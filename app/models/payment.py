@@ -2,6 +2,10 @@ from .db import db, environment, SCHEMA
 from datetime import datetime, timezone
 
 class Payment(db.Model):
+    """
+    Create payments model according to db Schema
+    Use timezone.utc for datetime to keep all datetimes consistent
+    """
     __tablename__ = 'payments'
 
     if environment == "production":
@@ -15,6 +19,13 @@ class Payment(db.Model):
     updated_at = db.Column(db.Datetime, default=datetime.now(timezone.utc))
 
     def to_dict(self):
+        """
+        Converts payment instance into a dictionary
+        Creates dictionary representation of payment instance,
+        returns a dictionary containing payment instance's information
+        so that data can be converted to json format
+        for api responses, etc
+        """
         return {
             'id': self.id,
             'expense_id': self.expense_id,
