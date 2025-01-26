@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 expense_participants = db.Table(
     "expense_participants", # name of the join table
     db.Model.metadata, # Attribute for connecting the table
-    db.Column("expenses", db.Integer, db.ForeignKey("expenses.id"), primary_key=True), # 
+    db.Column("expenses", db.Integer, db.ForeignKey("expenses.id"), primary_key=True),
     db.Column("users", db.Integer, db.ForeignKey("users.id"), primary_key=True)
 )
 
@@ -36,7 +36,15 @@ class Expense(db.Model):
             "updated_at": self.updated_at.isoformat()
         }
 
-# Add the foreign keys here
+# Add the relationship for One-to-many:
     # Add the variable that back_populates refers to
-    payments = db.relationship("Payment", back_populates="")
+    payments = db.relationship("Payment", back_populates="expense")
     user = db.relationship("User", back_populates="expenses")
+
+    # Add the relationships for the JOIN:
+    participants = db.relationship(
+        "User", # Name of table
+        secondary=expense_participants, # name of the join table
+        back_populates="particpant_expenses", # variable that relationship refers to in other table
+        cascade="all, delete"
+        )

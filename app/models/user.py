@@ -1,6 +1,7 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from .expenses import expense_participants
 
 
 class User(db.Model, UserMixin):
@@ -36,6 +37,14 @@ class User(db.Model, UserMixin):
             'email': self.email
         }
 
-    # Add foreignKeys here
-    expenses = db.relationship("Expense", back_populates="created_by")
+    # Add relationships here:
+    expenses = db.relationship("Expense", back_populates="user")
+
+    # Add the JOIN table relationships here:
+    particpant_expenses = db.relationship(
+        "Expense",
+        secondary= expense_participants,
+        back_populates="participants",
+        cascade="all, delete"
+    )
     
