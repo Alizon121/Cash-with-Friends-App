@@ -18,8 +18,6 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(40), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
 
-    payment = relationship('Payment', back_populates='users')
-
     @property
     def password(self):
         return self.hashed_password
@@ -41,6 +39,7 @@ class User(db.Model, UserMixin):
         }
 
     # Add relationships here:
+    payment = relationship('Payment', back_populates='users')
     expenses = db.relationship("Expense", back_populates="user")
 
     # Add the JOIN table relationships here:
@@ -50,4 +49,3 @@ class User(db.Model, UserMixin):
         back_populates="participants",
         cascade="all, delete"
     )
-    
