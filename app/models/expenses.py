@@ -14,7 +14,7 @@ class Expense(db.Model):
     created_by = db.Column(db.String(250), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     # I am not sure what method I should use to dynamically update a time
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow())
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utcnow))
 
     def to_dict(self):
         return {
@@ -26,3 +26,5 @@ class Expense(db.Model):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat()
         }
+
+# Add the foreign keys here?
