@@ -35,3 +35,7 @@ class User(db.Model, UserMixin):
             'username': self.username,
             'email': self.email
         }
+
+    # Add foreignKeys here
+    expenses = db.relationship("Expense", back_populates="created_by")
+    
