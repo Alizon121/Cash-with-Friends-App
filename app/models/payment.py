@@ -1,5 +1,14 @@
-from .db import db, environment, SCHEMA
+"""
+This module defined the Payment model for our application.
+The Payment model represents individual payments made within the app.
+This model is used to create and manage payment records within the application's database
+Uses the schema specified by SCHEMA .env variable
+Converts Payment instance into a dictionary for easy JSON serialization
+"""
+
 from datetime import datetime, timezone
+from sqlalchemy import ForeignKey
+from .db import db, environment, SCHEMA
 
 class Payment(db.Model):
     """
@@ -12,8 +21,8 @@ class Payment(db.Model):
         __table_args__ = {"schema": SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    expense_id = db.Column(db.Integer, nullable=False) # FOREIGN KEY
-    payer_id = db.Column(db.Integer, nullable=False) # FOREIGN KEY
+    expense_id = db.Column(db.Integer, ForeignKey('expenses.id'), nullable=False)
+    payer_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
     paid_at = db.Column(db.Datetime, default=datetime.now(timezone.utc))
     created_at = db.Column(db.Datetime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.Datetime, default=datetime.now(timezone.utc))
