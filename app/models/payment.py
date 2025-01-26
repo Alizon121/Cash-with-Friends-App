@@ -1,14 +1,16 @@
 """
-This module defined the Payment model for our application.
-The Payment model represents individual payments made within the app.
+This module defined the Payment model for our application
+The Payment model represents individual payments made within the app
 This model is used to create and manage payment records within the application's database
 Uses the schema specified by SCHEMA .env variable
 Converts Payment instance into a dictionary for easy JSON serialization
 """
 
+
 from datetime import datetime, timezone
 from sqlalchemy import ForeignKey
 from .db import db, environment, SCHEMA
+
 
 class Payment(db.Model):
     """
