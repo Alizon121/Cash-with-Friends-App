@@ -39,7 +39,7 @@ class User(db.Model, UserMixin):
         }
 
     # Add relationships here:
-    payment = relationship('Payment', back_populates='users')
+    payment = relationship('Payment', back_populates='payer')
     expenses = db.relationship("Expense", back_populates="user")
 
     # Add the JOIN table relationships here:

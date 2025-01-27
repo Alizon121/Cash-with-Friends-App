@@ -46,6 +46,6 @@ class Expense(db.Model):
     participants = db.relationship(
         "User", # Name of table
         secondary=expense_participants, # name of the join table
-        back_populates="particpant_expenses", # variable that relationship refers to in other table
+        back_populates="participant_expenses", # variable that relationship refers to in other table
         cascade="all, delete"
         )
