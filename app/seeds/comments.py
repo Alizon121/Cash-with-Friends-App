@@ -1,4 +1,4 @@
-comments= [
+seed_comments= [
     {
         "id": 1, 
         "expense_id": 1,
