@@ -5,8 +5,8 @@ from datetime import datetime, timezone
 expense_participants = db.Table(
     "expense_participants", # name of the join table
     db.Model.metadata, # Attribute for connecting the table
-    db.Column("expenses", db.Integer, db.ForeignKey("expenses.id"), primary_key=True),
-    db.Column("users", db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    db.Column("expense_id", db.Integer, db.ForeignKey("expenses.id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True)
 )
 
 
@@ -20,10 +20,10 @@ class Expense(db.Model):
     description = db.Column(db.String(250), nullable=True)
     amount = db.Column(db.Float, nullable=False)
     settled = db.Column(db.Boolean, default=False)
-    created_by = db.Column(db.String(250), db.ForeignKey("users.id"), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False) # default=datetime.now(timezone.utc) CHECK THIS METHOD
     # I am not sure what method I should use to dynamically update a time
-    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utcnow))
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc), nullable=False)
 
     def to_dict(self):
         return {
@@ -40,6 +40,7 @@ class Expense(db.Model):
     # Add the variable that back_populates refers to
     payments = db.relationship("Payment", back_populates="expense")
     user = db.relationship("User", back_populates="expenses")
+    comments = db.relationship("Comment", back_populates="expense")
 
     # Add the relationships for the JOIN:
     participants = db.relationship(
