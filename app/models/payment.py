@@ -10,7 +10,7 @@ Defines relationships between payments & foreign keys for easy querying
 
 from datetime import datetime, timezone
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
+# from sqlalchemy.orm import relationship
 from .db import db, environment, SCHEMA
 
 
@@ -35,8 +35,8 @@ class Payment(db.Model):
     # here we link each payment to an instance of 'expense' and an instance of 'user'
     # so that we can direclty access a the expense or user related to a given payment
     # i.e. payment.expense, payment.payer
-    expense = relationship('Expense', back_populates='payments')
-    payer = relationship('User', back_populates='payments')
+    expense = db.relationship('Expense', back_populates='payments')
+    payer = db.relationship('User', back_populates='payment')
 
     def to_dict(self):
         """
