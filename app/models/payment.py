@@ -25,9 +25,9 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     expense_id = db.Column(db.Integer, db.ForeignKey('expenses.id'), nullable=False)
     payer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    paid_at = db.Column(db.Datetime, default=datetime.now(timezone.utc))
-    created_at = db.Column(db.Datetime, default=datetime.now(timezone.utc))
-    updated_at = db.Column(db.Datetime, default=datetime.now(timezone.utc))
+    paid_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     # relationships defined for easier querying
     # here we link each payment to an instance of 'expense' and an instance of 'user'
