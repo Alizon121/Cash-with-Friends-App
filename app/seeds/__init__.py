@@ -2,6 +2,7 @@ from flask.cli import AppGroup
 from .users import seed_users, undo_users
 from .expenses import seed_expense, undo_expenses
 from .payments import seed_payments, undo_payments
+from .comments import seed_comments, undo_comments
 
 from app.models.db import db, environment, SCHEMA
 
@@ -25,6 +26,7 @@ def seed():
     # Add other seed functions here
     seed_expense()
     seed_payments()
+    seed_comments()
 
 
 # Creates the `flask seed undo` command
@@ -34,3 +36,4 @@ def undo():
     # Add other undo functions here
     undo_expenses()
     undo_payments()
+    undo_comments()
