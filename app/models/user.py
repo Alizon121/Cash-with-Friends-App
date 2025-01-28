@@ -42,6 +42,7 @@ class User(db.Model, UserMixin):
     # Relationships for payments, expenses, etc.
     payment = relationship('Payment', back_populates='payer')
     expenses = db.relationship("Expense", back_populates="user")
+    comments = db.relationship("Comment", back_populates="user")
 
     # Relationships for the JOIN table
     participant_expenses = db.relationship(
