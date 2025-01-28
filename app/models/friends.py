@@ -1,6 +1,7 @@
 from .db import db
 from datetime import datetime, timezone
 
+
 class Friend(db.Model):
     __tablename__ = "friends"
 
@@ -11,8 +12,8 @@ class Friend(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc), nullable=False)
 
     # Relationships
-    user = db.relationship("User", foreign_keys=[user_id], back_populates="friends")
-    friend = db.relationship("User", foreign_keys=[friend_id], back_populates="friend_requests")
+    user = db.relationship("User", foreign_keys=[user_id], back_populates="initiated_friendships")
+    friend = db.relationship("User", foreign_keys=[friend_id], back_populates="received_friendships")
 
     def to_dict(self):
         return {

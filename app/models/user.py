@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship
 from .friends import Friend
 
 
-
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
@@ -37,33 +36,31 @@ class User(db.Model, UserMixin):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'username': self.username,
-            'email': self.email,
-            'friends': [friend.to_dict() for friend in self.friends],
-            'friend_requests': [friend_request.to_dict() for friend_request in self.friend_requests]
+            'email': self.email
         }
 
-    # Add relationships here:
+    # Relationships for payments, expenses, etc.
     payment = relationship('Payment', back_populates='payer')
     expenses = db.relationship("Expense", back_populates="user")
 
-    # Add the JOIN table relationships here:
-    particpant_expenses = db.relationship(
+    # Relationships for the JOIN table
+    participant_expenses = db.relationship(
         "Expense",
-        secondary= expense_participants,
+        secondary=expense_participants,
         back_populates="participants",
         cascade="all, delete"
     )
 
- # New relationships for the Friend model
-    friends = db.relationship(
+    # Relationships for the Friend model
+    initiated_friendships = db.relationship(
         "Friend",
-        foreign_keys="[Friend.user_id]",
+        foreign_keys=[Friend.user_id],
         back_populates="user",
         cascade="all, delete-orphan"
     )
-    friend_requests = db.relationship(
+    received_friendships = db.relationship(
         "Friend",
-        foreign_keys="[Friend.friend_id]",
+        foreign_keys=[Friend.friend_id],
         back_populates="friend",
         cascade="all, delete-orphan"
     )
