@@ -10,7 +10,7 @@ class Friend(db.Model):
     )
    
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
-    friend_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    friend_id = db.Column(db.String(255), db.ForeignKey("users.username"), primary_key=True)
     pending_status = db.Column(db.Boolean, default=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc), nullable=False)
