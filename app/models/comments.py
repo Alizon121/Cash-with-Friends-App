@@ -11,8 +11,7 @@ class Comment(db.Model):
     expense_id = db.Column(db.Integer, db.ForeignKey("expenses.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
-    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc), nullable=False)
-
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc), nullable=False)    
     expense = db.relationship("Expense", back_populates="comments")
     user = db.relationship("User", back_populates="comments")
 
