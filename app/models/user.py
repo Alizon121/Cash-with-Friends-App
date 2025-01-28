@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from .expenses import expense_participants
 from sqlalchemy.orm import relationship
+from .friends import Friend
 
 
 class User(db.Model, UserMixin):
@@ -38,14 +39,26 @@ class User(db.Model, UserMixin):
             'email': self.email
         }
 
-    # Add relationships here:
+    # Relationships for payments, expenses, etc.
     payment = relationship('Payment', back_populates='payer')
     expenses = db.relationship("Expense", back_populates="user")
 
-    # Add the JOIN table relationships here:
-    particpant_expenses = db.relationship(
+    # Relationships for the JOIN table
+    participant_expenses = db.relationship(
         "Expense",
-        secondary= expense_participants,
+        secondary=expense_participants,
         back_populates="participants",
         cascade="all, delete"
+    )
+
+    # Relationships for the Friend model
+    initiated_friendships = db.relationship(
+        "Friend",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+    received_friendships = db.relationship(
+        "Friend",
+        back_populates="friend",
+        cascade="all, delete-orphan"
     )
