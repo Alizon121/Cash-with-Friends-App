@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from .expenses import expense_participants
 from sqlalchemy.orm import relationship
+from .friends import Friend
+
 
 
 class User(db.Model, UserMixin):
@@ -35,7 +37,9 @@ class User(db.Model, UserMixin):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'username': self.username,
-            'email': self.email
+            'email': self.email,
+            'friends': [friend.to_dict() for friend in self.friends],
+            'friend_requests': [friend_request.to_dict() for friend_request in self.friend_requests]
         }
 
     # Add relationships here:
@@ -48,4 +52,18 @@ class User(db.Model, UserMixin):
         secondary= expense_participants,
         back_populates="participants",
         cascade="all, delete"
+    )
+
+ # New relationships for the Friend model
+    friends = db.relationship(
+        "Friend",
+        foreign_keys="[Friend.user_id]",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+    friend_requests = db.relationship(
+        "Friend",
+        foreign_keys="[Friend.friend_id]",
+        back_populates="friend",
+        cascade="all, delete-orphan"
     )
