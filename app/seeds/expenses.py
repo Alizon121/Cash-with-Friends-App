@@ -53,18 +53,111 @@ def seed_expense():
         description="House rent", 
         amount=750.00, 
         settled=True, 
-        created_by=4, # I think we have to change to a variable from the Frontend (e.g. username)
+        created_by=4,
         particpants=[{
                       "username":"mario12", 
                       "settled":True
                     }
                     ]
     )
+    hiking = Expense(
+        description="Hiking in Zion", 
+        amount=20.00, 
+        settled=False, 
+        created_by=4,
+        particpants=[{
+                      "username":"marie", 
+                      "settled":True
+                    }
+                    ]
+    )
+    gas = Expense(
+        description="Gas to get to the place.", 
+        amount=30.00, 
+        settled=False, 
+        created_by=6,
+        particpants=[{
+                      "username":"chillguy12", 
+                      "settled":False
+                    },
+                    {
+                      "username":"daDude12", 
+                      "settled":True
+                    }
+                    ]
+    )
+    utilities = Expense(
+        description="Gas, water, electricity!", 
+        amount=50.00, 
+        settled=False, 
+        created_by=7,
+        particpants=[{
+                      "username":"daGuy12", 
+                      "settled":False
+                    },
+                    {
+                      "username":"daDude12", 
+                      "settled":True
+                    }
+                    ]
+    )
+    wifi = Expense(
+        description="Wifi!!", 
+        amount=18.00, 
+        settled=False, 
+        created_by=5,
+        particpants=[{
+                      "username":"Demo", 
+                      "settled":False
+                    },
+                    {
+                      "username":"daDude12", 
+                      "settled":True
+                    },
+                    {
+                        "username":"chillguy12",
+                        "settled": True
+                    }
+                    ]
+    )
+    brunch = Expense(
+        description="Brunch with the crew", 
+        amount=30.00, 
+        settled=False, 
+        created_by=6,
+        particpants=[{
+                      "username":"chillguy12", 
+                      "settled":False
+                    },
+                    {
+                      "username":"daDude12", 
+                      "settled":True
+                    }
+                    ]
+    )
+    spotify = Expense(
+        description="Spotify shared account.", 
+        amount=30.00, 
+        settled=False, 
+        created_by=3,
+        particpants=[{
+                      "username":"Demo", 
+                      "settled":False
+                    },
+                    ]
+    )
+    
 
     db.session.add(dinner)
     db.session.add(party)
     db.session.add(birthday)
     db.session.add(rent)
+    db.session.add(hiking)
+    db.session.add(gas)
+    db.session.add(utilities)
+    db.session.add(wifi)
+    db.session.add(brunch)
+    db.session.add(spotify)
     db.session.commit()
 
     # Uses a raw SQL query to TRUNCATE or DELETE the users table. SQLAlchemy doesn't

@@ -23,7 +23,7 @@ class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(250), nullable=True)
     amount = db.Column(db.Float, nullable=False)
-    settled = db.Column(db.Boolean, default=False)
+    settled = db.Column(db.Boolean, default=False, nullable=False)
     created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False) # default=datetime.now(timezone.utc) CHECK THIS METHOD
     # I am not sure what method I should use to dynamically update a time
