@@ -56,10 +56,12 @@ class User(db.Model, UserMixin):
     initiated_friendships = db.relationship(
         "Friend",
         back_populates="user",
+        foreign_keys=[Friend.user_id],
         cascade="all, delete-orphan"
     )
     received_friendships = db.relationship(
         "Friend",
         back_populates="friend",
+        foreign_keys=[Friend.friend_id],
         cascade="all, delete-orphan"
     )

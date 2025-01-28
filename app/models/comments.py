@@ -21,7 +21,6 @@ class Comment(db.Model):
             "comment_text": self.comment_text,
             "expense_id": self.expense_id,
             "user_id": self.user_id,
-            "username": self.user.username,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat()
         }
