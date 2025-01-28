@@ -1,12 +1,16 @@
 from .db import db, environment, SCHEMA
 from datetime import datetime, timezone
+from sqlalchemy import UniqueConstraint
+
 
 # Create the Join Table
 expense_participants = db.Table(
-    "expense_participants", # name of the join table
-    db.Model.metadata, # Attribute for connecting the table
+    "expense_participants",  # name of the join table
+    db.Model.metadata,       # Attribute for connecting the table
     db.Column("expense_id", db.Integer, db.ForeignKey("expenses.id"), primary_key=True),
-    db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    # Add the unique constraint to enforce uniqueness on (expense_id, user_id)
+    UniqueConstraint("expense_id", "user_id", name="uq_expense_user")
 )
 
 
