@@ -74,35 +74,85 @@ def amount_user_owes(id):
     '''
 
     '''
-        What one of the expenses returns:
-        {'id': 8, 'description': 'Wifi!!', 'amount': 18.0, 
-        'settled': False, 'created_by': 5, 
+        What the expense_owes var returns:
+        {'id': 2, 'description': 'Unforgettable birthday at the club', 
+        'amount': 150.0, 'settled': False, 'created_by': 3, 
         'created_at': '2025-01-28T19:45:08.554022', 
         'updated_at': '2025-01-28T19:45:08.554039'}
     '''
     if current_user.is_authenticated:
-        # Query to get the what the user owes for a specific expense
+        # Make a list var for returning json:
+        expense_data=[]
+
+        # Query to get the what the user details for a specific expense
         expense_owes = Expense.query.join(
             expense_participants, Expense.id == expense_participants.c.expense_id
         ).filter(
             expense_participants.c.user_id == current_user.id,
             Expense.id == id
         ).first()
-        print("ILBAFILAJBEFLIAJFBLAIFHJB", expense_owes)
+
+        # Query to get who the participants are in the expense
+        # Will serve to get the user's amount owed
+        def get_num_participants():
+            find_participants = User.query.get(current_user.id).participant_expenses
+            user_data = {data for data in find_participants if data.id == id} #find_participants[0].participants
+            for participant in user_data:
+                return len(participant.participants)
+            
+        def get_other_participants():
+            find_participants = User.query.get(current_user.id).participant_expenses
+            user_data = {data for data in find_participants if data.id == id} #find_participants[0].participants
+            for participant in user_data:
+                return [users.username for users in participant.participants]
+
+
+        if not expense_owes:
+            return jsonify({"Message": "User does not owe any expenses"})
         
-        # Use list to format into JSON
-        expense_data = []
+        owe_data = {
+            "id": expense_owes.id,
+            "description": expense_owes.description,
+            "amount": (expense_owes.amount/get_num_participants()),
+            "settled": expense_owes.settled,
+            "participants": get_other_participants()
+        }
 
 
+        expense_data.append(owe_data)
 
+        return jsonify({"Expenses": expense_data})
     else:
         return {"error": "unauthorized"}, 403
 
 
 @expense_routes.route("/<int:id>/amount_owed", methods=["GET"])
-def amount_user_is_owed():
+@login_required
+def amount_user_is_owed(id):
     '''
         Query for current users amount OWED details
     '''
-    if current_user.username == expense_participants.user_id.username:
-        expense_owed = Expense.query.get(id)
+    expense_data = []
+
+    if current_user.is_authenticated:
+        # Query for the user's created expenses
+        user_is_owed = User.query.get(current_user.id).expenses
+
+        # Select only the expense that corresponds with id in path:
+        expense_detail = [data for data in user_is_owed if data.id==id]
+
+        # Query for a particpant's individual amount (see below):
+        particpant_owes = User.query.
+
+        # Iterate over the queried data and add to dict:
+        for expense in expense_detail:
+            is_owed_data = {
+                "id":expense.id,
+                "description": expense.description,
+                "amount": expense.amount,
+                "settled": expense.settled,
+                "participants": [user.username for user in expense.participants],
+                # Query for a participants's individual amount (see above)
+                "particpant_amount": ""
+            }
+        print("KOKOKOKOKOKOKOKOKOKOKOKOK", [user.to_dict() for user in expense.participants])
