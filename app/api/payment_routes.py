@@ -13,7 +13,10 @@ payment_routes = Blueprint('payments', __name__)
 def expense_payments(id):
     """
     Find all payments related to the specified expense
-    Query for every payment using the expenseId provided via route parameter (payments.id.expense_id)
+    Query for the expense using id from route parameters
+    Query to find all Payments related to the expense
+    Format payment data based on API docs
+    Return json response
     """
 
     # Query to find the expense
@@ -60,10 +63,13 @@ def add_payment(id):
     Add a new payment to an expense
 
     Query for the expense using it's id
-    Get the current user
-    Get the amount paid (from the request body)
-    Return response body based on API docs
-    Create new Payment record in the database
+    Get the request data (username, amount paid)
+    Validate request data (ensure username and amount are both present)
+    Get the User from the username
+    Verify that the User is a participant in the expense (query expense_participants table)
+    Create new Payment record, add and commit to the db
+    Format response data based on API docs
+    Return json response
     """
 
     # Query to find the expense
