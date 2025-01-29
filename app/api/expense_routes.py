@@ -1,33 +1,97 @@
-from flask import Blueprint, redirect
+from flask import Blueprint, redirect, jsonify
 from flask_login import login_required, current_user
 from app.models import User
 from app.models.expenses import Expense, expense_participants
 
 expense_routes = Blueprint('expenses', __name__)
 
-@expense_routes.route("/<int:id>/payment_due", methods=["GET"])
+
+@expense_routes.route("/users/dashboard", methods=["GET"])
 @login_required
-def pending_expenses(id):
+def pending_expenses():
     '''
-        Query for current users pending expenses
+        Query for current users pending expenses and amount owed 
     '''
-    # if current_user.username == expense_participants.username:
-        # We want the user's total amount owed
-        # Get the owner of the expense
-        # Get the expense description
-        # Get the participants
+    # Use authorization logic here:
+    if current_user:
+        expense_data=[]
 
-        # Make a helper funciton to get "total amount/len(particpants)"
+        # Query to get what the user is owed
+        '''
+        {'id': 1, 'description': 'AYCE dinner with friends', 'amount': 90.0, 
+        'settled': False, 'created_by': 1, 
+        'created_at': '2025-01-28T19:45:08.554022', 
+        'updated_at': '2025-01-28T19:45:08.554039'
+        }
+        '''
+        user_is_owed = User.query.get(current_user.id).expenses[0].to_dict()
+        
+        # Error message for no user being owed something
+        if not user_is_owed:
+            return jsonify({"Message": "User is currently not owed any amount."})
+        
+        owed_data= {
+            "id": user_is_owed.id,
+            "amount": user_is_owed.amount,
+            "settled": user_is_owed.settled,
+            "createdAt": user_is_owed.created_at.isoformat()
+        }
 
-    user_expense = Expense.query.get(id)
-    print(user_expense)
-    # else:
-    #     return {"error": "unauthorized"}, 403
+        expense_data.append(owed_data)
 
-@expense_routes.route("/")
-def amount_owed_to_current_user():
+        # Query to get what the user owes
+        user_owes = User.query.get(current_user.id).participant_expenses
+
+        if not user_owes:
+            return jsonify({"Message": "User does not currently owe anything."})
+
+        for expense in user_owes:
+            owes_data = {
+                "id": expense.id,
+                "userId": current_user.id, 
+                "amount": (expense.amount/len(expense.participants)),
+                "description": expense.description,
+                "settled": expense.settled,
+                "createdBy": expense.created_by,
+                "participants": [user.username for user in expense.participants],
+                "createdAt": user_owes.created_at.isoformat()
+            }
+        
+        expense_data.append(owes_data)
+
+        return jsonify({"Expenses": expense_data})
+    
+    else:
+        return {"error": "unauthorized"}, 403
+
+
+
+
+
+
+
+
+@expense_routes.route("/<int:id>/payment_due")
+def amount_user_owes(id):
     '''
-        Query for current users amount owed details
+        Query for current users amount OWES details
     '''
-    if current_user.username == expense_participants.username:
-        pass
+    if current_user.username == expense_participants.user_id.username:
+        expense_owes = Expense.query.get(id)
+
+        # Use list to format into JSON
+        expense_data = []
+
+
+
+    else:
+        return {"error": "unauthorized"}, 403
+
+
+@expense_routes.route("/<int:id>/amount_owed", methods=["GET"])
+def amount_user_is_owed():
+    '''
+        Query for current users amount OWED details
+    '''
+    if current_user.username == expense_participants.user_id.username:
+        expense_owed = Expense.query.get(id)
