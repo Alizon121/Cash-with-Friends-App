@@ -1,7 +1,9 @@
 from flask import Blueprint, redirect, jsonify
-from flask_login import login_required, current_user
+from flask_login import login_required, LoginManager, current_user
 from app.models import User
 from app.models.expenses import Expense, expense_participants
+
+
 
 expense_routes = Blueprint('expenses', __name__)
 
@@ -13,7 +15,7 @@ def pending_expenses():
         Query for current users pending expenses and amount owed 
     '''
     # Use authorization logic here:
-    if current_user:
+    if current_user.is_authenticated:
         expense_data=[]
 
         # Query to get what the user is owed
@@ -31,10 +33,10 @@ def pending_expenses():
             return jsonify({"Message": "User is currently not owed any amount."})
         
         owed_data= {
-            "id": user_is_owed.id,
-            "amount": user_is_owed.amount,
-            "settled": user_is_owed.settled,
-            "createdAt": user_is_owed.created_at.isoformat()
+            "id": user_is_owed["id"],
+            "amount": user_is_owed["amount"],
+            "settled": user_is_owed["settled"],
+            # "createdAt": user_is_owed["created_at"]
         }
 
         expense_data.append(owed_data)
@@ -54,7 +56,7 @@ def pending_expenses():
                 "settled": expense.settled,
                 "createdBy": expense.created_by,
                 "participants": [user.username for user in expense.participants],
-                "createdAt": user_owes.created_at.isoformat()
+                # "createdAt": user_owes.created_at
             }
         
         expense_data.append(owes_data)
@@ -65,20 +67,29 @@ def pending_expenses():
         return {"error": "unauthorized"}, 403
 
 
-
-
-
-
-
-
 @expense_routes.route("/<int:id>/payment_due")
 def amount_user_owes(id):
     '''
         Query for current users amount OWES details
     '''
-    if current_user.username == expense_participants.user_id.username:
-        expense_owes = Expense.query.get(id)
 
+    '''
+        What one of the expenses returns:
+        {'id': 8, 'description': 'Wifi!!', 'amount': 18.0, 
+        'settled': False, 'created_by': 5, 
+        'created_at': '2025-01-28T19:45:08.554022', 
+        'updated_at': '2025-01-28T19:45:08.554039'}
+    '''
+    if current_user.is_authenticated:
+        # Query to get the what the user owes for a specific expense
+        expense_owes = Expense.query.join(
+            expense_participants, Expense.id == expense_participants.c.expense_id
+        ).filter(
+            expense_participants.c.user_id == current_user.id,
+            Expense.id == id
+        ).first()
+        print("ILBAFILAJBEFLIAJFBLAIFHJB", expense_owes)
+        
         # Use list to format into JSON
         expense_data = []
 
