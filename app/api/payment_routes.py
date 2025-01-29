@@ -1,8 +1,9 @@
-from flask import Blueprint, jsonify, redirect
+import datetime
+from flask import Blueprint, jsonify, request, redirect
 from flask_login import login_required, current_user
-from app.models import User
+from app.models import User, db
 from app.models.payment import Payment
-from app.models.expenses import Expense
+from app.models.expenses import Expense, expense_participants
 
 payment_routes = Blueprint('payments', __name__)
 
@@ -52,5 +53,75 @@ def expense_payments(id):
     return jsonify({"Payments": payments_data}), 200
 
 # ! Add a Payment to an Expense
+@payment_routes.route("api/expenses/<int:id>/payments", methods=["POST"])
+@login_required
+def add_payment(id):
+    """
+    Add a new payment to an expense
+
+    Query for the expense using it's id
+    Get the current user
+    Get the amount paid (from the request body)
+    Return response body based on API docs
+    Create new Payment record in the database
+    """
+
+    # Query to find the expense
+    expense = Expense.query.get(id)
+    if not expense:
+        return jsonify({"Message": "Expense couldn't be found"}), 404
+
+    # Get request data
+    data = request.get_json()
+    username = data.get("username")
+    amount = data.get("amount")
+
+    # Validate request data
+    if not username or not amount:
+        return jsonify({"message": "Validation error", "errors": {"username": "Username is required", "amount": "Amount is required"}}), 400
+
+    # Get the user making the payment
+    payer = User.query.filter_by(username=username).first()
+    if not payer:
+        return jsonify({"message": "User not found"}), 404
+
+    # Check if user is a participant in the expense
+    participation = db.session.query(expense_participants).filter_by(expense_id=id, user_id=payer.id).first()
+    if not participation:
+        return jsonify({"message": "Unauthorized"}), 403
+
+    # Create new payment record
+    new_payment = Payment(
+        amount=amount,
+        expense_id=expense.id,
+        user_id=payer.id,
+        paid_at=datetime.datetime.now()  # You can customize the date if needed
+    )
+
+    # Add and commit the new payment to the database
+    db.session.add(new_payment)
+    db.session.commit()
+
+    # Format response data & return json response
+    payment_data = {
+        "id": new_payment.id,
+        "expenseId": {
+            "description": expense.description,
+            "amount": expense.amount,
+            "settled": expense.settled,
+            "created_by": expense.created_by,
+            "created_at": expense.created_at.isoformat()
+        },
+        "userId": {
+            "firstName": payer.first_name,
+            "lastName": payer.last_name,
+            "email": payer.email,
+            "username": payer.username,
+        },
+        "amount": new_payment.amount,
+        "paidAt": new_payment.paid_at.isoformat()
+    }
+
+    return jsonify(payment_data), 201
 
 # ! Get All Payments of the Current User
