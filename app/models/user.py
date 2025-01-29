@@ -42,6 +42,7 @@ class User(db.Model, UserMixin):
     # Relationships for payments, expenses, etc.
     payment = relationship('Payment', back_populates='payer')
     expenses = db.relationship("Expense", back_populates="user")
+    comments = db.relationship("Comment", back_populates="user")
 
     # Relationships for the JOIN table
     participant_expenses = db.relationship(
@@ -55,10 +56,12 @@ class User(db.Model, UserMixin):
     initiated_friendships = db.relationship(
         "Friend",
         back_populates="user",
+        foreign_keys=[Friend.user_id],
         cascade="all, delete-orphan"
     )
     received_friendships = db.relationship(
         "Friend",
         back_populates="friend",
+        foreign_keys=[Friend.friend_id],
         cascade="all, delete-orphan"
     )
