@@ -16,30 +16,25 @@ def pending_expenses():
     '''
     # Use authorization logic here:
     if current_user.is_authenticated:
-        expense_data=[]
+        expense_data_owed=[]
+        expense_data_owes_to=[]
 
-        # Query to get what the user is owed
-        '''
-        {'id': 1, 'description': 'AYCE dinner with friends', 'amount': 90.0, 
-        'settled': False, 'created_by': 1, 
-        'created_at': '2025-01-28T19:45:08.554022', 
-        'updated_at': '2025-01-28T19:45:08.554039'
-        }
-        '''
-        user_is_owed = User.query.get(current_user.id).expenses[0].to_dict()
-        
+        total_amount = 0
+        # Query to get what expenses the user is owed
+        user_is_owed = User.query.get(current_user.id).expenses
         # Error message for no user being owed something
         if not user_is_owed:
             return jsonify({"Message": "User is currently not owed any amount."})
         
-        owed_data= {
-            "id": user_is_owed["id"],
-            "amount": user_is_owed["amount"],
-            "settled": user_is_owed["settled"],
+        for expense in user_is_owed:
+            total_amount += expense.amount
+            owed_data= {
+            "id": expense.id,
+            "amount": expense.amount,
+            "settled": expense.settled,
             # "createdAt": user_is_owed["created_at"]
         }
-
-        expense_data.append(owed_data)
+            expense_data_owed.append(owed_data)
 
         # Query to get what the user owes
         user_owes = User.query.get(current_user.id).participant_expenses
@@ -58,10 +53,13 @@ def pending_expenses():
                 "participants": [user.username for user in expense.participants],
                 # "createdAt": user_owes.created_at
             }
-        
-        expense_data.append(owes_data)
+            expense_data_owes_to.append(owes_data)
 
-        return jsonify({"Expenses": expense_data})
+        return jsonify({
+            "Expenses Owed": expense_data_owed,
+            "Owes Expenses": expense_data_owes_to,
+            "Total Amount Owed": total_amount            
+                        })
     
     else:
         return {"error": "unauthorized"}, 403
@@ -142,7 +140,7 @@ def amount_user_is_owed(id):
         expense_detail = [data for data in user_is_owed if data.id==id]
 
         # Query for a particpant's individual amount (see below):
-        particpant_owes = User.query.
+        # particpant_owes = User.query.
 
         # Iterate over the queried data and add to dict:
         for expense in expense_detail:
