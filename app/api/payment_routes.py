@@ -21,17 +21,7 @@ def expense_payments(id):
         return jsonify({"Message": "Expense couldn't be found"}), 404
 
     # Query to find all payments for the expense
-    payments = Payment.query.filter_by(expense_id=id).all()
-
-    # & Should I order the expenses by their payment id?
-    # & Or by their creation date?
-    # & This way we know that all of the payments in the payments_data list
-    # & will always be listed first to last in the order that they were created?
-
-    # # ^ Query to find all payments for the expense, ordered by 'id'
-    # payments = Payment.query.filter_by(expense_id=id).order_by(Payment.id).all()
-    # # ^ Query to find all payments for the expense, ordered by 'created_at'
-    # payments = Payment.query.filter_by(expense_id=id).order_by(Payment.created_at).all()
+    payments = Payment.query.filter_by(expense_id=id).order_by(Payment.id).all()
 
     # Format payments data into JSON response
     payments_data = []
