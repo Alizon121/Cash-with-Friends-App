@@ -7,7 +7,6 @@ from app.models.expenses import Expense
 payment_routes = Blueprint('payments', __name__)
 
 # ! Get All Payments for an Expense
-
 @payment_routes.route("/expenses/<int:id>/payments", methods=["GET"])
 @login_required
 def expense_payments(id):
@@ -27,7 +26,7 @@ def expense_payments(id):
     # & Should I order the expenses by their payment id?
     # & Or by their creation date?
     # & This way we know that all of the payments in the payments_data list
-    # & will always be first to last in the order that they were created?
+    # & will always be listed first to last in the order that they were created?
 
     # # ^ Query to find all payments for the expense, ordered by 'id'
     # payments = Payment.query.filter_by(expense_id=id).order_by(Payment.id).all()
