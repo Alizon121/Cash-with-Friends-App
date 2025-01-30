@@ -68,15 +68,7 @@ def pending_expenses():
 @expense_routes.route("/<int:id>/payment_due")
 def amount_user_owes(id):
     '''
-        Query for current users amount OWES details
-    '''
-
-    '''
-        What the expense_owes var returns:
-        {'id': 2, 'description': 'Unforgettable birthday at the club', 
-        'amount': 150.0, 'settled': False, 'created_by': 3, 
-        'created_at': '2025-01-28T19:45:08.554022', 
-        'updated_at': '2025-01-28T19:45:08.554039'}
+        Query for current users amount OWES details (one expense)
     '''
     if current_user.is_authenticated:
         # Make a list var for returning json:
@@ -139,11 +131,19 @@ def amount_user_is_owed(id):
         # Select only the expense that corresponds with id in path:
         expense_detail = [data for data in user_is_owed if data.id==id]
 
-        # Query for a particpant's individual amount (see below):
-        # particpant_owes = User.query.
 
         # Iterate over the queried data and add to dict:
         for expense in expense_detail:
+            
+            # Query for the number of particpants
+            participants = Expense.query.get(id).participants
+            
+            # Get num of participants:
+            num_participants = len(participants) if participants else 1
+
+            # Calculate how much each particpant owes:
+            participant_amount = expense.amount / num_participants
+
             is_owed_data = {
                 "id":expense.id,
                 "description": expense.description,
@@ -151,6 +151,10 @@ def amount_user_is_owed(id):
                 "settled": expense.settled,
                 "participants": [user.username for user in expense.participants],
                 # Query for a participants's individual amount (see above)
-                "particpant_amount": ""
+                "particpant_amount": participant_amount
             }
-        print("KOKOKOKOKOKOKOKOKOKOKOKOK", [user.to_dict() for user in expense.participants])
+
+            expense_data.append(is_owed_data)
+
+        return jsonify({"Expense": is_owed_data})
+       
