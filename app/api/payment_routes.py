@@ -56,7 +56,7 @@ def expense_payments(id):
     return jsonify({"Payments": payments_data}), 200
 
 # ! Add a Payment to an Expense
-@payment_routes.route("api/expenses/<int:id>/payments", methods=["POST"])
+@payment_routes.route("/expenses/<int:id>/payments", methods=["POST"])
 @login_required
 def add_payment(id):
     """
