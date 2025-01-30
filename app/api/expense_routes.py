@@ -169,28 +169,30 @@ def add_expense():
     form=ExpenseForm()
 
     # Reassign the choices attribute from the ExpenseForm with a query
-    form.participants.choices = [user.username for user in User.query.all()]
+    form.participants.choices = [(user.username, user.username) for user in User.query.all()]
 
     if current_user.is_authenticated:
         if form.validate_on_submit():
-            # strip removes whitespace and split returns a list
-            participant_usernames = [username.strip() for username in form.data["participants"].split(",")]
+            participant_usernames = [username.strip() for username in form.data["participants"]]
             participants = User.query.filter(User.username.in_(participant_usernames)).all()
 
             if not participants:
                 return jsonify({"error": "No valid participants found."}), 400
-
             new_expense = Expense(
                 description=form.data["description"],
-                amount=form.data["amount"]
+                amount=form.data["amount"],
+                created_by=current_user.id,
+                participants=participants
             )
+
+            # new_expense.participants.extend(participants)
 
             db.session.add(new_expense)
             db.session.commit()
-        
+            
             return jsonify({
                 "Message": "Expense creation successful",
-                "New Expense": new_expense.to_dict()
+                "New Expense": new_expense.to_dict(),
                         }), 201
 
         if form.errors:
