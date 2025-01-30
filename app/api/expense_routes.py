@@ -178,14 +178,13 @@ def add_expense():
 
             if not participants:
                 return jsonify({"error": "No valid participants found."}), 400
+            
             new_expense = Expense(
                 description=form.data["description"],
                 amount=form.data["amount"],
                 created_by=current_user.id,
                 participants=participants
             )
-
-            # new_expense.participants.extend(participants)
 
             db.session.add(new_expense)
             db.session.commit()
@@ -246,4 +245,16 @@ def comments(id):
     per_page = request.args.get('per_page', 10, type=int)
     comments = Comment.query.filter_by(expense_id=expense.id).paginate(page, per_page, False)
     return {'comments': [comment.to_dict() for comment in comments.items]}
-       
+
+
+@expense_routes.route("/<int:id>", methods=["DELETE"])
+@login_required
+def delete_expense(id):
+    if current_user.is_authenticated:
+        select_expense = Expense.query.get(id)
+
+        db.session.delete(select_expense)
+        db.session.commit()
+
+        return jsonify({"Message": "Expense successfully deleted"})
+    
