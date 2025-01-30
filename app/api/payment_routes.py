@@ -13,6 +13,7 @@ payment_routes = Blueprint('payments', __name__)
 def expense_payments(id):
     """
     Find all payments related to the specified expense
+
     Query for the expense using id from route parameters
     Query to find all Payments related to the expense
     Format payment data based on API docs
@@ -24,13 +25,15 @@ def expense_payments(id):
     if not expense:
         return jsonify({"Message": "Expense couldn't be found"}), 404
 
-    # Query to find all payments for the expense
-    payments = Payment.query.filter_by(expense_id=id).order_by(Payment.id).all()
+    # Join query to find all payments for this expense and corresponding users
+    payments = db.session.query(Payment, User).join(User, Payment.payer_id == User.id).filter(Payment.expense_id == id).order_by(Payment.id).all()
+    if not payments:
+        return jsonify({"Message": "No payments found for the current expense"})
 
     # Format payments data into JSON response
     payments_data = []
 
-    for payment in payments:
+    for payment, payer in payments:
         payment_data = {
             "id": payment.id,
             "expenseId": {
@@ -42,10 +45,10 @@ def expense_payments(id):
                 "created_at": expense.created_at.isoformat(),
             },
             "userId": {
-                "firstName": payment.payer.first_name,
-                "lastName": payment.payer.last_name,
-                "email": payment.payer.email,
-                "username": payment.payer.username,
+                "firstName": payer.first_name,
+                "lastName": payer.last_name,
+                "email": payer.email,
+                "username": payer.username,
             },
             "amount": payment.amount,
             "paidAt": payment.paid_at.isoformat()
@@ -131,3 +134,67 @@ def add_payment(id):
     return jsonify(payment_data), 201
 
 # ! Get All Payments of the Current User
+@payment_routes.route("/users/<int:id>/payments", methods=["GET"])
+@login_required
+def user_payments(id):
+
+    # & NOTES
+    # ^ Should this route be /current/payments?
+    # ^ That way we can just get the user from /current instead of querying for them,
+    # ^ since this will always be the user who is currently logged in?
+
+    # ! UPDATED QUERIES with .join and .filter as necessary to get the expense and user
+    # ! corresponding to the current payment for use in JSON response
+
+    """
+    Find all payments of the current user
+
+    Query for the user using the id from route parameters
+    Query for all payments where payer_id matches User id
+        .join with Expense / User queries
+            to find each expense where Expense.id == payment.expense_id
+            to find each user where User.id == payment.payer_id
+        .filter Users by the id of the current user (user.id)
+            to make sure only the current user's payments are queried
+    Format payment data
+    Return json response
+    """
+
+    # Query to find the user
+    user = User.query.get(id)
+    if not user:
+        return jsonify({"Message": "User couldn't be found"})
+
+    # Join query to find all payments for this user
+    # AND corresponding expense and user for each payment
+    payments = db.session.query(Payment, Expense, User).join(Expense, Payment.expense_id == Expense.id).join(User, Payment.payer_id == User.id).filter(Payment.payer_id == user.id).order_by(Payment.id).all()
+    if not payments:
+        return jsonify({"Message": "NO payments found for the current user"})
+
+    # Format payments data into JSON response
+    payments_data = []
+
+    for payment, expense, payer in payments:
+
+        payment_data = {
+            "id": payment.id,
+            "expenseId": {
+                "description": expense.description,
+                "amount": expense.amount,
+                "settled": expense.settled,
+                "created_by": expense.created_by,
+                "created_at": expense.created_at.isoformat(),
+            },
+            "userId": {
+                "firstName": payer.first_name,
+                "lastName": payer.last_name,
+                "email": payer.email,
+                "username": payer.username,
+            },
+            "amount": payment.amount,
+            "paidAt": payment.paid_at.isoformat()
+        }
+
+        payments_data.append(payment_data)
+
+    return jsonify({"Payments": payments_data}), 200
