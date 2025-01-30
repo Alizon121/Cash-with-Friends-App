@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, request
+from flask import Blueprint, redirect, url_for, request
 from flask_login import login_required, current_user
 from app.models import User, db, Comment
 from flask import Blueprint, redirect, jsonify
@@ -6,6 +6,7 @@ from flask_login import login_required, LoginManager, current_user
 from app.models import User
 from app.models.expenses import Expense, expense_participants
 from app.forms import CommentForm
+from app.forms.expense_form import ExpenseForm
 
 
 
@@ -69,7 +70,7 @@ def pending_expenses():
         return {"error": "unauthorized"}, 403
 
 
-@expense_routes.route("/<int:id>/payment_due")
+@expense_routes.route("/<int:id>/payment_due", methods=["GET"])
 def amount_user_owes(id):
     '''
         Query for current users amount OWES details (one expense)
@@ -160,6 +161,36 @@ def amount_user_is_owed(id):
             expense_data.append(is_owed_data)
 
         return jsonify({"Expense": is_owed_data})
+    
+
+@expense_routes.route("/", methods=["GET", "POST"])
+@login_required
+def add_expense():
+    form=ExpenseForm()
+
+    # Reassign the choices attribute from the ExpenseForm with a query
+    form.participants.choices = [(user.id, user.username) for user in User.query.all()]
+
+    if form.validate_on_submit():
+        new_expense=Expense(
+            participants=form.data["participants"],
+            description=form.data["description"],
+            amount=form.data["amount"],
+            comment=form.data["comment"]
+        )
+
+        db.session.add(new_expense)
+        db.session.commit()
+        return redirect("/api/expenses/users/dashboard")
+    
+    if not form.validate_on_submit():
+        return jsonify({"Message": "Invlaid form submission"})
+    
+    return jsonify({"Message": "Expense creation successful"}), 201
+
+
+
+
 
 
 @expense_routes.route('/<int:id>/comments', methods=["POST"])
