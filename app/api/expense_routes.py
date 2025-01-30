@@ -169,27 +169,34 @@ def add_expense():
     form=ExpenseForm()
 
     # Reassign the choices attribute from the ExpenseForm with a query
-    form.participants.choices = [(user.id, user.username) for user in User.query.all()]
+    form.participants.choices = [user.username for user in User.query.all()]
 
-    if form.validate_on_submit():
-        new_expense=Expense(
-            participants=form.data["participants"],
-            description=form.data["description"],
-            amount=form.data["amount"],
-            comment=form.data["comment"]
-        )
+    if current_user.is_authenticated:
+        if form.validate_on_submit():
+            # strip removes whitespace and split returns a list
+            participant_usernames = [username.strip() for username in form.data["participants"].split(",")]
+            participants = User.query.filter(User.username.in_(participant_usernames)).all()
 
-        db.session.add(new_expense)
-        db.session.commit()
-        return redirect("/api/expenses/users/dashboard")
-    
-    if not form.validate_on_submit():
-        return jsonify({"Message": "Invlaid form submission"})
-    
-    return jsonify({"Message": "Expense creation successful"}), 201
+            if not participants:
+                return jsonify({"error": "No valid participants found."}), 400
 
+            new_expense = Expense(
+                description=form.data["description"],
+                amount=form.data["amount"]
+            )
 
+            db.session.add(new_expense)
+            db.session.commit()
+        
+            return jsonify({
+                "Message": "Expense creation successful",
+                "New Expense": new_expense.to_dict()
+                        }), 201
 
+        if form.errors:
+            return jsonify(form.errors), 403
+
+    return "<h2>Request Form</h2>"
 
 
 
