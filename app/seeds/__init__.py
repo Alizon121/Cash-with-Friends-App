@@ -3,8 +3,19 @@ from .users import seed_users, undo_users
 from .expenses import seed_expense, undo_expenses
 from .payments import seed_payments, undo_payments
 from .comments import seed_comments, undo_comments
+from .friends import seed_friends, undo_friends
 
 from app.models.db import db, environment, SCHEMA
+from sqlalchemy.sql import text
+
+
+def undo_expense_participants():
+    if environment == "production":
+        db.session.execute(f"TRUNCATE table {SCHEMA}.expense_participants RESTART IDENTITY CASCADE;")
+    else:
+        db.session.execute(text("DELETE FROM expense_participants"))
+
+    db.session.commit()
 
 # Creates a seed group to hold our commands
 # So we can type `flask seed --help`
@@ -22,18 +33,23 @@ def seed():
         undo_users()
         undo_expenses()
         undo_payments()
+        undo_comments()
+        undo_friends()
+        undo_expense_participants()
     seed_users()
     # Add other seed functions here
     seed_expense()
     seed_payments()
     seed_comments()
+    seed_friends()
 
 
 # Creates the `flask seed undo` command
 @seed_commands.command('undo')
 def undo():
     undo_users()
-    # Add other undo functions here
+    undo_expense_participants()
     undo_expenses()
     undo_payments()
     undo_comments()
+    undo_friends()

@@ -1,7 +1,8 @@
-from flask import Blueprint, redirect
+from flask import Blueprint, redirect, request
 from flask_login import login_required, current_user
-from app.models import User
+from app.models import User, db, Comment
 from app.models.expenses import Expense, expense_participants
+from app.forms import CommentForm
 
 expense_routes = Blueprint('expenses', __name__)
 
@@ -31,3 +32,49 @@ def amount_owed_to_current_user():
     '''
     if current_user.username == expense_participants.username:
         pass
+
+
+@expense_routes.route('/<int:id>/comments', methods=["POST"])
+@login_required
+def add_comment(id):
+    form = CommentForm()
+    if not form.validate_on_submit():
+        return {"error": "Invalid form submission"}, 400
+
+    comment_text = form.comment_text.data
+
+    # Validate the expense's existence
+    expense = Expense.query.get(id)
+    if not expense: 
+        return {"error": "Expense not found"}, 404
+    
+    # Add the new comment
+    new_comment = Comment(
+        comment_text=comment_text,
+        expense_id=expense.id,
+        user_id=current_user.id
+    )
+    db.session.add(new_comment)
+    db.session.commit()
+    
+    # Return the new comment
+    return {"comment": new_comment.to_dict()}, 201
+
+
+@expense_routes.route('/<int:id>/comments')
+@login_required
+def comments(id):
+    """
+    Query for all comments for a specific expense and returns them in a list of dictionaries
+    """
+    
+    # Validate the expense's existence 
+    expense = Expense.query.get(id)
+    if not expense: 
+        return {"error": "Expense not found"}, 404
+    
+    # Query for all comments for the expense with "filter_by" and expense_id and .all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    comments = Comment.query.filter_by(expense_id=expense.id).paginate(page, per_page, False)
+    return {'comments': [comment.to_dict() for comment in comments.items]}
