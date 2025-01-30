@@ -2,7 +2,7 @@ from .db import db, environment, SCHEMA, add_prefix_for_prod
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from .expenses import expense_participants
-from sqlalchemy.orm import relationship
+# from sqlalchemy.orm import relationship
 from .friends import Friend
 
 
@@ -40,7 +40,7 @@ class User(db.Model, UserMixin):
         }
 
     # Relationships for payments, expenses, etc.
-    payment = relationship('Payment', back_populates='payer')
+    payment = db.relationship('Payment', back_populates='payer')
     expenses = db.relationship("Expense", back_populates="user")
     comments = db.relationship("Comment", back_populates="user")
 
