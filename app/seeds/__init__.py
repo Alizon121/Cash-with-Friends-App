@@ -35,6 +35,7 @@ def seed():
         undo_payments()
         undo_comments()
         undo_friends()
+        undo_expense_participants()
     seed_users()
     # Add other seed functions here
     seed_expense()
