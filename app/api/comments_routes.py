@@ -11,9 +11,9 @@ comment_routes = Blueprint('comments', __name__)
 def edit_comment(comment_id):
     comment_text = request.form.get("comment_text")
     
-    # # Validate comment_text
-    # if not comment_text:
-    #     return {"error": "Content cannot be empty"}, 400
+    # Validate comment_text
+    if not comment_text:
+        return {"error": "Content cannot be empty"}, 400
     
     # # Find the comment
     comment = Comment.query.get(comment_id)
@@ -21,9 +21,9 @@ def edit_comment(comment_id):
     if not comment:
         return {"error": "Comment not found"}, 404
 
-    # # Auth check
-    # if comment.user_id != current_user.id:
-    #     return {"error": "Unauthorized"}, 403
+    # Auth check
+    if comment.user_id != current_user.id:
+        return {"error": "Unauthorized"}, 403
     
     # Update the comment
     comment.comment_text = comment_text
