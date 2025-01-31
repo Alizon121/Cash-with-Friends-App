@@ -206,4 +206,3 @@ def comments(id):
     per_page = request.args.get('per_page', 10, type=int)
     comments = Comment.query.filter_by(expense_id=expense.id).paginate(page, per_page, False)
     return {'comments': [comment.to_dict() for comment in comments.items]}
-       
