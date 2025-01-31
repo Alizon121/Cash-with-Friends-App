@@ -235,7 +235,6 @@ def update_expense(id):
 
 
 #####################Comments/Explense Routes###########################
-
 @expense_routes.route('/<int:id>/comments', methods=['POST'])
 @login_required
 def add_comment(id):
