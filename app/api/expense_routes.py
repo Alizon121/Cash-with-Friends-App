@@ -355,7 +355,7 @@ def expense_comments(id):
 #################Payment/Expenses Routes#####################
 
 # ! Get All Payments for an Expense
-@expense_routes.route("/expenses/<int:id>/payments", methods=["GET"])
+@expense_routes.route("/<int:id>/payments", methods=["GET"])
 @login_required
 def expense_payments(id):
     """
@@ -380,12 +380,14 @@ def expense_payments(id):
     # Format payments data into JSON response
     payments_data = []
 
-    payment_amount = expense.amount / len(expense.participants)
-
     for payment, payer in payments:
+
+        payment_amount = expense.amount / len(expense.participants)
+
         payment_data = {
             "id": payment.id,
-            "expenseId": {
+            "expense": {
+                "expenseId": expense.id,
                 "description": expense.description,
                 "amount": expense.amount,
                 "settled": expense.settled,
@@ -393,7 +395,8 @@ def expense_payments(id):
                 # use .isoformat() for datetime objects to stay consistent?
                 "created_at": expense.created_at.isoformat(),
             },
-            "userId": {
+            "user": {
+                "userId": payer.id,
                 "firstName": payer.first_name,
                 "lastName": payer.last_name,
                 "email": payer.email,
@@ -408,7 +411,7 @@ def expense_payments(id):
     return jsonify({"Payments": payments_data}), 200
 
 # ! Add a Payment to an Expense
-@expense_routes.route("/expenses/<int:id>/payments", methods=["POST"])
+@expense_routes.route("/<int:id>/payments", methods=["POST"])
 @login_required
 def add_payment(id):
     """
@@ -465,14 +468,16 @@ def add_payment(id):
 
     payment_data = {
         "id": new_payment.id,
-        "expenseId": {
+        "expense": {
+            "expenseId": expense.id,
             "description": expense.description,
             "amount": expense.amount,
             "settled": expense.settled,
             "created_by": expense.created_by,
             "created_at": expense.created_at.isoformat()
         },
-        "userId": {
+        "user": {
+            "userId": payer.id,
             "firstName": payer.first_name,
             "lastName": payer.last_name,
             "email": payer.email,

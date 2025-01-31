@@ -42,14 +42,16 @@ def user_payments():
 
         payment_data = {
             "id": payment.id,
-            "expenseId": {
+            "expense": {
+                "expenseId": expense.id,
                 "description": expense.description,
                 "amount": expense.amount,
                 "settled": expense.settled,
                 "created_by": expense.created_by,
                 "created_at": expense.created_at.isoformat(),
             },
-            "userId": {
+            "user": {
+                "userId": user.id,
                 "firstName": user.first_name,
                 "lastName": user.last_name,
                 "email": user.email,
