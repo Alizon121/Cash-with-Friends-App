@@ -26,10 +26,7 @@ def user(id):
 
 
 # For the current user "comments" button (that we don't actually have yet lol)
-### We will have to add a "My Comments" button to the dashboard or maybe on the profile page?
-### Actually I'm thinking we could make the profile page more robust by making the profile page 
-### with multiple buttons for their own expenses, payments, comments, etc. 
-### OR have a profile dropdown with all the options, create expense, add friend, view comments, 
+# have a profile dropdown with all the options, create expense, add friend, view comments, 
 ### view payments, view expenses, etc...
 
 @user_routes.route('/comments')
