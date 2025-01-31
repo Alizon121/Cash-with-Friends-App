@@ -355,7 +355,7 @@ def expense_comments(id):
 #################Payment/Expenses Routes#####################
 
 # ! Get All Payments for an Expense
-@expense_routes.route("/expenses/<int:id>/payments", methods=["GET"])
+@expense_routes.route("/<int:id>/payments", methods=["GET"])
 @login_required
 def expense_payments(id):
     """
@@ -380,12 +380,14 @@ def expense_payments(id):
     # Format payments data into JSON response
     payments_data = []
 
-    payment_amount = expense.amount / len(expense.participants)
-
     for payment, payer in payments:
+
+        payment_amount = expense.amount / len(expense.participants)
+
         payment_data = {
             "id": payment.id,
-            "expenseId": {
+            "expense": {
+                "expenseId": expense.id,
                 "description": expense.description,
                 "amount": expense.amount,
                 "settled": expense.settled,
@@ -393,7 +395,8 @@ def expense_payments(id):
                 # use .isoformat() for datetime objects to stay consistent?
                 "created_at": expense.created_at.isoformat(),
             },
-            "userId": {
+            "user": {
+                "userId": payer.id,
                 "firstName": payer.first_name,
                 "lastName": payer.last_name,
                 "email": payer.email,
@@ -408,7 +411,7 @@ def expense_payments(id):
     return jsonify({"Payments": payments_data}), 200
 
 # ! Add a Payment to an Expense
-@expense_routes.route("/expenses/<int:id>/payments", methods=["POST"])
+@expense_routes.route("/<int:id>/payments", methods=["POST"])
 @login_required
 def add_payment(id):
     """
@@ -429,14 +432,15 @@ def add_payment(id):
     if not expense:
         return jsonify({"Message": "Expense couldn't be found"}), 404
 
+    payment_amount = expense.amount / len(expense.participants)
+
     # Get request data
     data = request.get_json()
     username = data.get("username")
-    amount = data.get("amount")
 
     # Validate request data
-    if not username or not amount:
-        return jsonify({"message": "Validation error", "errors": {"username": "Username is required", "amount": "Amount is required"}}), 400
+    if not username:
+        return jsonify({"username": "Username is required"}), 400
 
     # Get the user making the payment
     payer = User.query.filter_by(username=username).first()
@@ -450,7 +454,6 @@ def add_payment(id):
 
     # Create new payment record
     new_payment = Payment(
-        amount=amount,
         expense_id=expense.id,
         user_id=payer.id,
         paid_at=datetime.datetime.now()  # You can customize the date if needed
@@ -465,20 +468,22 @@ def add_payment(id):
 
     payment_data = {
         "id": new_payment.id,
-        "expenseId": {
+        "expense": {
+            "expenseId": expense.id,
             "description": expense.description,
             "amount": expense.amount,
             "settled": expense.settled,
             "created_by": expense.created_by,
             "created_at": expense.created_at.isoformat()
         },
-        "userId": {
+        "user": {
+            "userId": payer.id,
             "firstName": payer.first_name,
             "lastName": payer.last_name,
             "email": payer.email,
             "username": payer.username,
         },
-        "amount": new_payment.amount,
+        "amount": payment_amount,
         "paidAt": new_payment.paid_at.isoformat()
     }
 
