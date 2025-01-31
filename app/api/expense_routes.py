@@ -201,54 +201,6 @@ def add_expense():
 
     return "<h2>Request Form</h2>"
 
-
-
-@expense_routes.route('/<int:id>/comments', methods=["POST"])
-@login_required
-def add_comment(id):
-    form = CommentForm()
-    if not form.validate_on_submit():
-        return {"error": "Invalid form submission"}, 400
-
-    comment_text = form.comment_text.data
-
-    # Validate the expense's existence
-    expense = Expense.query.get(id)
-    if not expense: 
-        return {"error": "Expense not found"}, 404
-    
-    # Add the new comment
-    new_comment = Comment(
-        comment_text=comment_text,
-        expense_id=expense.id,
-        user_id=current_user.id
-    )
-    db.session.add(new_comment)
-    db.session.commit()
-    
-    # Return the new comment
-    return {"comment": new_comment.to_dict()}, 201
-
-
-@expense_routes.route('/<int:id>/comments')
-@login_required
-def comments(id):
-    """
-    Query for all comments for a specific expense and returns them in a list of dictionaries
-    """
-    
-    # Validate the expense's existence 
-    expense = Expense.query.get(id)
-    if not expense: 
-        return {"error": "Expense not found"}, 404
-    
-    # Query for all comments for the expense with "filter_by" and expense_id and .all()
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
-    comments = Comment.query.filter_by(expense_id=expense.id).paginate(page, per_page, False)
-    return {'comments': [comment.to_dict() for comment in comments.items]}
-
-
 @expense_routes.route("/<int:id>", methods=["DELETE"])
 @login_required
 def delete_expense(id):
@@ -272,7 +224,7 @@ def delete_expense(id):
 
 @expense_routes.route("/<int:id>", methods=["PUT"])
 @login_required
-def settle_expense(id):
+def update_expense(id):
     '''
         This route is NOT for settling but updating an expense's det
     '''
@@ -280,3 +232,58 @@ def settle_expense(id):
         # We should be able to update description, amount, and participants
         selected_expense = Expense.query.get(id)
         print(selected_expense)
+
+
+#####################Comments/Explense Routes###########################
+@expense_routes.route('/<int:id>/comments', methods=['POST'])
+@login_required
+def add_comment(id):
+    data = request.get_json()
+    
+    # Validate that comment is not empty
+    comment_text = data.get('comment_text', None)
+    if not comment_text:
+        return {"error": "Content cannot be empty"}, 400
+    
+    # Validate the expense's existence
+    expense = Expense.query.get(id)
+    if not expense:
+        return {"error": "Expense not found"}, 404
+    
+    # Check if user is a participant
+    if current_user not in expense.participants:
+        return {"error": "You are not a participant of this expense"}, 403
+    
+    # Do the thing (add the comment)
+    new_comment = Comment(
+        comment_text=comment_text,
+        expense_id=expense.id,
+        user_id=current_user.id
+    )
+    db.session.add(new_comment)
+    db.session.commit()
+    
+    # Return the comment
+    return {"comment": new_comment.to_dict()}, 201
+
+
+@expense_routes.route('/<int:id>/comments')
+@login_required
+def expense_comments(id):
+    # Validate the expense's existence
+    expense = Expense.query.get(id)
+    if not expense:
+        return {"error": "Expense not found"}, 404
+    
+    # Query for all comments with the expense (paginated)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    comments = Comment.query.filter_by(expense_id=expense.id).paginate(page=page, per_page=per_page, error_out=False)
+    
+    # Return paginated comments
+    return jsonify({
+        'comments': [comment.to_dict() for comment in comments.items],
+        'total': comments.total,
+        'pages': comments.pages,
+        'current_page': comments.page
+    })
