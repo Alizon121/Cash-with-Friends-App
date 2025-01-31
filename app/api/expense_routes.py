@@ -182,7 +182,9 @@ def add_expense():
             new_expense = Expense(
                 description=form.data["description"],
                 amount=form.data["amount"],
+                date=form.data["date"],
                 created_by=current_user.id,
+                settled=False,
                 participants=participants
             )
 
@@ -253,8 +255,28 @@ def delete_expense(id):
     if current_user.is_authenticated:
         select_expense = Expense.query.get(id)
 
+        if not select_expense:
+            return jsonify({"error": "Expense not found."}), 404
+
+        # Check if the current user is authorized to delete the expense
+        if select_expense.created_by != current_user.id:
+            return jsonify({"error": "Unauthorized to delete this expense."}), 403
+
         db.session.delete(select_expense)
         db.session.commit()
 
         return jsonify({"Message": "Expense successfully deleted"})
     
+    return jsonify({"error": "User not authenticated."}), 401
+    
+
+@expense_routes.route("/<int:id>", methods=["PUT"])
+@login_required
+def settle_expense(id):
+    '''
+        This route is NOT for settling but updating an expense's det
+    '''
+    if current_user.is_authenticated:
+        # We should be able to update description, amount, and participants
+        selected_expense = Expense.query.get(id)
+        print(selected_expense)

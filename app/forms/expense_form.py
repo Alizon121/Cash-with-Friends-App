@@ -8,9 +8,9 @@ class ExpenseForm(FlaskForm):
     participants=SelectMultipleField("Participants", choices=[], coerce=str)
     description=StringField("Description", validators=[DataRequired(), Length(max=255, message="Description must not exceed 255 characters")])
     amount=DecimalField("Amount", validators=[DataRequired()])
+    date=StringField("Date", validators=[DataRequired()])
     submit=SubmitField("Submit")
     # comment=StringField("Comment", validators=[DataRequired()])
-    # Do we need to add a comment field? I think this should be an option for after an expense is made
-    # DO WE NEED TO ADD A SETTLED FIELD? -> Default to False?
-    # DO WE NEED TO ADD A CREATED_BY FIELD? -> I don't think so
-    # DO I NEED TO UPDATE SEEDER DATA WITH A COMMENT KEY-VALUE?
+    # Do we need to add a comment field? We do not need a comment field (01/31/2025)
+    # DO WE NEED TO ADD A SETTLED FIELD? -> We do not need a settled field (01/31/2025)
+    # DO WE NEED TO ADD A CREATED_BY FIELD? -> No we should not (01/31/2025)
