@@ -231,7 +231,69 @@ def update_expense(id):
     if current_user.is_authenticated:
         # We should be able to update description, amount, and participants
         selected_expense = Expense.query.get(id)
-        print(selected_expense)
+
+        # Error for no expense
+        if not selected_expense:
+            return jsonify({"Error": "Expense not found"})
+        
+        # Authorization
+        if selected_expense.created_by == current_user.id:
+            
+            # Get the json request
+            data= request.get_json()
+
+            # Update values using data:
+            if "description" in data:
+                selected_expense.description = data["description"]
+
+            if "amount" in data:
+                selected_expense.amount = data["amount"]
+
+            if "participants" in data:
+                participant_usernames = data["participants"]
+                participants = User.query.filter(User.username.in_(participant_usernames)).all()
+
+                if not participants:
+                    return jsonify({"Error": "No valid participants found"}), 400
+                
+                selected_expense.participants = participants
+
+            db.session.commit()
+
+            return jsonify({
+            "Message": "Expense successfully updated",
+            "Updated Expense": selected_expense.to_dict()  # Assuming Expense has a to_dict() method
+            }), 200
+            
+           
+        return jsonify({"Error": "User is not authenticated"}), 400
+
+
+@expense_routes.route("/<int:id>/settle", methods=["PUT"])
+@login_required
+def settle_expense(id):
+
+    if current_user.is_authenticated:
+        
+        # Query the expense from the path
+        select_expense = Expense.query.get(id)
+
+        # Authorization
+        if select_expense.created_by == current_user.id:
+            # Get data from the request body
+            data=request.get_json()
+
+            if "settled" in data:
+                select_expense.settled = data["settled"]
+
+            db.session.commit()
+
+            return jsonify({
+                "Message": "Expense settled",
+                "Updated Expense": select_expense.to_dict()
+            }), 200
+        
+    return jsonify({"Error": "User is not authenticated"})
 
 
 #####################Comments/Explense Routes###########################
@@ -287,3 +349,5 @@ def expense_comments(id):
         'pages': comments.pages,
         'current_page': comments.page
     })
+
+#################Payment/Expenses Routes#####################
