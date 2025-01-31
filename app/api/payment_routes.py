@@ -150,8 +150,7 @@ def user_payments(id):
     Find all payments of the current user
 
     Query for the user using the id from route parameters
-    Query for all payments where payer_id matches User id
-        .join with Expense / User queries
+        .join with Expense
             to find each expense where Expense.id == payment.expense_id
             to find each user where User.id == payment.payer_id
         .filter Users by the id of the current user (user.id)
@@ -163,18 +162,17 @@ def user_payments(id):
     # Query to find the user
     user = User.query.get(id)
     if not user:
-        return jsonify({"Message": "User couldn't be found"})
+        return jsonify({"Message": "User couldn't be found"}), 404
 
-    # Join query to find all payments for this user
-    # AND corresponding expense and user for each payment
-    payments = db.session.query(Payment, Expense, User).join(Expense, Payment.expense_id == Expense.id).join(User, Payment.payer_id == User.id).filter(Payment.payer_id == user.id).order_by(Payment.id).all()
+    # Join query to find all payments for this user and corresponding expenses
+    payments = db.session.query(Payment, Expense).join(Expense, Payment.expense_id == Expense.id).filter(Payment.payer_id == user.id).order_by(Payment.id).all()
     if not payments:
-        return jsonify({"Message": "NO payments found for the current user"})
+        return jsonify({"Message": "No payments found for the current user"}), 404
 
     # Format payments data into JSON response
     payments_data = []
 
-    for payment, expense, payer in payments:
+    for payment, expense in payments:
 
         payment_data = {
             "id": payment.id,
@@ -186,10 +184,10 @@ def user_payments(id):
                 "created_at": expense.created_at.isoformat(),
             },
             "userId": {
-                "firstName": payer.first_name,
-                "lastName": payer.last_name,
-                "email": payer.email,
-                "username": payer.username,
+                "firstName": user.first_name,
+                "lastName": user.last_name,
+                "email": user.email,
+                "username": user.username,
             },
             "amount": payment.amount,
             "paidAt": payment.paid_at.isoformat()
