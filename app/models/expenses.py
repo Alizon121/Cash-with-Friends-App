@@ -25,6 +25,7 @@ class Expense(db.Model):
     amount = db.Column(db.Float, nullable=False)
     settled = db.Column(db.Boolean, default=False, nullable=False)
     created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    date = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False) # default=datetime.now(timezone.utc) CHECK THIS METHOD
     # I am not sure what method I should use to dynamically update a time
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc), nullable=False)
@@ -36,6 +37,7 @@ class Expense(db.Model):
             "amount": self.amount,
             "settled": self.settled,
             "created_by": self.created_by,
+            "date": self.date,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
             "participants": [user.username for user in self.participants]
