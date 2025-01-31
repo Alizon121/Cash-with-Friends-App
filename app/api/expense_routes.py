@@ -269,6 +269,33 @@ def update_expense(id):
         return jsonify({"Error": "User is not authenticated"}), 400
 
 
+@expense_routes.route("/<int:id>/settle", methods=["PUT"])
+@login_required
+def settle_expense(id):
+
+    if current_user.is_authenticated:
+        
+        # Query the expense from the path
+        select_expense = Expense.query.get(id)
+
+        # Authorization
+        if select_expense.created_by == current_user.id:
+            # Get data from the request body
+            data=request.get_json()
+
+            if "settled" in data:
+                select_expense.settled = data["settled"]
+
+            db.session.commit()
+
+            return jsonify({
+                "Message": "Expense settled",
+                "Updated Expense": select_expense.to_dict()
+            }), 200
+        
+    return jsonify({"Error": "User is not authenticated"})
+
+
 #####################Comments/Explense Routes###########################
 @expense_routes.route('/<int:id>/comments', methods=['POST'])
 @login_required
