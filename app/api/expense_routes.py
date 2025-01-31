@@ -269,7 +269,7 @@ def add_comment(id):
 
 @expense_routes.route('/<int:id>/comments')
 @login_required
-def comments(id):
+def expense_comments(id):
     # Validate the expense's existence
     expense = Expense.query.get(id)
     if not expense:
