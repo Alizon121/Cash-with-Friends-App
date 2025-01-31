@@ -64,4 +64,3 @@ def user_payments():
         payments_data.append(payment_data)
 
     return jsonify({"Payments": payments_data}), 200
-
