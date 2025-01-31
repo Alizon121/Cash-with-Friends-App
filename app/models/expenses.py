@@ -37,7 +37,8 @@ class Expense(db.Model):
             "settled": self.settled,
             "created_by": self.created_by,
             "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat()
+            "updated_at": self.updated_at.isoformat(),
+            "participants": [user.username for user in self.participants]
         }
 
 # Add the relationship for One-to-many:

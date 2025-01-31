@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, request
+from flask import Blueprint, redirect, url_for, request
 from flask_login import login_required, current_user
 from app.models import User, db, Comment
 from flask import Blueprint, redirect, jsonify
@@ -6,6 +6,7 @@ from flask_login import login_required, LoginManager, current_user
 from app.models import User
 from app.models.expenses import Expense, expense_participants
 from app.forms import CommentForm
+from app.forms.expense_form import ExpenseForm
 
 
 
@@ -69,7 +70,7 @@ def pending_expenses():
         return {"error": "unauthorized"}, 403
 
 
-@expense_routes.route("/<int:id>/payment_due")
+@expense_routes.route("/<int:id>/payment_due", methods=["GET"])
 def amount_user_owes(id):
     '''
         Query for current users amount OWES details (one expense)
@@ -160,6 +161,46 @@ def amount_user_is_owed(id):
             expense_data.append(is_owed_data)
 
         return jsonify({"Expense": is_owed_data})
+    
+
+@expense_routes.route("/", methods=["GET", "POST"])
+@login_required
+def add_expense():
+    form=ExpenseForm()
+
+    # Reassign the choices attribute from the ExpenseForm with a query
+    form.participants.choices = [(user.username, user.username) for user in User.query.all()]
+
+    if current_user.is_authenticated:
+        if form.validate_on_submit():
+            participant_usernames = [username.strip() for username in form.data["participants"]]
+            participants = User.query.filter(User.username.in_(participant_usernames)).all()
+
+            if not participants:
+                return jsonify({"error": "No valid participants found."}), 400
+            
+            new_expense = Expense(
+                description=form.data["description"],
+                amount=form.data["amount"],
+                date=form.data["date"],
+                created_by=current_user.id,
+                settled=False,
+                participants=participants
+            )
+
+            db.session.add(new_expense)
+            db.session.commit()
+            
+            return jsonify({
+                "Message": "Expense creation successful",
+                "New Expense": new_expense.to_dict(),
+                        }), 201
+
+        if form.errors:
+            return jsonify(form.errors), 403
+
+    return "<h2>Request Form</h2>"
+
 
 
 @expense_routes.route('/<int:id>/comments', methods=["POST"])
@@ -206,3 +247,36 @@ def comments(id):
     per_page = request.args.get('per_page', 10, type=int)
     comments = Comment.query.filter_by(expense_id=expense.id).paginate(page, per_page, False)
     return {'comments': [comment.to_dict() for comment in comments.items]}
+
+
+@expense_routes.route("/<int:id>", methods=["DELETE"])
+@login_required
+def delete_expense(id):
+    if current_user.is_authenticated:
+        select_expense = Expense.query.get(id)
+
+        if not select_expense:
+            return jsonify({"error": "Expense not found."}), 404
+
+        # Check if the current user is authorized to delete the expense
+        if select_expense.created_by != current_user.id:
+            return jsonify({"error": "Unauthorized to delete this expense."}), 403
+
+        db.session.delete(select_expense)
+        db.session.commit()
+
+        return jsonify({"Message": "Expense successfully deleted"})
+    
+    return jsonify({"error": "User not authenticated."}), 401
+    
+
+@expense_routes.route("/<int:id>", methods=["PUT"])
+@login_required
+def settle_expense(id):
+    '''
+        This route is NOT for settling but updating an expense's det
+    '''
+    if current_user.is_authenticated:
+        # We should be able to update description, amount, and participants
+        selected_expense = Expense.query.get(id)
+        print(selected_expense)
