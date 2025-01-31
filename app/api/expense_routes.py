@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, request
 from flask_login import login_required, current_user
-import datetime
+from datetime import datetime
 from app.models import User, db, Comment
 from flask import Blueprint, redirect, jsonify
 from flask_login import login_required, LoginManager, current_user
@@ -175,6 +175,10 @@ def add_expense():
 
     if current_user.is_authenticated:
         if form.validate_on_submit():
+
+            date_str = form.date.data
+            date_obj = datetime.strptime(date_str, "%m/%d/%Y")
+
             participant_usernames = [username.strip() for username in form.data["participants"]]
             participants = User.query.filter(User.username.in_(participant_usernames)).all()
 
@@ -184,7 +188,7 @@ def add_expense():
             new_expense = Expense(
                 description=form.data["description"],
                 amount=form.data["amount"],
-                date=form.data["date"],
+                date=date_obj.isoformat(),
                 created_by=current_user.id,
                 settled=False,
                 participants=participants
