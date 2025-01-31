@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, request
+from flask import Blueprint, redirect, url_for, request
 from flask_login import login_required, current_user
 from app.models import User, db, Comment
 from flask import Blueprint, redirect, jsonify
@@ -6,6 +6,7 @@ from flask_login import login_required, LoginManager, current_user
 from app.models import User
 from app.models.expenses import Expense, expense_participants
 from app.forms import CommentForm
+from app.forms.expense_form import ExpenseForm
 
 
 
@@ -69,7 +70,7 @@ def pending_expenses():
         return {"error": "unauthorized"}, 403
 
 
-@expense_routes.route("/<int:id>/payment_due")
+@expense_routes.route("/<int:id>/payment_due", methods=["GET"])
 def amount_user_owes(id):
     '''
         Query for current users amount OWES details (one expense)
@@ -160,23 +161,100 @@ def amount_user_is_owed(id):
             expense_data.append(is_owed_data)
 
         return jsonify({"Expense": is_owed_data})
+    
+
+@expense_routes.route("/", methods=["GET", "POST"])
+@login_required
+def add_expense():
+    form=ExpenseForm()
+
+    # Reassign the choices attribute from the ExpenseForm with a query
+    form.participants.choices = [(user.username, user.username) for user in User.query.all()]
+
+    if current_user.is_authenticated:
+        if form.validate_on_submit():
+            participant_usernames = [username.strip() for username in form.data["participants"]]
+            participants = User.query.filter(User.username.in_(participant_usernames)).all()
+
+            if not participants:
+                return jsonify({"error": "No valid participants found."}), 400
+            
+            new_expense = Expense(
+                description=form.data["description"],
+                amount=form.data["amount"],
+                date=form.data["date"],
+                created_by=current_user.id,
+                settled=False,
+                participants=participants
+            )
+
+            db.session.add(new_expense)
+            db.session.commit()
+            
+            return jsonify({
+                "Message": "Expense creation successful",
+                "New Expense": new_expense.to_dict(),
+                        }), 201
+
+        if form.errors:
+            return jsonify(form.errors), 403
+
+    return "<h2>Request Form</h2>"
+
+@expense_routes.route("/<int:id>", methods=["DELETE"])
+@login_required
+def delete_expense(id):
+    if current_user.is_authenticated:
+        select_expense = Expense.query.get(id)
+
+        if not select_expense:
+            return jsonify({"error": "Expense not found."}), 404
+
+        # Check if the current user is authorized to delete the expense
+        if select_expense.created_by != current_user.id:
+            return jsonify({"error": "Unauthorized to delete this expense."}), 403
+
+        db.session.delete(select_expense)
+        db.session.commit()
+
+        return jsonify({"Message": "Expense successfully deleted"})
+    
+    return jsonify({"error": "User not authenticated."}), 401
+    
+
+@expense_routes.route("/<int:id>", methods=["PUT"])
+@login_required
+def update_expense(id):
+    '''
+        This route is NOT for settling but updating an expense's det
+    '''
+    if current_user.is_authenticated:
+        # We should be able to update description, amount, and participants
+        selected_expense = Expense.query.get(id)
+        print(selected_expense)
 
 
-@expense_routes.route('/<int:id>/comments', methods=["POST"])
+#####################Comments/Explense Routes###########################
+@expense_routes.route('/<int:id>/comments', methods=['POST'])
 @login_required
 def add_comment(id):
-    form = CommentForm()
-    if not form.validate_on_submit():
-        return {"error": "Invalid form submission"}, 400
-
-    comment_text = form.comment_text.data
-
+    data = request.get_json()
+    
+    # Validate that comment is not empty
+    comment_text = data.get('comment_text', None)
+    if not comment_text:
+        return {"error": "Content cannot be empty"}, 400
+    
     # Validate the expense's existence
     expense = Expense.query.get(id)
-    if not expense: 
+    if not expense:
         return {"error": "Expense not found"}, 404
     
-    # Add the new comment
+    # Check if user is a participant
+    if current_user not in expense.participants:
+        return {"error": "You are not a participant of this expense"}, 403
+    
+    # Do the thing (add the comment)
     new_comment = Comment(
         comment_text=comment_text,
         expense_id=expense.id,
@@ -185,25 +263,27 @@ def add_comment(id):
     db.session.add(new_comment)
     db.session.commit()
     
-    # Return the new comment
+    # Return the comment
     return {"comment": new_comment.to_dict()}, 201
 
 
 @expense_routes.route('/<int:id>/comments')
 @login_required
-def comments(id):
-    """
-    Query for all comments for a specific expense and returns them in a list of dictionaries
-    """
-    
-    # Validate the expense's existence 
+def expense_comments(id):
+    # Validate the expense's existence
     expense = Expense.query.get(id)
-    if not expense: 
+    if not expense:
         return {"error": "Expense not found"}, 404
     
-    # Query for all comments for the expense with "filter_by" and expense_id and .all()
+    # Query for all comments with the expense (paginated)
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    comments = Comment.query.filter_by(expense_id=expense.id).paginate(page, per_page, False)
-    return {'comments': [comment.to_dict() for comment in comments.items]}
-       
+    comments = Comment.query.filter_by(expense_id=expense.id).paginate(page=page, per_page=per_page, error_out=False)
+    
+    # Return paginated comments
+    return jsonify({
+        'comments': [comment.to_dict() for comment in comments.items],
+        'total': comments.total,
+        'pages': comments.pages,
+        'current_page': comments.page
+    })
