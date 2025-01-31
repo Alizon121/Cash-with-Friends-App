@@ -141,8 +141,6 @@ def add_payment(id):
 @payment_routes.route("/", methods=["GET"])
 @login_required
 def user_payments():
-    # ! UPDATED QUERIES with .join and .filter as necessary to get the expense and user
-    # ! corresponding to the current payment for use in JSON response
 
     """
     Find all payments of the current user
