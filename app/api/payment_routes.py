@@ -33,6 +33,8 @@ def expense_payments(id):
     # Format payments data into JSON response
     payments_data = []
 
+    payment_amount = expense.amount / len(expense.participants)
+
     for payment, payer in payments:
         payment_data = {
             "id": payment.id,
@@ -50,7 +52,7 @@ def expense_payments(id):
                 "email": payer.email,
                 "username": payer.username,
             },
-            "amount": payment.amount,
+            "amount": payment_amount,
             "paidAt": payment.paid_at.isoformat()
         }
 
@@ -112,6 +114,8 @@ def add_payment(id):
     db.session.commit()
 
     # Format response data & return json response
+    payment_amount = expense.amount / len(expense.participants)
+
     payment_data = {
         "id": new_payment.id,
         "expenseId": {
@@ -134,15 +138,9 @@ def add_payment(id):
     return jsonify(payment_data), 201
 
 # ! Get All Payments of the Current User
-@payment_routes.route("/users/<int:id>/payments", methods=["GET"])
+@payment_routes.route("/", methods=["GET"])
 @login_required
-def user_payments(id):
-
-    # & NOTES
-    # ^ Should this route be /current/payments?
-    # ^ That way we can just get the user from /current instead of querying for them,
-    # ^ since this will always be the user who is currently logged in?
-
+def user_payments():
     # ! UPDATED QUERIES with .join and .filter as necessary to get the expense and user
     # ! corresponding to the current payment for use in JSON response
 
@@ -160,9 +158,7 @@ def user_payments(id):
     """
 
     # Query to find the user
-    user = User.query.get(id)
-    if not user:
-        return jsonify({"Message": "User couldn't be found"}), 404
+    user = User.query.get(current_user.id)
 
     # Join query to find all payments for this user and corresponding expenses
     payments = db.session.query(Payment, Expense).join(Expense, Payment.expense_id == Expense.id).filter(Payment.payer_id == user.id).order_by(Payment.id).all()
@@ -173,6 +169,8 @@ def user_payments(id):
     payments_data = []
 
     for payment, expense in payments:
+
+        payment_amount = expense.amount / len(expense.participants)
 
         payment_data = {
             "id": payment.id,
@@ -189,7 +187,7 @@ def user_payments(id):
                 "email": user.email,
                 "username": user.username,
             },
-            "amount": payment.amount,
+            "amount": payment_amount,
             "paidAt": payment.paid_at.isoformat()
         }
 
