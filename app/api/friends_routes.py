@@ -9,35 +9,47 @@ friends_routes = Blueprint("friends", __name__)
 def send_friend_request():
     """Send a friend request to another user."""
     data = request.get_json()
-    friend_id = data.get("friend_id")
+    username = data.get("username")
 
-    if not friend_id:
-        return jsonify({"error": "Friend ID is required"}), 400
+    if not username:
+        return jsonify({"message": "Username is required"}), 400
 
-    friend = User.query.get(friend_id)
+    friend = User.query.filter_by(username=username).first()
     if not friend:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"message": "User not found"}), 404
 
-    existing_friendship = Friend.query.filter_by(user_id=current_user.id, friend_id=friend_id).first()
+    if friend.id == current_user.id:
+        return jsonify({"message": "You cannot send a friend request to yourself"}), 400
+
+    existing_friendship = Friend.query.filter(
+        ((Friend.user_id == current_user.id) & (Friend.friend_id == friend.id)) |
+        ((Friend.friend_id == current_user.id) & (Friend.user_id == friend.id))
+    ).first()
+
     if existing_friendship:
-        return jsonify({"error": "Friend request already sent or user is already your friend"}), 400
+        return jsonify({"message": "User is already your friend"}), 400
 
-    new_friend_request = Friend(user_id=current_user.id, friend_id=friend_id, pending_status=True)
+    new_friend_request = Friend(user_id=current_user.id, friend_id=friend.id, pending_status=True)
     db.session.add(new_friend_request)
     db.session.commit()
 
     return jsonify({"message": "Friend request sent successfully"}), 201
 
-@friends_routes.route("/<int:friend_id>", methods=["PUT"])
+
+@friends_routes.route("", methods=["PUT"])
 @login_required
-def respond_to_friend_request(friend_id):
+def respond_to_friend_request():
     """Accept or reject a friend request."""
     data = request.get_json()
+    friend_id = data.get("friend_id")
     accept = data.get("accept")
+
+    if not friend_id:
+        return jsonify({"message": "Friend ID is required"}), 400
 
     friend_request = Friend.query.filter_by(user_id=friend_id, friend_id=current_user.id, pending_status=True).first()
     if not friend_request:
-        return jsonify({"error": "No pending friend request found"}), 404
+        return jsonify({"message": "Friend request not found"}), 404
 
     if accept:
         friend_request.pending_status = False
@@ -48,26 +60,6 @@ def respond_to_friend_request(friend_id):
         db.session.commit()
         return jsonify({"message": "Friend request rejected"}), 200
 
-@friends_routes.route("", methods=["GET"])
-@login_required
-def get_all_friends():
-    """Retrieve all friends of the logged-in user."""
-    friendships = Friend.query.filter(
-        (Friend.user_id == current_user.id) | (Friend.friend_id == current_user.id),
-        Friend.pending_status == False
-    ).all()
-
-    friends_list = []
-    for friendship in friendships:
-        friend_id = friendship.friend_id if friendship.user_id == current_user.id else friendship.user_id
-        friend = User.query.get(friend_id)
-        friends_list.append({
-            "id": friend.id,
-            "username": friend.username,
-            "email": friend.email
-        })
-
-    return jsonify({"friends": friends_list}), 200
 
 @friends_routes.route("/<int:friend_id>", methods=["DELETE"])
 @login_required
@@ -79,8 +71,54 @@ def remove_friend(friend_id):
     ).first()
 
     if not friendship:
-        return jsonify({"error": "Friendship not found"}), 404
+        return jsonify({"message": "Friend not found"}), 404
 
     db.session.delete(friendship)
     db.session.commit()
-    return jsonify({"message": "Friendship removed"}), 200
+    return jsonify({"message": "Friend removed"}), 200
+
+
+
+@friends_routes.route("/requests", methods=["GET"])
+@login_required
+def get_pending_friend_requests():
+    """Retrieve all pending friend requests for the logged-in user."""
+    pending_requests = Friend.query.filter_by(friend_id=current_user.id, pending_status=True).all()
+    print("HELLO WORLD", pending_requests)
+    pending_list = [{
+        "id": request.user_id,
+        "firstName": User.query.get(request.user_id).first_name,
+        "lastName": User.query.get(request.user_id).last_name,
+        "email": User.query.get(request.user_id).email,
+        "username": User.query.get(request.user_id).username
+    } for request in pending_requests]
+
+    return jsonify({"PendingRequests": pending_list}), 200
+
+@friends_routes.route("", methods=["GET"])
+@login_required
+def get_all_friends():
+    """Retrieve all accepted friends of the logged-in user."""
+    friendships = Friend.query.filter(
+        ((Friend.user_id == current_user.id) | (Friend.friend_id == current_user.id)) &
+        (Friend.pending_status == False)
+    ).all()
+
+    if not friendships:
+        return jsonify({"message": "No friends yet, would you like to add some?"}), 200
+
+    friends_list = []
+    for friendship in friendships:
+        friend_id = friendship.friend_id if friendship.user_id == current_user.id else friendship.user_id
+        friend = User.query.get(friend_id)
+
+        friends_list.append({
+            "id": friend.id,
+            "firstName": friend.first_name,
+            "lastName": friend.last_name,
+            "email": friend.email,
+            "username": friend.username,
+            "createdAt": friendship.created_at.isoformat()
+        })
+
+    return jsonify({"friends": friends_list}), 200

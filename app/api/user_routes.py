@@ -1,13 +1,13 @@
 from flask import Blueprint, jsonify
-from flask_login import login_required
-from app.models import User
+from flask_login import login_required, current_user
+from app.models import User, db, Friend
 
 user_routes = Blueprint('users', __name__)
 
 
 @user_routes.route('/')
 @login_required
-def users():
+def users():    
     """
     Query for all users and returns them in a list of user dictionaries
     """
@@ -23,3 +23,4 @@ def user(id):
     """
     user = User.query.get(id)
     return user.to_dict()
+
