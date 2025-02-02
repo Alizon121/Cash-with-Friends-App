@@ -1,56 +1,66 @@
-from flask import Blueprint, jsonify, redirect
+import datetime
+from flask import Blueprint, jsonify, request, redirect
 from flask_login import login_required, current_user
-from app.models import User
+from app.models import User, db
 from app.models.payment import Payment
-from app.models.expenses import Expense
+from app.models.expenses import Expense, expense_participants
 
 payment_routes = Blueprint('payments', __name__)
 
-# ! Get All Payments for an Expense
-@payment_routes.route("/expenses/<int:id>/payments", methods=["GET"])
+# ! Get All Payments of the Current User
+@payment_routes.route("/", methods=["GET"])
 @login_required
-def expense_payments(id):
+def user_payments():
+
     """
-    Find all payments related to the specified expense
-    Query for every payment using the expenseId provided via route parameter (payments.id.expense_id)
+    Find all payments of the current user
+
+    Query for the user using the id from route parameters
+        .join with Expense
+            to find each expense where Expense.id == payment.expense_id
+            to find each user where User.id == payment.payer_id
+        .filter Users by the id of the current user (user.id)
+            to make sure only the current user's payments are queried
+    Format payment data
+    Return json response
     """
 
-    # Query to find the expense
-    expense = Expense.query.get(id)
-    if not expense:
-        return jsonify({"Message": "Expense couldn't be found"}), 404
+    # Query to find the user
+    user = User.query.get(current_user.id)
 
-    # Query to find all payments for the expense
-    payments = Payment.query.filter_by(expense_id=id).order_by(Payment.id).all()
+    # Join query to find all payments for this user and corresponding expenses
+    payments = db.session.query(Payment, Expense).join(Expense, Payment.expense_id == Expense.id).filter(Payment.payer_id == user.id).order_by(Payment.id).all()
+    if not payments:
+        return jsonify({"Message": "No payments found for the current user"}), 404
 
     # Format payments data into JSON response
     payments_data = []
 
-    for payment in payments:
+    for payment, expense in payments:
+
+        payment_amount = expense.amount / len(expense.participants)
+
         payment_data = {
             "id": payment.id,
-            "expenseId": {
+            "expense": {
+                "expenseId": expense.id,
                 "description": expense.description,
                 "amount": expense.amount,
                 "settled": expense.settled,
                 "created_by": expense.created_by,
-                # use .isoformat() for datetime objects to stay consistent?
                 "created_at": expense.created_at.isoformat(),
             },
-            "userId": {
-                "firstName": payment.payer.first_name,
-                "lastName": payment.payer.last_name,
-                "email": payment.payer.email,
-                "username": payment.payer.username,
+            "user": {
+                "userId": user.id,
+                "firstName": user.first_name,
+                "lastName": user.last_name,
+                "email": user.email,
+                "username": user.username,
             },
-            "amount": payment.amount,
+            "amount": payment_amount,
             "paidAt": payment.paid_at.isoformat()
         }
 
         payments_data.append(payment_data)
 
     return jsonify({"Payments": payments_data}), 200
-
-# ! Add a Payment to an Expense
-
-# ! Get All Payments of the Current User
