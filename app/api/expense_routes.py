@@ -463,9 +463,6 @@ def add_payment(id):
     db.session.add(new_payment)
     db.session.commit()
 
-    # # Format response data & return json response
-    # payment_amount = expense.amount / len(expense.participants)
-
     payment_data = {
         "id": new_payment.id,
         "expense": {
