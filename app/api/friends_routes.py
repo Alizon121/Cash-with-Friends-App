@@ -84,7 +84,6 @@ def remove_friend(friend_id):
 def get_pending_friend_requests():
     """Retrieve all pending friend requests for the logged-in user."""
     pending_requests = Friend.query.filter_by(friend_id=current_user.id, pending_status=True).all()
-    print("HELLO WORLD", pending_requests)
     pending_list = [{
         "id": request.user_id,
         "firstName": User.query.get(request.user_id).first_name,
