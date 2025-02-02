@@ -464,7 +464,7 @@ def add_payment(id):
     # Create new payment record
     new_payment = Payment(
         expense_id=expense.id,
-        user_id=payer.id,
+        payer_id=payer.id,
         paid_at=datetime.datetime.now()  # You can customize the date if needed
     )
 
