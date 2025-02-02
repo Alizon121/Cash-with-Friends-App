@@ -292,27 +292,33 @@ def update_expense(id):
 @login_required
 def settle_expense(id):
 
-    if current_user.is_authenticated:
+    # Query the expense from the path
+    select_expense = Expense.query.get(id)
 
-        # Query the expense from the path
-        select_expense = Expense.query.get(id)
+    print("POIAFLIAUFHNOAIJFHGNAIUWEHF", select_expense.settled)
+    # Authorization
+    if select_expense.created_by == current_user.id:
+        
+        # Get data from the request body
+        data=request.get_json()
 
-        # Authorization
-        if select_expense.created_by == current_user.id:
-            # Get data from the request body
-            data=request.get_json()
-
-            if "settled" in data:
+        if "settled" in data:
+            
+            # Check and make sure that the input is a Boolean
+            if isinstance(data["settled"], bool):
                 select_expense.settled = data["settled"]
+            else:
+                return jsonify({"Error": "Please provide Boolean type"}), 400
 
-            db.session.commit()
+        db.session.commit()
 
-            return jsonify({
-                "Message": "Expense settled",
-                "Updated Expense": select_expense.to_dict()
-            }), 200
+        return jsonify({
+            "Message": "Expense settled",
+            "Updated Expense": select_expense.to_dict()
+        }), 200
 
-    return jsonify({"Error": "User is not authenticated"})
+    else:
+        return jsonify({"Error": "User is unauthorized"})
 
 
 #####################Comments/Explense Routes###########################
