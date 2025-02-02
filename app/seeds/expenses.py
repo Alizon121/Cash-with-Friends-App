@@ -16,7 +16,8 @@ def seed_expense():
    dinner = Expense(
         description="AYCE dinner with friends", 
         amount=90.00, 
-        settled=False, 
+        settled=False,
+        date="01/10/2025",
         created_by=1,  # I think we have to change to a variable from the Frontend (e.g. username)
         participants=[marnie,bobbie]
     )
@@ -24,6 +25,7 @@ def seed_expense():
         description="Unforgettable birthday at the club", 
         amount=150.00, 
         settled=False, 
+        date="12/01/2024",
         created_by=3, # I think we have to change to a variable from the Frontend (e.g. username)
         participants=[Demo,chillguy12]
     )
@@ -31,13 +33,15 @@ def seed_expense():
         description="Aunt's birthday!", 
         amount=30.00, 
         settled=False, 
+        date="01/12/2025",
         created_by=5, # I think we have to change to a variable from the Frontend (e.g. username)
         participants=[marnie,Demo]
     )
    rent = Expense(
         description="House rent", 
         amount=750.00, 
-        settled=True, 
+        settled=True,
+        date="01/16/2025",
         created_by=4,
         participants=[daGuy12]
     )
@@ -45,6 +49,7 @@ def seed_expense():
         description="Hiking in Zion", 
         amount=20.00, 
         settled=False, 
+        date="01/15/2025",
         created_by=4,
         participants=[marnie, bobbie]
     )
@@ -52,13 +57,15 @@ def seed_expense():
         description="Gas to get to the place.", 
         amount=30.00, 
         settled=False, 
+        date="01/17/2025",
         created_by=6,
         participants=[chillguy12,daDude12]
     )
    utilities = Expense(
         description="Gas, water, electricity!", 
         amount=50.00, 
-        settled=False, 
+        settled=False,
+        date="01/18/2025",
         created_by=7,
         participants=[daGuy12,daDude12]
     )
@@ -66,6 +73,7 @@ def seed_expense():
         description="Wifi!!", 
         amount=18.00, 
         settled=False, 
+        date="01/19/2025",
         created_by=5,
         participants=[Demo, daDude12,chillguy12]
     )
@@ -73,6 +81,7 @@ def seed_expense():
         description="Brunch with the crew", 
         amount=30.00, 
         settled=False, 
+        date="01/20/2025",
         created_by=6,
         participants=[chillguy12,daDude12]
     )
@@ -80,6 +89,7 @@ def seed_expense():
         description="Spotify shared account.", 
         amount=30.00, 
         settled=False, 
+        date="01/21/2025",
         created_by=3,
         participants=[Demo]
     )
