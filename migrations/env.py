@@ -113,7 +113,7 @@ else:
     run_migrations_online()
 
 
-    # Code from 'Setting Up a Schema" Reading
+    ############ Code from 'Setting Up a Schema" Reading ##################
     # def process_revision_directives(context, revision, directives):
     #         if getattr(config.cmd_opts, 'autogenerate', False):
     #             script = directives[0]
@@ -150,4 +150,4 @@ else:
     #     run_migrations_offline()
     # else:
     #     run_migrations_online()
-
+    #####################################################################################
