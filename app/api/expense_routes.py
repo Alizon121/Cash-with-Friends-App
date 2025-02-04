@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, request
 from flask_login import login_required, current_user
-import datetime
+from datetime import datetime
 from app.models import User, db, Comment
 from flask import Blueprint, redirect, jsonify
 from flask_login import login_required, LoginManager, current_user
@@ -26,6 +26,8 @@ def pending_expenses():
         expense_data_owed=[]
         expense_data_owes_to=[]
 
+    ############Optimize the queries to use JOIN (Eager Loading!)###############
+
         total_amount = 0
         # Query to get what expenses the user is owed
         user_is_owed = User.query.get(current_user.id).expenses
@@ -38,6 +40,8 @@ def pending_expenses():
             owed_data= {
             "id": expense.id,
             "amount": expense.amount,
+            # A query inside a query results in n+1
+            "username": [user.username for user in Expense.query.get(expense.id).participants],
             "settled": expense.settled,
             # "createdAt": user_is_owed["created_at"]
         }
@@ -57,6 +61,7 @@ def pending_expenses():
                 "description": expense.description,
                 "settled": expense.settled,
                 "createdBy": expense.created_by,
+                # A query inside a query results in n+1
                 "participants": [user.username for user in expense.participants],
                 # "createdAt": user_owes.created_at
             }
@@ -81,13 +86,16 @@ def amount_user_owes(id):
         # Make a list var for returning json:
         expense_data=[]
 
-        # Query to get the what the user details for a specific expense
+        # Query to get  the user details for a specific expense
         expense_owes = Expense.query.join(
             expense_participants, Expense.id == expense_participants.c.expense_id
         ).filter(
             expense_participants.c.user_id == current_user.id,
             Expense.id == id
         ).first()
+
+        if not expense_owes:
+            return jsonify({"Message": "User does not currently owe any amount"}),404
 
         # Query to get who the participants are in the expense
         # Will serve to get the user's amount owed
@@ -97,24 +105,19 @@ def amount_user_owes(id):
             for participant in user_data:
                 return len(participant.participants)
 
-        def get_other_participants():
+        def get_participants():
             find_participants = User.query.get(current_user.id).participant_expenses
             user_data = {data for data in find_participants if data.id == id} #find_participants[0].participants
             for participant in user_data:
                 return [users.username for users in participant.participants]
-
-
-        if not expense_owes:
-            return jsonify({"Message": "User does not owe any expenses"})
 
         owe_data = {
             "id": expense_owes.id,
             "description": expense_owes.description,
             "amount": (expense_owes.amount/get_num_participants()),
             "settled": expense_owes.settled,
-            "participants": get_other_participants()
+            "participants": get_participants()
         }
-
 
         expense_data.append(owe_data)
 
@@ -131,39 +134,40 @@ def amount_user_is_owed(id):
     '''
     expense_data = []
 
-    if current_user.is_authenticated:
-        # Query for the user's created expenses
-        user_is_owed = User.query.get(current_user.id).expenses
+    # Query for the user's created expenses
+    user_is_owed = User.query.get(current_user.id).expenses
 
-        # Select only the expense that corresponds with id in path:
-        expense_detail = [data for data in user_is_owed if data.id==id]
+    # Select only the expense that corresponds with id in path:
+    expense_detail = [data for data in user_is_owed if data.id==id]
 
-        # Iterate over the queried data and add to dict:
-        for expense in expense_detail:
+    if not expense_detail:
+        return jsonify({"Error": "Expense not found or unauthorized"}), 403
+    # Iterate over the queried data and add to dict:
+    for expense in expense_detail:
 
-            # Query for the number of particpants
-            participants = Expense.query.get(id).participants
+        # Query for the number of particpants
+        participants = Expense.query.get(id).participants
 
-            # Get num of participants:
-            num_participants = len(participants) if participants else 1
+        # Get num of participants:
+        num_participants = len(participants) if participants else 1
 
-            # Calculate how much each particpant owes:
-            participant_amount = expense.amount / num_participants
+        # Calculate how much each particpant owes:
+        participant_amount = expense.amount / num_participants
 
-            is_owed_data = {
-                "id":expense.id,
-                "description": expense.description,
-                "amount": expense.amount,
-                "settled": expense.settled,
-                "participants": [user.username for user in expense.participants],
-                # Query for a participants's individual amount (see above)
-                "particpant_amount": participant_amount
+        is_owed_data = {
+            "id":expense.id,
+            "description": expense.description,
+            "amount": expense.amount,
+            "settled": expense.settled,
+            # Query inside of another query results in n+1
+            "participants": [user.username for user in expense.participants],
+            # Query for a participants's individual amount (see above)
+            "particpant_amount": participant_amount
             }
 
-            expense_data.append(is_owed_data)
+        expense_data.append(is_owed_data)
 
-        return jsonify({"Expense": is_owed_data})
-
+    return jsonify({"Expense": expense_data})
 
 @expense_routes.route("/", methods=["GET", "POST"])
 @login_required
@@ -173,8 +177,12 @@ def add_expense():
     # Reassign the choices attribute from the ExpenseForm with a query
     form.participants.choices = [(user.username, user.username) for user in User.query.all()]
 
-    if current_user.is_authenticated:
-        if form.validate_on_submit():
+
+    if form.validate_on_submit():
+        try:
+            date_str = form.date.data
+            date_obj = datetime.strptime(date_str, "%m/%d/%Y")
+
             participant_usernames = [username.strip() for username in form.data["participants"]]
             participants = User.query.filter(User.username.in_(participant_usernames)).all()
 
@@ -184,7 +192,7 @@ def add_expense():
             new_expense = Expense(
                 description=form.data["description"],
                 amount=form.data["amount"],
-                date=form.data["date"],
+                date=date_obj.isoformat(),
                 created_by=current_user.id,
                 settled=False,
                 participants=participants
@@ -196,106 +204,121 @@ def add_expense():
             return jsonify({
                 "Message": "Expense creation successful",
                 "New Expense": new_expense.to_dict(),
-                        }), 201
+                }), 201
+        except Exception as e:
+            return jsonify({"error": str(e)}), 400
 
-        if form.errors:
-            return jsonify(form.errors), 403
-
-    return "<h2>Request Form</h2>"
+    return jsonify(form.errors), 403
 
 @expense_routes.route("/<int:id>", methods=["DELETE"])
 @login_required
 def delete_expense(id):
-    if current_user.is_authenticated:
-        select_expense = Expense.query.get(id)
+    select_expense = Expense.query.get(id)
 
-        if not select_expense:
-            return jsonify({"error": "Expense not found."}), 404
+    if not select_expense:
+        return jsonify({"error": "Expense not found."}), 404
 
-        # Check if the current user is authorized to delete the expense
-        if select_expense.created_by != current_user.id:
-            return jsonify({"error": "Unauthorized to delete this expense."}), 403
+    # Check if the current user is authorized to delete the expense
+    if select_expense.created_by != current_user.id:
+        return jsonify({"error": "Unauthorized to delete this expense."}), 403
 
-        db.session.delete(select_expense)
-        db.session.commit()
+    db.session.delete(select_expense)
+    db.session.commit()
 
-        return jsonify({"Message": "Expense successfully deleted"})
-
-    return jsonify({"error": "User not authenticated."}), 401
+    return jsonify({"Message": "Expense successfully deleted"})
 
 
 @expense_routes.route("/<int:id>", methods=["PUT"])
 @login_required
 def update_expense(id):
     '''
-        This route is NOT for settling but updating an expense's det
+        This route is for updating an expense
     '''
-    if current_user.is_authenticated:
-        # We should be able to update description, amount, and participants
-        selected_expense = Expense.query.get(id)
+    # We should be able to update description, amount, and participants
+    selected_expense = Expense.query.get(id)
 
-        # Error for no expense
-        if not selected_expense:
-            return jsonify({"Error": "Expense not found"})
+    # Error for no expense
+    if not selected_expense:
+        return jsonify({"Error": "Expense not found"})
 
-        # Authorization
-        if selected_expense.created_by == current_user.id:
+    # Authorization
+    if selected_expense.created_by == current_user.id:
 
-            # Get the json request
-            data= request.get_json()
+        # Get the json request
+        data= request.get_json()
 
-            # Update values using data:
-            if "description" in data:
-                selected_expense.description = data["description"]
+        # Update values using data:
+        if "description" in data:
+            description = data["description"].strip()
+            if not description:
+                return jsonify({"Error": "Description cannot be empty"}), 400
+            selected_expense.description = data["description"]
 
-            if "amount" in data:
-                selected_expense.amount = data["amount"]
+        if "amount" in data:
+            amount = data["amount"]
+            if amount <= 0:
+                return jsonify({"Error": "amount must be greater than $0.00"}), 403
+            selected_expense.amount = data["amount"]
 
-            if "participants" in data:
-                participant_usernames = data["participants"]
-                participants = User.query.filter(User.username.in_(participant_usernames)).all()
+        if "participants" in data:
+            participant_usernames = data["participants"]
+            
+            # Query for the existing usernames
+            participants = User.query.filter(User.username.in_(participant_usernames)).all()
 
-                if not participants:
-                    return jsonify({"Error": "No valid participants found"}), 400
+            # We need to add a validation for checking if a user exists in the database or not
+            existing_usernames = [user.username for user in participants]
 
-                selected_expense.participants = participants
+            # Find usernames that do not exist in the database
+            non_existent_usernames = [username for username in participant_usernames if username not in existing_usernames]
 
-            db.session.commit()
+            if non_existent_usernames:
+                return jsonify({"Error": f"These users do not exist: {', '.join(non_existent_usernames)}"}), 400
 
-            return jsonify({
+            selected_expense.participants = participants
+
+        db.session.commit()
+
+        return jsonify({
             "Message": "Expense successfully updated",
             "Updated Expense": selected_expense.to_dict()  # Assuming Expense has a to_dict() method
             }), 200
 
 
-        return jsonify({"Error": "User is not authenticated"}), 400
+    return jsonify({"Error": "Unauthorized user"}), 403
 
 
 @expense_routes.route("/<int:id>/settle", methods=["PUT"])
 @login_required
 def settle_expense(id):
 
-    if current_user.is_authenticated:
+    # Query the expense from the path
+    select_expense = Expense.query.get(id)
 
-        # Query the expense from the path
-        select_expense = Expense.query.get(id)
+    print("POIAFLIAUFHNOAIJFHGNAIUWEHF", select_expense.settled)
+    # Authorization
+    if select_expense.created_by == current_user.id:
+        
+        # Get data from the request body
+        data=request.get_json()
 
-        # Authorization
-        if select_expense.created_by == current_user.id:
-            # Get data from the request body
-            data=request.get_json()
-
-            if "settled" in data:
+        if "settled" in data:
+            
+            # Check and make sure that the input is a Boolean
+            if isinstance(data["settled"], bool):
                 select_expense.settled = data["settled"]
+            else:
+                return jsonify({"Error": "Please provide Boolean type"}), 400
 
-            db.session.commit()
+        db.session.commit()
 
-            return jsonify({
-                "Message": "Expense settled",
-                "Updated Expense": select_expense.to_dict()
-            }), 200
+        return jsonify({
+            "Message": "Expense settled",
+            "Updated Expense": select_expense.to_dict()
+        }), 200
 
-    return jsonify({"Error": "User is not authenticated"})
+    else:
+        return jsonify({"Error": "User is unauthorized"})
 
 
 #####################Comments/Explense Routes###########################
@@ -462,9 +485,6 @@ def add_payment(id):
     # Add and commit the new payment to the database
     db.session.add(new_payment)
     db.session.commit()
-
-    # # Format response data & return json response
-    # payment_amount = expense.amount / len(expense.participants)
 
     payment_data = {
         "id": new_payment.id,

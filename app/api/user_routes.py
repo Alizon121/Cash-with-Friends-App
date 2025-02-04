@@ -33,14 +33,14 @@ def user(id):
 @login_required
 def get_user_comments():
     user_id = current_user.id
-    
+
     # Get page and per_page values from query parameters (default to page 1, per_page 10)
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    
+
     # Paginate the user's comments
     comments = Comment.query.filter_by(user_id=user_id).paginate(page, per_page, False)
-    
+
     # Return paginated comments with metadata
     return jsonify({
         'comments': [comment.to_dict() for comment in comments.items],
