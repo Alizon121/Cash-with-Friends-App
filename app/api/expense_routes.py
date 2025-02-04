@@ -57,7 +57,7 @@ def pending_expenses():
             owes_data = {
                 "id": expense.id,
                 "userId": current_user.id,
-                "amount": (expense.amount/len(expense.participants)),
+                "amount": (expense.amount/len(expense.participants)+1),
                 "description": expense.description,
                 "settled": expense.settled,
                 "createdBy": expense.created_by,
@@ -405,7 +405,7 @@ def expense_payments(id):
 
     for payment, payer in payments:
 
-        payment_amount = expense.amount / len(expense.participants)
+        payment_amount = expense.amount / len(expense.participants)+1
 
         payment_data = {
             "id": payment.id,
@@ -455,7 +455,7 @@ def add_payment(id):
     if not expense:
         return jsonify({"Message": "Expense couldn't be found"}), 404
 
-    payment_amount = expense.amount / len(expense.participants)
+    payment_amount = expense.amount / len(expense.participants)+1
 
     # Get request data
     data = request.get_json()
