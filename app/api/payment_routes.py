@@ -38,7 +38,7 @@ def user_payments():
 
     for payment, expense in payments:
 
-        payment_amount = expense.amount / len(expense.participants)
+        payment_amount = expense.amount / len(expense.participants)+1
 
         payment_data = {
             "id": payment.id,

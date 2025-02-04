@@ -1,4 +1,4 @@
-from .db import db, environment, SCHEMA
+from .db import db, environment, SCHEMA, add_prefix_for_prod
 from datetime import datetime, timezone
 from sqlalchemy import UniqueConstraint
 
@@ -7,8 +7,8 @@ from sqlalchemy import UniqueConstraint
 expense_participants = db.Table(
     "expense_participants",  # name of the join table
     db.Model.metadata,       # Attribute for connecting the table
-    db.Column("expense_id", db.Integer, db.ForeignKey("expenses.id"), primary_key=True),
-    db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    db.Column("expense_id", db.Integer, db.ForeignKey(add_prefix_for_prod("expenses.id")), primary_key=True), # Add prefix for production
+    db.Column("user_id", db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), primary_key=True),
     # Add the unique constraint to enforce uniqueness on (expense_id, user_id)
     UniqueConstraint("expense_id", "user_id", name="uq_expense_user")
 )
@@ -24,8 +24,8 @@ class Expense(db.Model):
     description = db.Column(db.String(250), nullable=True)
     amount = db.Column(db.Float, nullable=False)
     settled = db.Column(db.Boolean, default=False, nullable=False)
-    created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    date = db.Column(db.String(80), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), nullable=False)
+    date = db.Column(db.String(80), default=datetime.now(timezone.utc), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False) # default=datetime.now(timezone.utc) CHECK THIS METHOD
     # I am not sure what method I should use to dynamically update a time
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc), nullable=False)
