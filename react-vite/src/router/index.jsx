@@ -11,6 +11,7 @@ export const router = createBrowserRouter([
         path: "/",
         element: <h1>Welcome!</h1>,
       },
+      // We should change this to a modal
       {
         path: "login",
         element: <LoginFormPage />,
