@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, make_response
+from flask_wtf.csrf import generate_csrf
 from app.models import User, db
 from app.forms import LoginForm
 from app.forms import SignUpForm
@@ -13,7 +14,12 @@ def authenticate():
     Authenticates a user.
     """
     if current_user.is_authenticated:
-        return current_user.to_dict()
+        response = make_response(current_user.to_dict())
+
+        csrf_token = generate_csrf()
+        response.set_cookie("XSRF-TOKEN", csrf_token)
+        return response
+    
     return {'errors': {'message': 'Unauthorized'}}, 401
 
 
