@@ -48,20 +48,6 @@ function SignupFormPage() {
 
   return (
     <>
-      {/* <div>
-        <h2>Cash with Friends</h2>
-        <button>
-            <OpenModalMenuItem
-              itemText="Login"
-              modalComponent={<LoginFormModal/>}
-            />
-        </button>
-        <button>
-          Demo
-          </button>
-      </div> */}
-
-
       <h1>Split the Bill. Make Life Easier.</h1>
       {errors.server && <p>{errors.server}</p>}
       <form onSubmit={handleSubmit}>
