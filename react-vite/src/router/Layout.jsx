@@ -17,8 +17,8 @@ export default function Layout() {
     <>
       <ModalProvider>
         <Navigation />
-         <FriendsList/>
         {isLoaded && <Outlet />}
+         <FriendsList/>
         <Modal />
       </ModalProvider>
     </>
