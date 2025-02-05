@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import User, Comment
+from app.models import User, Comment, db
 
 user_routes = Blueprint('users', __name__)
 
@@ -51,3 +51,7 @@ def get_user_comments():
         'pages': comments.pages,
         'current_page': comments.page
     })
+
+
+
+
