@@ -1,4 +1,4 @@
-from .db import db
+from .db import db, environment, SCHEMA, add_prefix_for_prod
 from datetime import datetime, timezone
 from sqlalchemy import UniqueConstraint
 
@@ -8,9 +8,11 @@ class Friend(db.Model):
     __table_args__ = (
         UniqueConstraint("user_id", "friend_id"),
     )
+    if environment == "production":
+        __table_args__ = {'schema': SCHEMA}
    
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
-    friend_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), primary_key=True)
+    friend_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), primary_key=True)
     pending_status = db.Column(db.Boolean, default=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc), nullable=False)

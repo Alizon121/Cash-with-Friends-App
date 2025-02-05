@@ -9,7 +9,7 @@ Defines relationships between payments & foreign keys for easy querying
 
 
 from datetime import datetime, timezone
-from .db import db, environment, SCHEMA
+from .db import db, environment, SCHEMA, add_prefix_for_prod
 
 
 class Payment(db.Model):
@@ -23,8 +23,8 @@ class Payment(db.Model):
         __table_args__ = {"schema": SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    expense_id = db.Column(db.Integer, db.ForeignKey('expenses.id'), nullable=False)
-    payer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    expense_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('expenses.id')), nullable=False)
+    payer_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), nullable=False)
     paid_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
