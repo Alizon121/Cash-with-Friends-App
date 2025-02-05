@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { thunkSignup } from "../../redux/session";
+import LoginFormModal from "../LoginFormModal";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 
 function SignupFormPage() {
   const dispatch = useDispatch();
@@ -48,8 +50,15 @@ function SignupFormPage() {
     <>
       <div>
         <h2>Cash with Friends</h2>
-        <button>Login</button>
-        <button>Demo</button>
+        <button>
+            <OpenModalMenuItem
+              itemText="Login"
+              modalComponent={<LoginFormModal/>}
+            />
+        </button>
+        <button>
+          Demo
+          </button>
       </div>
 
 

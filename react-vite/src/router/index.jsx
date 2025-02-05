@@ -67,8 +67,8 @@ export const router = createBrowserRouter([
       }
     ]
   },
-    {
-      path: "/",
-      element: <SignupFormPage/>
-    },
+  {
+    path: "/",
+    element: <SignupFormPage/>
+  }
 ])
