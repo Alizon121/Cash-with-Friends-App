@@ -3,7 +3,7 @@ import SignupFormPage from '../components/SignupFormPage';
 import UserDashboardPage from '../components/UserDashboard';
 import PaymentDuePage from '../components/PaymentDue';
 import AmountOwedPage from '../components/AmountOwed';
-import CommentDetailsPage from '../components/CommentDetails';
+import ExpenseCommentPage from '../components/ExpenseComments';
 import AllCommentsPage from '../components/AllComments';
 import FriendsPage from '../components/Friends';
 import UserProfilePage from '../components/UserProfile/UserProfilePage';
@@ -55,7 +55,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/expenses/:id/comments",
-        element: <CommentDetailsPage/>
+        element: <ExpenseCommentPage/>
       },
       {
         path: "/comments",
