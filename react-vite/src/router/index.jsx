@@ -38,6 +38,10 @@ export const router = createBrowserRouter([
     element: <Layout/>,
     children: [
       {
+        path: "/",
+        element: <SignupFormPage/>
+      },
+      {
         path: "/users/dashboard",
         element: <UserDashboardPage/>
       },
@@ -66,9 +70,5 @@ export const router = createBrowserRouter([
         element: <UserProfilePage/>
       }
     ]
-  },
-  {
-    path: "/",
-    element: <SignupFormPage/>
   }
 ])

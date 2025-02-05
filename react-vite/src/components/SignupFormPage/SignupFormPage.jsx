@@ -48,7 +48,7 @@ function SignupFormPage() {
 
   return (
     <>
-      <div>
+      {/* <div>
         <h2>Cash with Friends</h2>
         <button>
             <OpenModalMenuItem
@@ -59,7 +59,7 @@ function SignupFormPage() {
         <button>
           Demo
           </button>
-      </div>
+      </div> */}
 
 
       <h1>Split the Bill. Make Life Easier.</h1>
