@@ -4,7 +4,9 @@ import { csrfFetch } from "./csrf";
 const SETTLE_EXPENSE = "SETTLE_EXPENSE"
 
 // action for fetching expense details for payment_due page
+// and for amount_owed
 const PAYMENT_DUE = "PAYMENT_DUE"
+const AMOUNT_OWED = "AMOUNT_OWED"
 
 // Make an action creator for settling/updating an expense
 const settle = (expense) => {
@@ -13,8 +15,14 @@ const settle = (expense) => {
 }
 
 // Action creator to fetch expense details for payment_due page
+// And for amount_owed page
 const paymentDue = (expense) => {
     type = PAYMENT_DUE,
+    payload = expense
+}
+
+const amountOwed = (expense) => {
+    type = AMOUNT_OWED,
     payload = expense
 }
 
@@ -33,6 +41,7 @@ export const settleExpenseThunk = (expenseId) => async dispatch => {
 }
 
 // Fetch expense details for payment_due page
+// and for amount_owed page
 export const paymentDueThunk = (expenseId) => async dispatch => {
     const response = await csrfFetch(`/api/expenses/${expenseId}/payment_due`, {
         method: 'GET',
@@ -42,6 +51,19 @@ export const paymentDueThunk = (expenseId) => async dispatch => {
     if (response.ok) {
         const result = await response.json()
         dispatch(paymentDue)
+        return result
+    }
+}
+
+export const amountOwedThunk = (expenseId) => async dispatch => {
+    const response = await csrfFetch(`/api/expenses/${expenseId}/amount_owed`, {
+        method: 'GET',
+        body: JSON.stringify(payload)
+    })
+
+    if (response.ok) {
+        const result = await response.json()
+        dispatch(amountOwed)
         return result
     }
 }

@@ -1,18 +1,16 @@
-import ExpenseDetails from "./ExpenseDetails"
+import ExpenseDetails from "./ExpenseDetailsPmtDue"
 
 function PaymentDuePage() {
 
     return (
         <>
-            <h2>Payment Due</h2>
-
             <div>
-                <ExpenseDetails />
+                <h2>Expenses</h2>
+                <button>View Comments</button>
             </div>
 
             <div>
-                <button>Delete Expense</button>
-                <button>Update Details</button>
+                <ExpenseDetails />
             </div>
         </>
     )
