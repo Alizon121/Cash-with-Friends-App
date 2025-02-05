@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { thunkUpdateUser } from "../redux/session";
+import { thunkUpdateUser } from "../../redux/session";
 
 const UpdateProfileModal = ({ user, closeModal }) => {
     const dispatch = useDispatch();

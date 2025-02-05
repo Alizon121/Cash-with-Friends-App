@@ -52,6 +52,42 @@ def get_user_comments():
         'current_page': comments.page
     })
 
+@user_routes.route("/profile", methods=["GET"])
+@login_required
+def get_profile():
+    user = current_user
+    return jsonify({
+        "id": user.id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "username": user.username,
+        "email": user.email,
+        "avatar": user.avatar
+    })
 
+@user_routes.route("/profile", methods=["PUT"])
+@login_required
+def update_profile():
+    data = request.json
+    user = current_user
+
+    # Check if any fields were provided, otherwise use existing values
+    user.first_name = data.get("first_name", user.first_name)
+    user.last_name = data.get("last_name", user.last_name)
+    user.username = data.get("username", user.username)
+    user.email = data.get("email", user.email)
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "username": user.username,
+            "email": user.email,
+            "avatar": user.avatar
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 

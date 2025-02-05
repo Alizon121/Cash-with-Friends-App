@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { thunkAuthenticate, thunkLogout } from "../redux/session";
-import UpdateProfileModal from "./UpdateProfileModal";
+import { thunkAuthenticate, thunkLogout } from "../../redux/session";
+import UpdateProfileModal from "../UpdateUserModal/UpdateProfileModal";
 
 const UserProfilePage = () => {
     const dispatch = useDispatch();
