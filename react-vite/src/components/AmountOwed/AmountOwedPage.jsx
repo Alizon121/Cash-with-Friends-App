@@ -14,7 +14,7 @@ function AmountOwedPage() {
             </div>
 
             <div>
-                {/* <ExpenseDetails /> */}
+                <ExpenseDetails />
             </div>
 
             <div>
