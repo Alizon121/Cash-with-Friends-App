@@ -82,4 +82,23 @@ function sessionReducer(state = initialState, action) {
   }
 }
 
+export const thunkUpdateUser = (userData) => async (dispatch) => {
+  const response = await fetch("/api/users/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+  });
+
+  if (response.ok) {
+      const updatedUser = await response.json();
+      dispatch(setUser(updatedUser));
+      return null; // No errors
+  } else if (response.status < 500) {
+      return await response.json(); // Return validation errors
+  } else {
+      return { server: "Something went wrong. Please try again." };
+  }
+};
+
+
 export default sessionReducer;
