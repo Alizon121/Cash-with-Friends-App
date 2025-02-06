@@ -1,5 +1,6 @@
 import ExpenseDetails from "./ExpenseDetailsPmtDue"
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom';
+import OpenModalButton from '../OpenModalButton'
 
 function PaymentDuePage() {
 
@@ -15,6 +16,12 @@ function PaymentDuePage() {
 
             <div>
                 {/* <ExpenseDetails /> */}
+            </div>
+
+            <div>
+                <li>
+                    <OpenModalButton />
+                </li>
             </div>
         </>
     )
