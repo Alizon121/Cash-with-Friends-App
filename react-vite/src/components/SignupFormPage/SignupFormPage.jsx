@@ -42,7 +42,7 @@ function SignupFormPage() {
     if (serverResponse) {
       setErrors(serverResponse);
     } else {
-      navigate("/users/dashboard");
+      navigate("api/expenses/users/dashboard");
     }
   };
 

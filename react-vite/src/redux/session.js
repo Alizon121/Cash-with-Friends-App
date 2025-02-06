@@ -47,7 +47,7 @@ export const thunkLogin = (credentials) => async dispatch => {
 };
 
 export const thunkSignup = (user) => async (dispatch) => {
-  const response = await fetch("/api/auth/signup", {
+try { const response = await csrfFetch("/api/auth/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user)
@@ -61,6 +61,8 @@ export const thunkSignup = (user) => async (dispatch) => {
     return errorMessages
   } else {
     return { server: "Something went wrong. Please try again" }
+  }} catch (e){
+    return {Server: "network error please try again later"}
   }
 };
 
