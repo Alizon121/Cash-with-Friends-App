@@ -8,6 +8,7 @@ import FriendsList from "../components/Navigation/FriendsList";
 
 export default function Layout() {
   const dispatch = useDispatch();
+  const location = useLocation()
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
     dispatch(thunkAuthenticate()).then(() => setIsLoaded(true));

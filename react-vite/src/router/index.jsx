@@ -3,34 +3,11 @@ import SignupFormPage from '../components/SignupFormPage';
 import UserDashboardPage from '../components/UserDashboard';
 import PaymentDuePage from '../components/PaymentDue';
 import AmountOwedPage from '../components/AmountOwed';
-import CommentDetailsPage from '../components/CommentDetails';
-import AllCommentsPage from '../components/AllComments';
+import ExpenseCommentPage from '../components/ExpenseComments';
+import UserCommentsPage from '../components/UserComments/UserCommentsPage';
 import FriendsPage from '../components/Friends';
 import UserProfilePage from '../components/UserProfile/UserProfilePage';
 import Layout from './Layout';
-
-// This function is from the starter and is not relevant
-// export const router = createBrowserRouter([
-//   {
-//     element: <Layout />,
-//     children: [
-//       {
-//         path: "/",
-//         element: <h1>Welcome!</h1>,
-//       },
-//       // We should change this to a modal
-//       {
-//         path: "login",
-//         element: <LoginFormPage />,
-//       },
-//       {
-//         path: "signup",
-//         element: <SignupFormPage />,
-//       },
-//     ],
-//   },
-// ]);
-
 
 // Maybe we could use this setup instead?
 export const router = createBrowserRouter([
@@ -55,11 +32,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/expenses/:id/comments",
-        element: <CommentDetailsPage/>
+        element: <ExpenseCommentPage/>
       },
       {
         path: "/comments",
-        element: <AllCommentsPage/>
+        element: <UserCommentsPage/>
       },
       {
         path: "/friends",
