@@ -1,34 +1,163 @@
 import { csrfFetch } from "./csrf";
 
-// Make an Action Creator to load all the Comments
-const LOAD_USER_COMMENTS = "LOAD_USER_COMMENTS"
-const loadUserComments = (comments) => {
-    return  {
-        type: LOAD_USER_COMMENTS,
-        payload: comments
-    }
-}
+/******************************* ACTION TYPES *******************************************/
 
-// Make a thunk action that gets all current user comments
-export const loadCurrentUserComments = () => async dispatch => {
-    const response = await csrfFetch("/api/comments")
+export const LOAD_COMMENTS = "comments/loadComments";
+export const ADD_COMMENT = "comments/addComment";
+export const UPDATE_COMMENT = "comments/updateComment";
+export const DELETE_COMMENT = "comments/deleteComment";
 
-    if (response.ok) {
-        const result = await response.json()
-        dispatch(loadUserComments(result))
-    }
-}
+/******************************* ACTION CREATORS *******************************************/
 
-// Make Comments Reducer
-const commentsReducer = (state={}, action) => {
-    switch(action.type) {
-        case(LOAD_USER_COMMENTS): {
-            const userComments = {}
-            return userComments
+export const loadComments = (comments) => ({
+  type: LOAD_COMMENTS,
+  payload: comments,
+});
+
+export const addComment = (comment) => ({
+  type: ADD_COMMENT,
+  payload: comment,
+});
+
+export const reviseComment = (comment) => ({
+  type: UPDATE_COMMENT,
+  payload: comment,
+});
+
+export const removeComment = (commentId) => ({
+  type: DELETE_COMMENT,
+  payload: commentId,
+});
+
+/******************************* THUNK ACTIONS *******************************************/
+
+// Get Comments for an expense
+export const getComments = (type, id) => async (dispatch) => {
+    let url = '';
+    if (type === 'expense') {
+        if (!id) {
+            console.error("getComments called with an undefined expenseId");
+            return;
         }
-        default: 
-            return state
+        url = `/api/expenses/${id}/comments`;
+    } else if (type === 'user') {
+        url = `/api/users/${id}/comments`;
+    } else {
+        throw Error('Invalid type. Use "expense" or "user"');
     }
-}
 
-export default commentsReducer
+    try {
+        const res = await csrfFetch(url);
+        if (!res.ok) throw Error("Failed to get comments");
+        const data = await res.json();
+
+        if (!data.comments || data.comments.length === 0) {
+            console.log(`No comments found for ${type} with id ${id}`)
+            return;
+        }
+        
+        dispatch(loadComments(data.comments));
+    } catch (e) {
+        console.error("Error loading comments", e);
+    }
+};
+
+// Add a Comment to an Expense
+export const createComment = (expenseId, commentData) => async (dispatch) => {
+    try {
+        const res = await csrfFetch(`/api/expenses/${expenseId}/comments`, {
+            method: "POST",
+            body: JSON.stringify(commentData),
+        });
+        if (!res.ok) throw Error("Failed to create comment");
+        const comment = await res.json();
+        dispatch(addComment(comment));
+        return comment;
+    } catch (e) {
+        console.error("Error creating comment", e);
+        throw e;
+    }
+};
+
+// Delete a Comment
+export const deleteComment = (commentId, expenseId) => async (dispatch) => {
+    try {
+        const res = await csrfFetch(`/api/comments/${commentId}`, {
+            method: "DELETE",
+        });
+        if (!res.ok) throw Error("Failed to delete comment");
+        dispatch(removeComment(commentId, expenseId));
+    } catch (e) {
+        console.error("Error deleting comment", e);
+        throw e;
+    }
+};
+
+// Update a Comment
+export const updateComment = (commentData) => async (dispatch) => {
+    const { id } = commentData;
+    try {
+      const res = await csrfFetch(`/api/Comments/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(commentData),
+      });
+      if (!res.ok) throw new Error("Failed to update comment.");
+      const updatedComment = await res.json();
+      dispatch(reviseComment(updatedComment));
+      return updatedComment;
+    } catch (e) {
+      console.error("Error updating comment:", e);
+      throw e;
+    }
+  };
+
+/******************************* INITIAL STATE AND REDUCER *******************************************/
+
+const initialState = {
+  comments: {},
+};
+
+const commentsReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case LOAD_COMMENTS: {
+      const commentsById = action.payload.reduce((acc, comment) => {
+        acc[comment.id] = comment;
+        return acc;
+      }, {});
+      return {
+        ...state,
+        comments: commentsById,
+      };
+    }
+    case ADD_COMMENT: {
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          [action.payload.id]: action.payload,
+        },
+      };
+    }
+    case UPDATE_COMMENT: {
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          [action.payload.id]: action.payload,
+        },
+      };
+    }
+    case DELETE_COMMENT: {
+      const newComments = { ...state.comments };
+      delete newComments[action.payload];
+      return {
+        ...state,
+        comments: newComments,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+export default commentsReducer;
