@@ -26,7 +26,7 @@ export const thunkAuthenticate = () => async (dispatch) => {
 
 export const thunkLogin = (credentials) => async dispatch => {
   const {email, password} = credentials
-  const response = await fetch("/api/auth/login", {
+  const response = await csrfFetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -65,7 +65,7 @@ export const thunkSignup = (user) => async (dispatch) => {
 };
 
 export const thunkLogout = () => async (dispatch) => {
-  await fetch("/api/auth/logout");
+  await csrfFetch("/api/auth/logout");
   dispatch(removeUser());
 };
 
