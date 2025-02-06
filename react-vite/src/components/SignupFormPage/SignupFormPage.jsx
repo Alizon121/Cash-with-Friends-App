@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { thunkSignup } from "../../redux/session";
+import LoginFormModal from "../LoginFormModal";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 
 function SignupFormPage() {
   const dispatch = useDispatch();
@@ -46,13 +48,6 @@ function SignupFormPage() {
 
   return (
     <>
-      <div>
-        <h2>Cash with Friends</h2>
-        <button>Login</button>
-        <button>Demo</button>
-      </div>
-
-
       <h1>Split the Bill. Make Life Easier.</h1>
       {errors.server && <p>{errors.server}</p>}
       <form onSubmit={handleSubmit}>

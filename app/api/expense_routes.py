@@ -295,7 +295,6 @@ def settle_expense(id):
     # Query the expense from the path
     select_expense = Expense.query.get(id)
 
-    print("POIAFLIAUFHNOAIJFHGNAIUWEHF", select_expense.settled)
     # Authorization
     if select_expense.created_by == current_user.id:
         

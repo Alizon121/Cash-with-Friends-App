@@ -1,3 +1,5 @@
+import { csrfFetch } from "./csrf";
+
 const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
 
@@ -23,10 +25,14 @@ export const thunkAuthenticate = () => async (dispatch) => {
 };
 
 export const thunkLogin = (credentials) => async dispatch => {
+  const {email, password} = credentials
   const response = await fetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(credentials)
+    body: JSON.stringify({
+      email,
+      password
+    })
   });
 
   if(response.ok) {
@@ -75,5 +81,24 @@ function sessionReducer(state = initialState, action) {
       return state;
   }
 }
+
+export const thunkUpdateUser = (userData) => async (dispatch) => {
+  const response = await fetch("/api/users/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+  });
+
+  if (response.ok) {
+      const updatedUser = await response.json();
+      dispatch(setUser(updatedUser));
+      return null; // No errors
+  } else if (response.status < 500) {
+      return await response.json(); // Return validation errors
+  } else {
+      return { server: "Something went wrong. Please try again." };
+  }
+};
+
 
 export default sessionReducer;
