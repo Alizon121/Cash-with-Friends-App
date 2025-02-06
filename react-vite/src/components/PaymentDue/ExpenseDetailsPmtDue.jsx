@@ -17,6 +17,7 @@ const ExpenseDetails = () => {
 
     // ! What is the best way to find the owner of the expense?
     // For displaying their name in "You Owe: " and in "Created By: "
+    // ^ GET FROM AUTHENTICATE ROUTE!
 
     return (
         <>
