@@ -1,3 +1,5 @@
+import { csrfFetch } from "./csrf";
+
 const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
 
@@ -23,10 +25,14 @@ export const thunkAuthenticate = () => async (dispatch) => {
 };
 
 export const thunkLogin = (credentials) => async dispatch => {
+  const {email, password} = credentials
   const response = await fetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(credentials)
+    body: JSON.stringify({
+      email,
+      password
+    })
   });
 
   if(response.ok) {
