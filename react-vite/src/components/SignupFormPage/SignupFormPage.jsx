@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { thunkSignup } from "../../redux/session";
-import LoginFormModal from "../LoginFormModal";
-import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+// import LoginFormModal from "../LoginFormModal";
+// import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 
 function SignupFormPage() {
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ function SignupFormPage() {
     if (serverResponse) {
       setErrors(serverResponse);
     } else {
-      navigate("/users/dashboard");
+      navigate("api/expenses/users/dashboard");
     }
   };
 

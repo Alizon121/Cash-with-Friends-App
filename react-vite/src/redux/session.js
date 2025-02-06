@@ -26,7 +26,7 @@ export const thunkAuthenticate = () => async (dispatch) => {
 
 export const thunkLogin = (credentials) => async dispatch => {
   const {email, password} = credentials
-  const response = await fetch("/api/auth/login", {
+  const response = await csrfFetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -47,7 +47,7 @@ export const thunkLogin = (credentials) => async dispatch => {
 };
 
 export const thunkSignup = (user) => async (dispatch) => {
-  const response = await fetch("/api/auth/signup", {
+try { const response = await csrfFetch("/api/auth/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user)
@@ -61,11 +61,13 @@ export const thunkSignup = (user) => async (dispatch) => {
     return errorMessages
   } else {
     return { server: "Something went wrong. Please try again" }
+  }} catch (e){
+    return {Server: "network error please try again later"}
   }
 };
 
 export const thunkLogout = () => async (dispatch) => {
-  await fetch("/api/auth/logout");
+  await csrfFetch("/api/auth/logout");
   dispatch(removeUser());
 };
 
@@ -81,5 +83,24 @@ function sessionReducer(state = initialState, action) {
       return state;
   }
 }
+
+export const thunkUpdateUser = (userData) => async (dispatch) => {
+  const response = await fetch("/api/users/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+  });
+
+  if (response.ok) {
+      const updatedUser = await response.json();
+      dispatch(setUser(updatedUser));
+      return null; // No errors
+  } else if (response.status < 500) {
+      return await response.json(); // Return validation errors
+  } else {
+      return { server: "Something went wrong. Please try again." };
+  }
+};
+
 
 export default sessionReducer;
