@@ -14,6 +14,37 @@ const ExpenseDetails = () => {
     }, [dispatch, payment_due]);
 
     console.log(payment_due)
+
+    // ! What is the best way to find the owner of the expense?
+    // For displaying their name in "You Owe: " and in "Created By: "
+
+    return (
+        <>
+            <h3>Total you owe: {payment_due.amount}</h3>
+
+            <div>
+                <p>You Owe:</p>
+                <div>
+                    <p>EXPENSE OWNER</p>
+                    <p>{payment_due.amount}</p>
+                    <button>Settle</button>
+                </div>
+                <div>
+                    <p>For: {payment_due.description}</p>
+                    <p>Created By: EXPENSE OWNER</p>
+                    <div>
+                        <p>Other Participants</p>
+                        {amount_owed.participants.map((participant, index) => (
+                            <div key={index}>
+                                {participant}
+                            <button>Delete</button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </>
+    )
 }
 
 export default ExpenseDetails

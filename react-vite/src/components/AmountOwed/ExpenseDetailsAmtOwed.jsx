@@ -14,6 +14,30 @@ const ExpenseDetails = () => {
     }, [dispatch, amount_owed]);
 
     console.log(amount_owed)
+
+    return (
+
+        //! What is the best way to get the user from the front end?
+        // For the purpose of displaying the user's name for 'Created By:'
+
+        <>
+            <div>
+                <h3>Total owed to you: {amount_owed.amount}</h3>
+                <p>For: {amount_owed.description}</p>
+                <p>Created By: CURRENT USER </p>
+            </div>
+            <div>
+                <h4>Owes you:</h4>
+                {amount_owed.participants.map((participant, index) => (
+                    <div key={index}>
+                        {participant}
+                        {amount_owed.amount}
+                        <button>Delete</button>
+                    </div>
+                ))}
+            </div>
+        </>
+    )
 }
 
 export default ExpenseDetails
