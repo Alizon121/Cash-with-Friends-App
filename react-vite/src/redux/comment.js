@@ -15,7 +15,7 @@ export const loadCurrentUserComments = () => async dispatch => {
 
     if (response.ok) {
         const result = await response.json()
-        dispatch(loadCurrentUserComments(result))
+        dispatch(loadUserComments(result))
     }
 }
 

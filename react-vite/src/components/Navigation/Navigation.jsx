@@ -1,15 +1,33 @@
 import { NavLink } from "react-router-dom";
 import ProfileButton from "./ProfileButton";
-// import FriendsList from "./FriendsList";
 import { useSelector } from "react-redux";
 import LoginFormModal from "../LoginFormModal";
 import "./Navigation.css";
 import OpenModalMenuItem from "./OpenModalMenuItem";
-// import OpenModalButton from "../OpenModalButton/OpenModalButton";
+// import { thunkLogin } from "../../redux/session";
+// import { useDispatch } from "react-redux";
+// import { useState } from "react";
 
 function Navigation() {
-
+  // const [errors, setErrors] = useState()
   const sessionUser = useSelector(state => state.session.user)
+//   const dispatch = useDispatch()
+
+//   const handleDemoUser = async () => {
+//     // e.preventDefault();
+//     const demoEmail = 'demo@aa.io'
+//     const demoPassword = 'password'
+
+//     setErrors({})
+//     return dispatch(thunkLogin({ email: demoEmail, password: demoPassword }))
+//     // .then(closeModal)
+//     .catch(async (res) => {
+//             const data = await res.json();
+//             if (data && data.errors) setErrors(data.errors);
+//             else setErrors({general: "The demo login failed. Please try again later"})
+//         }
+//         );
+// }
 
   return (
     <>
@@ -34,6 +52,7 @@ function Navigation() {
             />
           </button>
           <button>Demo</button>
+          {/* onClick={handleDemoUser} */}
         </div>
       )
     }
