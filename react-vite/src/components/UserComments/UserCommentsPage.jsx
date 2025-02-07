@@ -1,9 +1,20 @@
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
+import { loadCurrentUserComments } from "../../redux/comment"
+import { useEffect } from "react"
 
 function UserCommentsPage(){
     const comments = useSelector(state => state.comments)
-    console.log(comments)
-    return <h2>Hello World</h2>
-}
+    const dispatch = useDispatch()
+    useEffect(async () => {
+        await dispatch(loadCurrentUserComments())
+    })
+
+
+    return (
+    <>
+        <h2>Comments</h2>
+
+    </>
+)}
 
 export default UserCommentsPage

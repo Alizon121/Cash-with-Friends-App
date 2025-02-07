@@ -13,7 +13,6 @@ function Navigation() {
   const sessionUser = useSelector(state => state.session.user)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  console.log("NAVIGATION", sessionUser)
 
   const handleDemoUser = async () => {
     // e.preventDefault();
