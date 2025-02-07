@@ -3,17 +3,20 @@ import { useEffect } from "react"
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem"
 import CreateExpenseModal from "../CreateExpenseModal/CreateExpenseModal"
 import AddFriendModal from "../AddFriendModal/AddFriendModal"
+import { loadAllUserExpensesThunk } from "../../redux/expense"
 
 function UserDashboardPage() {
     const user = useSelector(state => state.session)
+    const expense = useSelector(state => state.expense)
     const dispatch = useDispatch()
 
-    // useEffect(() => {
+    console.log("OJAFIASBFAILHSFB", expense)
+    useEffect(() => {
         // Add the thunk actions for amount user owes and amount user is owed
-            // We may need to modify the backend to have the route diaply the total amounts
-    //     dispatch()
-    // })
-    
+        //     We may need to modify the backend to have the route diaply the total amounts
+        dispatch(loadAllUserExpensesThunk())
+    }, [dispatch])
+
     return (
     <>
         <div>
@@ -31,7 +34,9 @@ function UserDashboardPage() {
                 />
             </button>
             <div>
-                <span></span>
+                <span>{expense.expenses.totalAmountOwed}</span>
+                {/* <span>{expense.expenses.expensesOwed}</span>
+                <span>{expense.expenses.owesExpenses}</span> */}
             </div>
         </div>
         

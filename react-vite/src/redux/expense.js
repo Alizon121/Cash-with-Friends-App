@@ -9,6 +9,19 @@ const settle = (expense) => ({
     payload: expense
 })
 
+// Make an action creater for creating an expense -ASL
+const CREATE_EXPENSE = "CREATE_EXPENSE"
+const create = (expense) => ({
+    type: CREATE_EXPENSE,
+    payload: expense
+})
+
+// Make an action creator for grabbing all user expense data -ASL
+const LOAD_ALL_USER_EXPENSES = "LOAD_ALL_USER_EXPENSES"
+const loadAll = (expense) => ({
+    type: LOAD_ALL_USER_EXPENSES,
+    payload: expense
+})
 
 // action for fetching expense details for payment_due page
 // and for amount_owed
@@ -29,20 +42,28 @@ const amountOwed = (expense) => ({
 })
 
 
-// Make an action creater for creating an expense -ASL
-const CREATE_EXPENSE = "CREATE_EXPENSE"
-const create = (expense) => {
-    type = CREATE_EXPENSE
-    payload = expense
-}
 
 ////////////////////// Thunk Actions ////////////////////////////
 
+// Make a thunk action for grabbing all using expense info -ASL
+export const loadAllUserExpensesThunk = () => async dispatch => {
+    const response = await csrfFetch("/api/expenses/users/dashboard")
+
+    if (response.ok) {
+        const result = await response.json()
+        dispatch(loadAll(result))
+        return result
+    } else {
+        const errorResult = await response.json()
+        console.error(errorResult)
+    }
+}
+
 // Make a thunk action that will settle an expense -ASL
-export const settleExpenseThunk = (expenseId) => async dispatch => {
+export const settleExpenseThunk = (settled, expenseId) => async dispatch => {
     const response = await csrfFetch(`/api/expenses/${expenseId}`, {
         method: 'POST',
-        body: JSON.stringify(payload)
+        body: JSON.stringify(settled)
     })
 
     if (response.ok) {
@@ -100,6 +121,16 @@ export const amountOwedThunk = (expenseId) => async dispatch => {
 // Make the expense reducer -ASL
 const expenseReducer = (state={}, action) => {
     switch(action.type) {
+        case LOAD_ALL_USER_EXPENSES: {
+            const expenses = action.payload
+            return {
+                ...state,
+                expenses: {
+                    ...state.expenses,
+                    ...expenses
+                }
+            }
+        }
         case SETTLE_EXPENSE: {
             const settledExpense = action.payload
             return {

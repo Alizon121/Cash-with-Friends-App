@@ -29,6 +29,7 @@ def pending_expenses():
     ############Optimize the queries to use JOIN (Eager Loading!)###############
 
         total_amount = 0
+        total_owed_amount = 0
         # Query to get what expenses the user is owed
         user_is_owed = User.query.get(current_user.id).expenses
         # Error message for no user being owed something
@@ -37,6 +38,8 @@ def pending_expenses():
 
         for expense in user_is_owed:
             total_amount += expense.amount
+            total_owed_amount += expense.amount
+
             owed_data= {
             "id": expense.id,
             "amount": expense.amount,
@@ -57,7 +60,7 @@ def pending_expenses():
             owes_data = {
                 "id": expense.id,
                 "userId": current_user.id,
-                "amount": (expense.amount/len(expense.participants)+1),
+                "amount": (expense.amount/(len(expense.participants)+1)),
                 "description": expense.description,
                 "settled": expense.settled,
                 "createdBy": expense.created_by,
@@ -65,12 +68,14 @@ def pending_expenses():
                 "participants": [user.username for user in expense.participants],
                 # "createdAt": user_owes.created_at
             }
+            total_amount-= (expense.amount/(len(expense.participants)+1))
             expense_data_owes_to.append(owes_data)
 
         return jsonify({
-            "Expenses Owed": expense_data_owed,
-            "Owes Expenses": expense_data_owes_to,
-            "Total Amount Owed": total_amount
+            "expensesOwed": expense_data_owed,
+            "owesExpenses": expense_data_owes_to,
+            "totalAmountOwed": total_amount,
+            "totalOwedAmount": total_owed_amount
                         })
 
     else:
@@ -111,8 +116,11 @@ def amount_user_owes(id):
             for participant in user_data:
                 return [users.username for users in participant.participants]
 
+        # Querying inside of a query will result in n+1 (lazy loading)
+
         owe_data = {
             "id": expense_owes.id,
+            "created_by": expense_owes.created_by,
             "description": expense_owes.description,
             "amount": (expense_owes.amount/get_num_participants()),
             "settled": expense_owes.settled,
