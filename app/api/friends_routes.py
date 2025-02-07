@@ -4,7 +4,7 @@ from app.models import db, Friend, User
 
 friends_routes = Blueprint("friends", __name__)
 
-@friends_routes.route("", methods=["POST"])
+@friends_routes.route("/", methods=["POST"])
 @login_required
 def send_friend_request():
     """Send a friend request to another user."""
@@ -36,7 +36,7 @@ def send_friend_request():
     return jsonify({"message": "Friend request sent successfully"}), 201
 
 
-@friends_routes.route("", methods=["PUT"])
+@friends_routes.route("/", methods=["PUT"])
 @login_required
 def respond_to_friend_request():
     """Accept or reject a friend request."""
@@ -94,7 +94,7 @@ def get_pending_friend_requests():
 
     return jsonify({"PendingRequests": pending_list}), 200
 
-@friends_routes.route("", methods=["GET"])
+@friends_routes.route("/", methods=["GET"])
 @login_required
 def get_all_friends():
     """Retrieve all accepted friends of the logged-in user."""
