@@ -27,13 +27,13 @@ const ExpenseDetailsPmtDue = () => {
             <div>
                 <p>You Owe:</p>
                 <div>
-                    <p>EXPENSE OWNER</p>
+                    <p>{payment_due[id]?.created_by}</p>
                     <p>{payment_due[id]?.amount}</p>
                     <button>Settle</button>
                 </div>
                 <div>
                     <p>For: {payment_due[id]?.description}</p>
-                    <p>Created By: EXPENSE OWNER</p>
+                    <p>Created By: {payment_due[id]?.created_by}</p>
                     <div>
                         <p>Other Participants</p>
                         {payment_due[id]?.participants.map((participant, index) => (

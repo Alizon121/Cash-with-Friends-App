@@ -118,14 +118,18 @@ def amount_user_owes(id):
 
         # Querying inside of a query will result in n+1 (lazy loading)
 
+        expense_owner = User.query.get(expense_owes.id)
+
         owe_data = {
             "id": expense_owes.id,
-            "created_by": expense_owes.created_by,
+            "created_by": expense_owner.username.capitalize(),
             "description": expense_owes.description,
             "amount": (expense_owes.amount/get_num_participants()),
             "settled": expense_owes.settled,
             "participants": get_participants()
         }
+
+        print("EXEPNSE OWNER IS:", owe_data["created_by"])
 
         expense_data.append(owe_data)
 
