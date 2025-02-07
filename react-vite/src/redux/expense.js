@@ -4,10 +4,10 @@ import { csrfFetch } from "./csrf";
 
 // Make an action for settling/updating an expense -ASL
 const SETTLE_EXPENSE = "SETTLE_EXPENSE"
-const settle = (expense) => {
-    type = SETTLE_EXPENSE,
-    payload = expense
-}
+const settle = (expense) => ({
+    type: SETTLE_EXPENSE,
+    payload: expense
+})
 
 
 // action for fetching expense details for payment_due page
@@ -15,11 +15,6 @@ const settle = (expense) => {
 const PAYMENT_DUE = "PAYMENT_DUE"
 const AMOUNT_OWED = "AMOUNT_OWED"
 
-// Make an action creator for settling/updating an expense
-const settle = (expense) => ({
-    type: SETTLE_EXPENSE,
-    payload: expense
-})
 
 // Action creator to fetch expense details for payment_due page
 // And for amount_owed page
@@ -119,6 +114,7 @@ const expenseReducer = (state={}, action) => {
                     ...action.payload
                 }
             }
+        }
         case PAYMENT_DUE: {
             const paymentDue = action.payload;
             return {
