@@ -88,22 +88,30 @@ function sessionReducer(state = initialState, action) {
 }
 
 export const thunkUpdateUser = (userData) => async (dispatch) => {
+  console.log("📤 Sending profile update request:", userData);
+
   const response = await fetch("/api/users/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData)
   });
 
+  console.log("🔍 API Response Status:", response.status);
+
   if (response.ok) {
       const updatedUser = await response.json();
-      dispatch(setUser(updatedUser));
+      console.log("✅ Successfully updated:", updatedUser);
+
+      dispatch(setUser(updatedUser));  // Ensure Redux state updates
       return null; // No errors
-  } else if (response.status < 500) {
-      return await response.json(); // Return validation errors
   } else {
-      return { server: "Something went wrong. Please try again." };
+      const errorResponse = await response.json();
+      console.log("⚠️ Validation Errors:", errorResponse);
+
+      return errorResponse; // Return validation errors
   }
 };
+
 
 
 export default sessionReducer;

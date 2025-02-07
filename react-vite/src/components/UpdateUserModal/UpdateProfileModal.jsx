@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { thunkUpdateUser } from "../../redux/session";
+import { useModal } from "../../context/Modal";
 
-const UpdateProfileModal = ({ user, closeModal }) => {
+const UpdateProfileModal = ({ user }) => {
     const dispatch = useDispatch();
+    const { closeModal } = useModal();
+
     const [formData, setFormData] = useState({
         first_name: user.first_name,
         last_name: user.last_name,
@@ -12,6 +15,7 @@ const UpdateProfileModal = ({ user, closeModal }) => {
     });
 
     const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,13 +24,16 @@ const UpdateProfileModal = ({ user, closeModal }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setIsSubmitting(true);
 
         const errors = await dispatch(thunkUpdateUser(formData));
 
         if (errors) {
             setError(errors.server || "Failed to update profile.");
+            setIsSubmitting(false);
         } else {
-            closeModal();
+            console.log("✅ Profile updated successfully! Closing modal.");
+            closeModal();  // ✅ This will now work because `OpenModalMenuItem` provides it
         }
     };
 
@@ -40,8 +47,14 @@ const UpdateProfileModal = ({ user, closeModal }) => {
                     <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} placeholder="Last Name" required />
                     <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" required />
                     <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-                    <button type="submit">Save Changes</button>
-                    <button type="button" onClick={closeModal} className="cancel-button">Cancel</button>
+
+                    <button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? "Saving..." : "Save Changes"}
+                    </button>
+
+                    <button type="button" onClick={closeModal} className="cancel-button">
+                        Cancel
+                    </button>
                 </form>
             </div>
         </div>
