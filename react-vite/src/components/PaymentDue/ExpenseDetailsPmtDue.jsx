@@ -12,7 +12,6 @@ const ExpenseDetailsPmtDue = () => {
     useEffect(() => {
         if (id) {
             dispatch(paymentDueThunk(id));
-            console.log("Test")
         }
     }, [dispatch, id]);
 
