@@ -11,7 +11,7 @@ const loadUserComments = (comments) => {
 
 // Make a thunk action that gets all current user comments
 export const loadCurrentUserComments = () => async dispatch => {
-    const response = await csrfFetch("/api/comments")
+    const response = await csrfFetch("/api/users/comments")
 
     if (response.ok) {
         const result = await response.json()
@@ -23,7 +23,7 @@ export const loadCurrentUserComments = () => async dispatch => {
 const commentsReducer = (state={}, action) => {
     switch(action.type) {
         case(LOAD_USER_COMMENTS): {
-            const userComments = {}
+            const userComments = {...state}
             return userComments
         }
         default: 
