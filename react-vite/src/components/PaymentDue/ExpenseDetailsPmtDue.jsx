@@ -7,7 +7,7 @@ const ExpenseDetailsPmtDue = () => {
     const dispatch = useDispatch();
     const { id } = useParams(); // Get expenseId from URL params
 
-    const payment_due = useSelector((state) => state.expense.expenses);
+    const payment_due = useSelector((state) => state.expenses.expenses);
 
     useEffect(() => {
         if (id) {

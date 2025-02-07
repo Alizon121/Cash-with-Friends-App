@@ -79,10 +79,10 @@ export const createExpenseThunk = (payload) => async dispatch => {
         method: 'POST',
         body: JSON.stringify(payload)
     })
-      
+
      if (response.ok) {
         const result = await response.json()
-        dispatch(create) 
+        dispatch(create)
         return result
     } else {
         const errorResult = await response.json()
@@ -90,7 +90,7 @@ export const createExpenseThunk = (payload) => async dispatch => {
         throw new Error("Failed to create expense")
     }
 }
-      
+
 // Fetch expense details for payment_due page
 // and for amount_owed page
 export const paymentDueThunk = (expenseId) => async (dispatch) => {
@@ -112,9 +112,10 @@ export const amountOwedThunk = (expenseId) => async dispatch => {
 
     if (response.ok) {
         const result = await response.json()
-        dispatch(amountOwed(result))
+        console.log("Fetched Data:", result);
+        dispatch(amountOwed(result.Expense[0]))
         return result
-    } 
+    }
 }
 
 
@@ -160,9 +161,9 @@ const expenseReducer = (state={}, action) => {
             const amountOwed = action.payload;
             return {
                 ...state,
-                expenses: {
-                    ...state.expenses,
-                    [amountOwed.id]: amountOwed
+                expense: {
+                    ...state.expense,
+                    [action.payload.id]: action.payload
                 }
             };
         }

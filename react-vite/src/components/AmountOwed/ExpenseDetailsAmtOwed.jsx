@@ -3,11 +3,13 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { amountOwedThunk } from '../../redux/expense';
+import { useParams } from 'react-router-dom';
 
 const ExpenseDetails = () => {
     const dispatch = useDispatch(); // used to dispatch actions to the Redux store
+    const { id } = useParams();
 
-    const amount_owed = useSelector((state) => state.expense.expense);
+    const amount_owed = useSelector((state) => state.expenses.expense);
 
     // This useEffect will fetch the details of an expense when the component mounts
     useEffect(() => {
@@ -16,7 +18,7 @@ const ExpenseDetails = () => {
         }
     }, [dispatch, id])
 
-    console.log(amount_owed)
+    console.log(amount_owed[id])
 
     return (
 
@@ -25,19 +27,19 @@ const ExpenseDetails = () => {
 
         <>
             <div>
-                <h3>Total owed to you: {amount_owed?.amount}</h3>
-                <p>For: {amount_owed?.description}</p>
+                <h3>Total owed to you: {amount_owed[id]?.amount}</h3>
+                <p>For: {amount_owed[id]?.description}</p>
                 <p>Created By: CURRENT USER </p>
             </div>
             <div>
                 <h4>Owes you:</h4>
-                {/* {amount_owed?.participants.map((participant, index) => (
+                {amount_owed[id]?.participants.map((participant, index) => (
                     <div key={index}>
                         {participant}
                         {amount_owed?.amount}
                         <button>Delete</button>
                     </div>
-                ))} */}
+                ))}
             </div>
         </>
     )
