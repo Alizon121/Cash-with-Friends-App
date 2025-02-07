@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux"
-import { getComments } from "../../redux/comment"
+// import { getComments } from "../../redux/comment"
 import { useEffect } from "react"
 
 function UserCommentsPage(){
