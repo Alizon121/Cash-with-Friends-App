@@ -19,9 +19,9 @@ export const addComment = (comment) => ({
   payload: comment,
 });
 
-export const reviseComment = (comment) => ({
+export const reviseComment = (updatedComment) => ({
   type: UPDATE_COMMENT,
-  payload: comment,
+  payload: { updatedComment },
 });
 
 export const removeComment = (commentId) => ({
@@ -34,16 +34,16 @@ export const removeComment = (commentId) => ({
 // Get Comments for an expense
 export const getComments = (type, id) => async (dispatch) => {
     let url = '';
-    if (type === 'expense') {
+    if (type === 'expenses') {
         if (!id) {
             console.error("getComments called with an undefined expenseId");
             return;
         }
         url = `/api/expenses/${id}/comments`;
     } else if (type === 'user') {
-        url = `/api/users/${id}/comments`;
+        url = `/comments`;
     } else {
-        throw Error('Invalid type. Use "expense" or "user"');
+        throw Error('Invalid type. Use "expenses" or "user"');
     }
 
     try {
@@ -63,9 +63,9 @@ export const getComments = (type, id) => async (dispatch) => {
 };
 
 // Add a Comment to an Expense
-export const createComment = (expenseId, commentData) => async (dispatch) => {
+export const createComment = (id, commentData) => async (dispatch) => {
     try {
-        const res = await csrfFetch(`/api/expenses/${expenseId}/comments`, {
+        const res = await csrfFetch(`/api/expenses/${id}/comments`, {
             method: "POST",
             body: JSON.stringify(commentData),
         });
@@ -80,13 +80,13 @@ export const createComment = (expenseId, commentData) => async (dispatch) => {
 };
 
 // Delete a Comment
-export const deleteComment = (commentId, expenseId) => async (dispatch) => {
+export const deleteComment = (commentId, id) => async (dispatch) => {
     try {
         const res = await csrfFetch(`/api/comments/${commentId}`, {
             method: "DELETE",
         });
         if (!res.ok) throw Error("Failed to delete comment");
-        dispatch(removeComment(commentId, expenseId));
+        dispatch(removeComment(commentId, id));
     } catch (e) {
         console.error("Error deleting comment", e);
         throw e;
@@ -97,7 +97,7 @@ export const deleteComment = (commentId, expenseId) => async (dispatch) => {
 export const updateComment = (commentData) => async (dispatch) => {
     const { id } = commentData;
     try {
-      const res = await csrfFetch(`/api/Comments/${id}`, {
+      const res = await csrfFetch(`/api/comments/${id}`, {
         method: "PUT",
         body: JSON.stringify(commentData),
       });
@@ -120,7 +120,8 @@ const initialState = {
 const commentsReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_COMMENTS: {
-      const commentsById = action.payload.reduce((acc, comment) => {
+          const commentsById = action.payload.reduce((acc, comment) => {
+              console.log("COMMMEEENNNNTTTSSS: ", comment);
         acc[comment.id] = comment;
         return acc;
       }, {});
@@ -139,14 +140,15 @@ const commentsReducer = (state = initialState, action) => {
       };
     }
     case UPDATE_COMMENT: {
-      return {
-        ...state,
-        comments: {
-          ...state.comments,
-          [action.payload.id]: action.payload,
-        },
-      };
-    }
+        return {
+          ...state,
+          comments: {
+            ...state.comments,
+            [action.payload.id]: action.payload,
+          },
+        };
+      }
+      
     case DELETE_COMMENT: {
       const newComments = { ...state.comments };
       delete newComments[action.payload];

@@ -8,16 +8,16 @@ const CommentCard = ({ comment }) => {
   const [newCommentText, setNewCommentText] = useState(comment.comment_text);
 
   const handleEdit = () => {
-    if (editing && newCommentText !== comment.comment_text) {
-      dispatch(commentActions.updateComment(comment.id, { comment_text: newCommentText }));
+      if (editing && newCommentText !== comment.comment_text) {
+          dispatch(commentActions.updateComment({ ...comment, comment_text: newCommentText }));
     }
     setEditing(!editing);
   };
-
+    
   const handleDelete = () => {
-    dispatch(commentActions.deleteComment(comment.id));
+    dispatch(commentActions.deleteComment(comment.commentId));
   };
-
+  
   return (
     <div>
       {editing ? (

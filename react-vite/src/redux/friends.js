@@ -31,9 +31,9 @@ export const deleteRequest = (friendId) => ({
 /******************************* THUNK ACTIONS *******************************************/
 
 // Get friends for a user
-export const getFriends = (userId) => async (dispatch) => {
+export const getFriends = () => async (dispatch) => {
   try {
-    const res = await csrfFetch("/api/users/friends");
+    const res = await csrfFetch("/api/friends");
     if (!res.ok) throw Error("Failed to get friends");
     const data = await res.json();
 

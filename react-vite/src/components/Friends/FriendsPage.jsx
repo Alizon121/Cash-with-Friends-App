@@ -6,11 +6,13 @@ import "./Friends.css";
 
 function FriendsPage() {
   const dispatch = useDispatch();
-  const friends = useSelector((state) => state.friends.allFriends);
+  const friendsById = useSelector((state) => state.friends.friends);
 
   useEffect(() => {
     dispatch(friendActions.getFriends());
   }, [dispatch]);
+
+  const friends = Object.values(friendsById);
 
   return (
     <div className="friends-container">
