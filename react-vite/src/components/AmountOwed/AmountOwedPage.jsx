@@ -1,5 +1,8 @@
 import ExpenseDetails from "./ExpenseDetailsAmtOwed"
 import { useNavigate, useParams } from "react-router-dom"
+import OpenModalButton from "../OpenModalButton"
+import DeleteExpenseModal from "./DeleteExpenseModal"
+import UpdateExpenseModal from "./UpdateExpenseModal"
 
 function AmountOwedPage() {
 
@@ -14,12 +17,20 @@ function AmountOwedPage() {
             </div>
 
             <div>
-                <ExpenseDetails />
+                {/* <ExpenseDetails /> */}
             </div>
 
             <div>
-                <button>Delete Expense</button>
-                <button>Update Details</button>
+                    <OpenModalButton
+                    buttonText="Delete Expense"
+                    modalComponent={<DeleteExpenseModal />}
+                    />
+            </div>
+            <div>
+                    <OpenModalButton
+                    buttonText="Update Details"
+                    modalComponent={<UpdateExpenseModal />}
+                    />
             </div>
         </>
     )

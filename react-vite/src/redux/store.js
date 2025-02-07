@@ -11,7 +11,8 @@ import commentsReducer from "./comment";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
-  
+  expense: expenseReducer,
+  comment: commentsReducer
 });
 
 let enhancer;

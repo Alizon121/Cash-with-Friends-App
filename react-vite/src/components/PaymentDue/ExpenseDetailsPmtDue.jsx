@@ -1,51 +1,52 @@
-// import styles from "./ExpenseDetails.module.css"
-// import { useParams } from 'react-router-dom'
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { paymentDueThunk } from '../../redux/expense';
 
-const ExpenseDetails = () => {
-    const dispatch = useDispatch(); // used to dispatch actions to the Redux store
+const ExpenseDetailsPmtDue = () => {
+    const dispatch = useDispatch();
+    const { id } = useParams(); // Get expenseId from URL params
 
-    const payment_due = useSelector((state) => state.expenses.payment_due);
+    const payment_due = useSelector((state) => state.expense.expenses);
 
-    // This useEffect will fetch the details of an expense when the component mounts
     useEffect(() => {
-        dispatch(payment_due());
-    }, [dispatch, payment_due]);
+        if (id) {
+            dispatch(paymentDueThunk(id));
+            console.log("Test")
+        }
+    }, [dispatch, id]);
 
-    console.log(payment_due)
-
-    // ! What is the best way to find the owner of the expense?
-    // For displaying their name in "You Owe: " and in "Created By: "
-    // ^ GET FROM AUTHENTICATE ROUTE!
+    if (!payment_due) {
+        return <div>No payment owed for this expense</div>;
+    }
 
     return (
         <>
-            <h3>Total you owe: {payment_due.amount}</h3>
+            <h3>Total you owe: {payment_due[id]?.amount}</h3>
 
             <div>
                 <p>You Owe:</p>
                 <div>
                     <p>EXPENSE OWNER</p>
-                    <p>{payment_due.amount}</p>
+                    <p>{payment_due[id]?.amount}</p>
                     <button>Settle</button>
                 </div>
                 <div>
-                    <p>For: {payment_due.description}</p>
+                    <p>For: {payment_due[id]?.description}</p>
                     <p>Created By: EXPENSE OWNER</p>
                     <div>
                         <p>Other Participants</p>
-                        {amount_owed.participants.map((participant, index) => (
+                        {payment_due[id]?.participants.map((participant, index) => (
                             <div key={index}>
                                 {participant}
-                            <button>Delete</button>
+                                <button>Delete</button>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default ExpenseDetails
+export default ExpenseDetailsPmtDue;
