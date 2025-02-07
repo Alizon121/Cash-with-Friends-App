@@ -2,9 +2,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { friendActions } from "../../redux";
-import UserProfilePage from "../UserProfile/UserProfilePage";
 import "./Friends.css";
-
 
 function FriendsPage() {
   const dispatch = useDispatch();
@@ -15,9 +13,14 @@ function FriendsPage() {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="friends-container">
+      <h1>My Friends</h1>
       {Object.values(friends).map((friend) => (
-        <UserProfilePage key={friend.id} friend={friend} />
+        <div key={friend.id} className="friend-card">
+          <p>
+            👤 <strong>{friend.firstName}</strong> ({friend.username})
+          </p>
+        </div>
       ))}
     </div>
   );

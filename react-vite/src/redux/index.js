@@ -12,14 +12,14 @@ export { default as sessionReducer } from "./session";
 export * as expenseActions from "./expense";
 export { default as expenseReducer } from "./expense";
 
-// these aren't built yet but I assume that's what we will call them?
 export * as friendActions from "./friends"; 
 export { default as friendsReducer } from "./friends";
 
-export * as paymentActions from "./payments";
-export { default as paymentsReducer } from "./payments";
+// these aren't built yet but I assume that's what we will call them?
+// export * as paymentActions from "./payments";
+// export { default as paymentsReducer } from "./payments";
 
 // not entirely sure we need this one:
-export * as userActions from "./users";
-export { default as usersReducer } from "./users";
+// export * as userActions from "./users";
+// export { default as usersReducer } from "./users";
 

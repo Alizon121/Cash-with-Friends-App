@@ -15,7 +15,7 @@ const RemoveFriendRequestModal = ({ request, closeModal }) => {
             return;
         }
 
-        const errors = await dispatch(friendActions.RemoveFriendRequest(requestId));
+        const errors = await dispatch(friendActions.removeRequest(requestId));
 
         if (errors) {
             setError(errors.server || "Failed to remove friend request.");
@@ -29,7 +29,7 @@ const RemoveFriendRequestModal = ({ request, closeModal }) => {
             <div className="modal-content">
                 <h3>Remove Friend Request</h3>
                 {error && <p className="error">{error}</p>}
-                <p>Are you sure you want to remove firend request?</p>
+                <p>Are you sure you want to remove friend request?</p>
                 <p>{request.firstName}</p>
                 <button onClick={handleRemoval} className="remove-button">Remove</button>
                 <button onClick={closeModal} className="close-button">Close</button>
