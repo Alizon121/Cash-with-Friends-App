@@ -83,7 +83,6 @@ def update_profile():
             "last_name": user.last_name,
             "username": user.username,
             "email": user.email,
-            "avatar": user.avatar
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 400

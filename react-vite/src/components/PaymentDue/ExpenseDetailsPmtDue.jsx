@@ -1,0 +1,52 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { paymentDueThunk } from '../../redux/expense';
+
+const ExpenseDetailsPmtDue = () => {
+    const dispatch = useDispatch();
+    const { id } = useParams(); // Get expenseId from URL params
+
+    const payment_due = useSelector((state) => state.expense.expenses);
+
+    useEffect(() => {
+        if (id) {
+            dispatch(paymentDueThunk(id));
+            console.log("Test")
+        }
+    }, [dispatch, id]);
+
+    if (!payment_due) {
+        return <div>No payment owed for this expense</div>;
+    }
+
+    return (
+        <>
+            <h3>Total you owe: {payment_due[id]?.amount}</h3>
+
+            <div>
+                <p>You Owe:</p>
+                <div>
+                    <p>EXPENSE OWNER</p>
+                    <p>{payment_due[id]?.amount}</p>
+                    <button>Settle</button>
+                </div>
+                <div>
+                    <p>For: {payment_due[id]?.description}</p>
+                    <p>Created By: EXPENSE OWNER</p>
+                    <div>
+                        <p>Other Participants</p>
+                        {payment_due[id]?.participants.map((participant, index) => (
+                            <div key={index}>
+                                {participant}
+                                <button>Delete</button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+};
+
+export default ExpenseDetailsPmtDue;

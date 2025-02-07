@@ -1,5 +1,22 @@
-function PaymentDuePage(){
-    return <h2>Hello World</h2>
+import ExpenseDetailsPmtDue from "./ExpenseDetailsPmtDue";
+import { useNavigate, useParams } from "react-router-dom";
+
+function PaymentDuePage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <div>
+                <h2>Expenses</h2>
+                <button onClick={() => navigate(`/expenses/${id}/comments`)}>View Comments</button>
+            </div>
+
+            <div>
+                <ExpenseDetailsPmtDue />
+            </div>
+    </>
+  );
 }
 
-export default PaymentDuePage
+export default PaymentDuePage;

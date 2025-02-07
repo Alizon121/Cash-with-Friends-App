@@ -24,11 +24,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "expenses/:id/payment_due",
-        element: <PaymentDuePage/>
+        element: <PaymentDuePage />
       },
       {
         path: "/expenses/:id/amount_owed",
-        element: <AmountOwedPage/>
+        element: <AmountOwedPage />
       },
       {
         path: "/expenses/:id/comments",

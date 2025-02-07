@@ -1,16 +1,46 @@
 import { csrfFetch } from "./csrf";
 
-// Make an action for settling/updating an expense
+////////////////////////////// Action Creators///////////////////////
+
+// Make an action for settling/updating an expense -ASL
 const SETTLE_EXPENSE = "SETTLE_EXPENSE"
-// Make an action creator for settling/updating an expense
-const settle = (expense) => {
-    type = SETTLE_EXPENSE,
+const settle = (expense) => ({
+    type: SETTLE_EXPENSE,
+    payload: expense
+})
+
+
+// action for fetching expense details for payment_due page
+// and for amount_owed
+const PAYMENT_DUE = "PAYMENT_DUE"
+const AMOUNT_OWED = "AMOUNT_OWED"
+
+
+// Action creator to fetch expense details for payment_due page
+// And for amount_owed page
+const paymentDue = (expense) => ({
+    type: PAYMENT_DUE,
+    payload: expense
+});
+
+const amountOwed = (expense) => ({
+    type: AMOUNT_OWED,
+    payload: expense
+})
+
+
+// Make an action creater for creating an expense -ASL
+const CREATE_EXPENSE = "CREATE_EXPENSE"
+const create = (expense) => {
+    type = CREATE_EXPENSE
     payload = expense
 }
 
-// Make a thunk action that will settle an expense
+////////////////////// Thunk Actions ////////////////////////////
+
+// Make a thunk action that will settle an expense -ASL
 export const settleExpenseThunk = (expenseId) => async dispatch => {
-    const response = await csrfFetch(`expenses/${expenseId}`, {
+    const response = await csrfFetch(`/api/expenses/${expenseId}`, {
         method: 'POST',
         body: JSON.stringify(payload)
     })
@@ -22,6 +52,52 @@ export const settleExpenseThunk = (expenseId) => async dispatch => {
     }
 }
 
+// Thunk action for creating an expense
+export const createExpenseThunk = (payload) => async dispatch => {
+    const response = await csrfFetch("/api/expenses/", {
+        method: 'POST',
+        body: JSON.stringify(payload)
+    })
+      
+     if (response.ok) {
+        const result = await response.json()
+        dispatch(create) 
+        return result
+    } else {
+        const errorResult = await response.json()
+        console.error(errorResult)
+        throw new Error("Failed to create expense")
+    }
+}
+      
+// Fetch expense details for payment_due page
+// and for amount_owed page
+export const paymentDueThunk = (expenseId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/expenses/${expenseId}/payment_due`, {
+        method: 'GET'
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        dispatch(paymentDue(result.Expenses[0]));
+        return result;
+    }
+};
+
+export const amountOwedThunk = (expenseId) => async dispatch => {
+    const response = await csrfFetch(`/api/expenses/${expenseId}/amount_owed`, {
+        method: 'GET',
+    })
+
+    if (response.ok) {
+        const result = await response.json()
+        dispatch(amountOwed(result))
+        return result
+    } 
+}
+
+
+// Make the expense reducer -ASL
 const expenseReducer = (state={}, action) => {
     switch(action.type) {
         case SETTLE_EXPENSE: {
@@ -30,6 +106,34 @@ const expenseReducer = (state={}, action) => {
                 ...state,
                 [settledExpense.id]:settledExpense
             }
+        }
+        case CREATE_EXPENSE: {
+            return {
+                ...state,
+                [action.payload.id]: {
+                    ...action.payload
+                }
+            }
+        }
+        case PAYMENT_DUE: {
+            const paymentDue = action.payload;
+            return {
+                ...state,
+                expenses: {
+                    ...state.expenses,
+                    [paymentDue.id]: paymentDue
+                }
+            };
+        }
+        case AMOUNT_OWED: {
+            const amountOwed = action.payload;
+            return {
+                ...state,
+                expenses: {
+                    ...state.expenses,
+                    [amountOwed.id]: amountOwed
+                }
+            };
         }
         default:
             return state
