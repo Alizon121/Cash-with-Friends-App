@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { thunkAuthenticate, thunkLogout } from "../../redux/session";
 import UpdateProfileModal from "../UpdateUserModal/UpdateProfileModal";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
-
 
 const UserProfilePage = () => {
     const dispatch = useDispatch();
@@ -40,10 +39,11 @@ const UserProfilePage = () => {
                         <p><strong>Last Name:</strong> {user?.last_name}</p>
                         <p><strong>Username:</strong> {user?.username}</p>
                         <p><strong>Email:</strong> {user?.email}</p>
-                        <button> 
+
+                        <button>{/* ✅ Corrected Button for Opening Modal */}
                         <OpenModalMenuItem
-                            modalComponent={<UpdateProfileModal user={user}/>}
-                            itemtext={"Update Profile"}
+                            modalComponent={<UpdateProfileModal user={user} />}
+                            itemtext="Update Profile"
                         /> Update Profile
                         </button>
                     </div>
