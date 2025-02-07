@@ -5,7 +5,7 @@ import { thunkLogout } from "../../redux/session";
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function ProfileButton() {
   const dispatch = useDispatch();
@@ -42,6 +42,12 @@ function ProfileButton() {
     closeMenu();
   };
 
+  const navigateToComments = (e) => {
+    e.preventDefault();
+    navigate("/comments")
+    closeMenu()
+  }
+
   return (
     <>
       <button onClick={toggleMenu}>
@@ -54,6 +60,7 @@ function ProfileButton() {
             {/* Should we add links to different pages here? */}
               <li>{user.username}</li>
               <li>{user.email}</li>
+              <li><button onClick={navigateToComments}>User Comments</button></li>
               <li>
                 {/* Should we remove this? */}
                 <button onClick={logout}>Log Out</button>
