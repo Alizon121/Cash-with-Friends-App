@@ -23,3 +23,22 @@ export async function csrfFetch(url, options = {}) {
 // export function restoreCSRF() {
 //     return csrfFetch('/api/auth/');
 //   }
+
+// export async function csrfFetch(url, options = {}) {
+//     options.method = options.method || 'GET';
+//     options.headers = options.headers || {};
+
+//     // Set headers only for non-GET requests
+//     if (options.method.toUpperCase() !== 'GET') {
+//         options.headers['Content-Type'] = options.headers['Content-Type'] || 'application/json';
+//     }
+
+//     // Ensure cookies (like csrf_token) are sent with every request
+//     options.credentials = 'include';
+
+//     const res = await window.fetch(url, options);
+
+//     if (res.status >= 400) throw res;
+
+//     return res;
+// }

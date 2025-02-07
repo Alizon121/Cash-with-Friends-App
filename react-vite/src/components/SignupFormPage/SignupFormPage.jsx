@@ -17,6 +17,7 @@ function SignupFormPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
 
+  // console.log("Sessionuser", sessionUser)
   if (sessionUser) return <Navigate to="/users/dashboard" replace={true} />;
 
   const handleSubmit = async (e) => {
@@ -31,18 +32,19 @@ function SignupFormPage() {
 
     const serverResponse = await dispatch(
       thunkSignup({
-        firstName,
-        lastName,
+        first_name: firstName,
+        last_name: lastName,
         email,
         username,
-        password
+        password,
+        confirm_password: confirmPassword
       })
     );
 
     if (serverResponse) {
       setErrors(serverResponse);
     } else {
-      navigate("api/expenses/users/dashboard");
+      navigate("/users/dashboard");
     }
   };
 

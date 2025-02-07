@@ -67,7 +67,7 @@ try { const response = await csrfFetch("/api/auth/signup", {
 };
 
 export const thunkLogout = () => async (dispatch) => {
-  await csrfFetch("/api/auth/logout");
+  await fetch("/api/auth/logout");
   dispatch(removeUser());
 };
 
@@ -78,7 +78,10 @@ function sessionReducer(state = initialState, action) {
     case SET_USER:
       return { ...state, user: action.payload };
     case REMOVE_USER:
-      return { ...state, user: null };
+      const newState={...state}
+      delete newState.user
+      // return { ...state};
+      return newState
     default:
       return state;
   }

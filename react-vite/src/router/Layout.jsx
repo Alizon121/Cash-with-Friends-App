@@ -11,9 +11,17 @@ export default function Layout() {
   const location = useLocation()
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // useEffect(() => {
+  //   if (location.pathname !== "/") {
+  //     dispatch(thunkAuthenticate()).then(() => setIsLoaded(true));
+  //   } else {
+  //     setIsLoaded(true)
+  //   }
+  // }, [dispatch, location.pathname]);
+  
   // This is causing an unauthorized error in signup
   useEffect(() => {
-    dispatch(thunkAuthenticate()).then(() => setIsLoaded(true));
+      dispatch(thunkAuthenticate()).then(() => setIsLoaded(true));
   }, [dispatch]);
 
   return (
