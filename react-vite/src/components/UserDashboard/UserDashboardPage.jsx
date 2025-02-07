@@ -7,16 +7,15 @@ import { loadAllUserExpensesThunk } from "../../redux/expense"
 
 function UserDashboardPage() {
     const user = useSelector(state => state.session)
-    const expense = useSelector(state => state.expense)
+    const expense = useSelector(state => state.expenses)
     const dispatch = useDispatch()
 
-    console.log("OJAFIASBFAILHSFB", expense)
     useEffect(() => {
         // Add the thunk actions for amount user owes and amount user is owed
         //     We may need to modify the backend to have the route diaply the total amounts
         dispatch(loadAllUserExpensesThunk())
     }, [dispatch])
-
+    
     return (
     <>
         <div>
@@ -34,9 +33,17 @@ function UserDashboardPage() {
                 />
             </button>
             <div>
-                <span>{expense.expenses.totalAmountOwed}</span>
-                {/* <span>{expense.expenses.expensesOwed}</span>
-                <span>{expense.expenses.owesExpenses}</span> */}
+                <div>Total Amount: {expense.expenses.totalAmountOwed}</div>
+                <div>Amount Owed: {expense.expenses.totalOwedAmount}</div>
+                <div>User Owes: {expense.expenses.totalOwesAmount}</div>
+            </div>
+
+            <div>
+                <h3>You Owe:</h3>
+                <div>
+                    <span>{expense.expenses.owesExpenses.map(participant => participant.createdBy)}</span>
+                    <span></span>
+                </div>
             </div>
         </div>
         
