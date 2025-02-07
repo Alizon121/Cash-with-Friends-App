@@ -9,6 +9,31 @@ const settle = (expense) => {
     payload = expense
 }
 
+
+// action for fetching expense details for payment_due page
+// and for amount_owed
+const PAYMENT_DUE = "PAYMENT_DUE"
+const AMOUNT_OWED = "AMOUNT_OWED"
+
+// Make an action creator for settling/updating an expense
+const settle = (expense) => ({
+    type: SETTLE_EXPENSE,
+    payload: expense
+})
+
+// Action creator to fetch expense details for payment_due page
+// And for amount_owed page
+const paymentDue = (expense) => ({
+    type: PAYMENT_DUE,
+    payload: expense
+});
+
+const amountOwed = (expense) => ({
+    type: AMOUNT_OWED,
+    payload: expense
+})
+
+
 // Make an action creater for creating an expense -ASL
 const CREATE_EXPENSE = "CREATE_EXPENSE"
 const create = (expense) => {
@@ -38,8 +63,8 @@ export const createExpenseThunk = (payload) => async dispatch => {
         method: 'POST',
         body: JSON.stringify(payload)
     })
-
-    if (response.ok) {
+      
+     if (response.ok) {
         const result = await response.json()
         dispatch(create) 
         return result
@@ -49,6 +74,33 @@ export const createExpenseThunk = (payload) => async dispatch => {
         throw new Error("Failed to create expense")
     }
 }
+      
+// Fetch expense details for payment_due page
+// and for amount_owed page
+export const paymentDueThunk = (expenseId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/expenses/${expenseId}/payment_due`, {
+        method: 'GET'
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        dispatch(paymentDue(result.Expenses[0]));
+        return result;
+    }
+};
+
+export const amountOwedThunk = (expenseId) => async dispatch => {
+    const response = await csrfFetch(`/api/expenses/${expenseId}/amount_owed`, {
+        method: 'GET',
+    })
+
+    if (response.ok) {
+        const result = await response.json()
+        dispatch(amountOwed(result))
+        return result
+    } 
+}
+
 
 // Make the expense reducer -ASL
 const expenseReducer = (state={}, action) => {
@@ -67,6 +119,25 @@ const expenseReducer = (state={}, action) => {
                     ...action.payload
                 }
             }
+        case PAYMENT_DUE: {
+            const paymentDue = action.payload;
+            return {
+                ...state,
+                expenses: {
+                    ...state.expenses,
+                    [paymentDue.id]: paymentDue
+                }
+            };
+        }
+        case AMOUNT_OWED: {
+            const amountOwed = action.payload;
+            return {
+                ...state,
+                expenses: {
+                    ...state.expenses,
+                    [amountOwed.id]: amountOwed
+                }
+            };
         }
         default:
             return state

@@ -95,7 +95,7 @@ def amount_user_owes(id):
         ).first()
 
         if not expense_owes:
-            return jsonify({"Message": "User does not currently owe any amount"}),404
+            return jsonify({"Message": "User does not currently owe any amount"}), 404
 
         # Query to get who the participants are in the expense
         # Will serve to get the user's amount owed
@@ -262,7 +262,7 @@ def update_expense(id):
 
         if "participants" in data:
             participant_usernames = data["participants"]
-            
+
             # Query for the existing usernames
             participants = User.query.filter(User.username.in_(participant_usernames)).all()
 
@@ -297,12 +297,12 @@ def settle_expense(id):
 
     # Authorization
     if select_expense.created_by == current_user.id:
-        
+
         # Get data from the request body
         data=request.get_json()
 
         if "settled" in data:
-            
+
             # Check and make sure that the input is a Boolean
             if isinstance(data["settled"], bool):
                 select_expense.settled = data["settled"]
