@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { thunkAuthenticate, thunkLogout } from "../../redux/session";
 import UpdateProfileModal from "../UpdateUserModal/UpdateProfileModal";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+
 
 const UserProfilePage = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.session.user);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         dispatch(thunkAuthenticate()); 
@@ -39,14 +40,15 @@ const UserProfilePage = () => {
                         <p><strong>Last Name:</strong> {user?.last_name}</p>
                         <p><strong>Username:</strong> {user?.username}</p>
                         <p><strong>Email:</strong> {user?.email}</p>
-                        <button onClick={() => setIsModalOpen(true)} className="update-button">
-                            Update Profile
+                        <button> 
+                        <OpenModalMenuItem
+                            modalComponent={<UpdateProfileModal user={user}/>}
+                            itemtext={"Update Profile"}
+                        /> Update Profile
                         </button>
                     </div>
                 </div>
             </div>
-
-            {isModalOpen && <UpdateProfileModal user={user} closeModal={() => setIsModalOpen(false)} />}
         </div>
     );
 };
