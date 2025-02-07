@@ -30,6 +30,8 @@ def pending_expenses():
 
         total_amount = 0
         total_owed_amount = 0
+        total_owes_amount = 0
+
         # Query to get what expenses the user is owed
         user_is_owed = User.query.get(current_user.id).expenses
         # Error message for no user being owed something
@@ -68,6 +70,7 @@ def pending_expenses():
                 "participants": [user.username for user in expense.participants],
                 # "createdAt": user_owes.created_at
             }
+            total_owes_amount+=(expense.amount/(len(expense.participants)+1))
             total_amount-= (expense.amount/(len(expense.participants)+1))
             expense_data_owes_to.append(owes_data)
 
@@ -75,7 +78,8 @@ def pending_expenses():
             "expensesOwed": expense_data_owed,
             "owesExpenses": expense_data_owes_to,
             "totalAmountOwed": total_amount,
-            "totalOwedAmount": total_owed_amount
+            "totalOwedAmount": total_owed_amount,
+            "totalOwesAmount": total_owes_amount
                         })
 
     else:
