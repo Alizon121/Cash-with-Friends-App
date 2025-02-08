@@ -31,37 +31,6 @@ export const removeComment = (commentId) => ({
 
 /******************************* THUNK ACTIONS *******************************************/
 
-// Get Comments for an expense
-// export const getComments = (type, id) => async (dispatch) => {
-//   let url = "";
-//   if (type === "expenses") {
-//     if (!id) {
-//       console.error("getComments called with an undefined expenseId");
-//       return;
-//     }
-//     url = `/api/expenses/${id}/comments`;
-//   } else if (type === "user") {
-//     url = `/api/comments`;
-//   } else {
-//     throw Error('Invalid type. Use "expenses" or "user"');
-//   }
-
-//   try {
-//     const res = await csrfFetch(url);
-//     if (!res.ok) throw Error("Failed to get comments");
-//     const data = await res.json();
-
-//     if (!data.comments || data.comments.length === 0) {
-//       console.log(`No comments found for ${type} with id ${id}`);
-//       return;
-//     }
-
-//     dispatch(loadComments(data.comments));
-//   } catch (e) {
-//     console.error("Error loading comments", e);
-//   }
-// };
-
 // Helper Func for Both "Get Comments"
 export const getComments = async (url, dispatch) => {
   try {

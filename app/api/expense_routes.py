@@ -45,6 +45,7 @@ def pending_expenses():
             owed_data= {
             "id": expense.id,
             "amount": expense.amount,
+            "description": expense.description,
             # A query inside a query results in n+1
             "username": [user.username for user in Expense.query.get(expense.id).participants],
             "settled": expense.settled,

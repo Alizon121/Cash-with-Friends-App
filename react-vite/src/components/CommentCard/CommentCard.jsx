@@ -26,7 +26,7 @@ const CommentCard = ({ comment }) => {
           onChange={(e) => setNewCommentText(e.target.value)}
         />
       ) : (
-        <p>{comment.comment_text}</p>
+          <p>{comment.user_id} said: {comment.comment_text}</p>
       )}
       <button onClick={handleEdit}>{editing ? 'Save' : 'Edit'}</button>
       <button onClick={handleDelete}>Delete</button>
