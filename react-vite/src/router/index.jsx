@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
         element: <UserDashboardPage/>
       },
       {
-        path: "expenses/:id/payment_due",
+        path: "/expenses/:id/payment_due",
         element: <PaymentDuePage />
       },
       {
