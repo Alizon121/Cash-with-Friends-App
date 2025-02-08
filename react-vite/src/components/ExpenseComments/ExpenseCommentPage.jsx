@@ -8,12 +8,11 @@ function ExpenseCommentPage() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const commentsById = useSelector((state) => state.comments.comments);
-  const expense = useSelector((state) => state.expenses[id]);
+  const expenseId = useSelector((state) => state.expenses[id]);
   const friends = useSelector((state) => state.friends.list);
 
   useEffect(() => {
-    dispatch(commentActions.getComments("expenses", id));
-    // dispatch(expenseActions.getExpense(id));
+    dispatch(commentActions.getExpenseComments(id));
   }, [dispatch, id]);
 
   const comments = Object.values(commentsById);
@@ -24,25 +23,11 @@ function ExpenseCommentPage() {
       </header>
 
       <div className="main-content">
-        {/* Friends Sidebar */}
-        <aside className="friends-sidebar">
-          <h2>FRIENDS</h2>
-          <button className="add-friend-button">➕</button>
-          <ul>
-            {friends?.map((friend) => (
-              <li key={friend.id} className="friend-item">
-                <img src={friend.avatar || "/default-avatar.png"} alt={friend.name} className="friend-avatar" />
-                {friend.name}
-              </li>
-            ))}
-          </ul>
-        </aside>
-
         {/* Comments Section */}
         <section className="comments-section">
           <h2>Comments:</h2>
           <div className="expense-description">
-            <p>Expense: <span className="expense-name">{expense?.name || "Loading..."}</span></p>
+            <p>Expense: <span className="expense-name">{id?.name || "Loading..."}</span></p>
           </div>
 
           <ul className="expense-comments">

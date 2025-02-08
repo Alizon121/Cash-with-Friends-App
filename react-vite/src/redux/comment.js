@@ -62,6 +62,42 @@ export const removeComment = (commentId) => ({
 //   }
 // };
 
+// Helper Func for Both "Get Comments"
+export const getComments = async (url, dispatch) => {
+  try {
+    const res = await csrfFetch(url);
+    if (!res.ok) throw Error("Failed to get comments");
+    const data = await res.json();
+
+    if (!data.comments || data.comments.length === 0) {
+      console.log(`No comments found for ${url}`);
+      return;
+    }
+
+    dispatch(loadComments(data.comments));
+  } catch (e) {
+    console.error("Error loading comments", e);
+  }
+};
+
+// Get Comments for the current User
+export const getUserComments = () => async (dispatch, getState) => {
+  const userId = getState().session.user.id;
+
+  const url = `/api/users/${userId}/comments`;
+  await getComments(url, dispatch);
+};
+
+// Get Comments for the expense by id
+export const getExpenseComments = (id) => async (dispatch) => {
+  if (!id) {
+    console.error("getExpenseComments called with an undefined id");
+    return;
+  }
+  const url = `/api/expenses/${id}/comments`;
+  await getComments(url, dispatch);
+};
+
 // Add a Comment to an Expense
 export const createComment = (id, commentData) => async (dispatch) => {
   try {
