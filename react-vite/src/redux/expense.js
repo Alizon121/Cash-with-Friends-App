@@ -109,17 +109,6 @@ export const deleteExpenseThunk = (id) => async dispatch => {
     }
 }
 
-// Thunk action for deleting an expense -ASL
-export const deleteExpenseThunk = (id) => async dispatch => {
-    const response = await csrfFetch(`/api/expenses/${id}`, {
-        method: 'DELETE',
-    })
-
-    if (response.ok) {
-        dispatch(deleteExpense(id))
-    }
-}
-
 // Fetch expense details for payment_due page
 // and for amount_owed page
 export const paymentDueThunk = (expenseId) => async (dispatch) => {
