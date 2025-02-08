@@ -59,14 +59,14 @@ def pending_expenses():
             return jsonify({"Message": "User does not currently owe anything."})
 
         for expense in user_owes:
+            expense_owner = User.query.get(expense.created_by)
             owes_data = {
                 "id": expense.id,
                 "userId": current_user.id,
                 "amount": (expense.amount/(len(expense.participants)+1)),
                 "description": expense.description,
                 "settled": expense.settled,
-                "createdBy": expense.created_by,
-                # A query inside a query results in n+1
+                "createdBy": expense_owner.username,
                 "participants": [user.username for user in expense.participants],
                 # "createdAt": user_owes.created_at
             }
