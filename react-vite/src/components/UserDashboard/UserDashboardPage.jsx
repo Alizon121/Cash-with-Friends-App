@@ -6,25 +6,18 @@ import AddFriendModal from "../AddFriendModal/AddFriendModal"
 import { loadAllUserExpensesThunk } from "../../redux/expense"
 import SettleFormModal from "../SettleFormModal/SettleFormModal"
 import { useNavigate } from "react-router-dom"
-import DeleteExpenseModal from "../AmountOwed/DeleteExpenseModal"
 
 function UserDashboardPage() {
     const user = useSelector(state => state.session)
     const expense = useSelector(state => state.expenses)
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [deletedExpenseId, setDeletedExpenseId] = useState(null)
 
     useEffect(() => {
         // Add the thunk actions for amount user owes and amount user is owed
         //     We may need to modify the backend to have the route diaply the total amounts
         dispatch(loadAllUserExpensesThunk())
-    }, [dispatch, deletedExpenseId])
-
-    // Make a helper function to set the deletedreviewId when a :
-    const handleExpenseDeletion = (id) => {
-        setDeletedExpenseId(id)
-    }
+    }, [dispatch])
 
     // Make helper funciton to navigate to payment_due details page
     const navigatePaymentDuePage = async (id) => {
@@ -101,12 +94,6 @@ function UserDashboardPage() {
                                         <div>
                                             <button onClick={() => navigateAmountOwedPage(expense.id)}>
                                                 Details
-                                            </button>
-                                            <button>
-                                                <OpenModalMenuItem
-                                                    itemText={"Delete"}
-                                                    modalComponent={<DeleteExpenseModal id={expense.id} onDelete={()=> handleExpenseDeletion(expense.id)}/>}
-                                                />
                                             </button>
                                         </div>       
                                     </>

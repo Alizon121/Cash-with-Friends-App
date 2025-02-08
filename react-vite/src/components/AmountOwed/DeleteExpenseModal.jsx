@@ -8,7 +8,7 @@ function DeleteExpenseModal({expenseId, onDelete}) {
     const dispatch = useDispatch()
     
     const handleDelete = async (e) => {
-        await dispatch(deleteExpenseThunk(expenseIdd))
+        await dispatch(deleteExpenseThunk(expenseId))
         closeModal()
         onDelete(expenseId)
     }
