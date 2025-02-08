@@ -45,14 +45,14 @@ class Expense(db.Model):
 
 # Add the relationship for One-to-many:
     # Add the variable that back_populates refers to
-    payments = db.relationship("Payment", back_populates="expense")
+    payments = db.relationship("Payment", back_populates="expense", cascade="all, delete-orphan")
     user = db.relationship("User", back_populates="expenses")
-    comments = db.relationship("Comment", back_populates="expense")
+    comments = db.relationship("Comment", back_populates="expense", cascade="all, delete-orphan")
 
     # Add the relationships for the JOIN:
     participants = db.relationship(
         "User", # Name of table
         secondary=expense_participants, # name of the join table
         back_populates="participant_expenses", # variable that relationship refers to in other table
-        cascade="all, delete"
+        cascade="save-update, merge"
         )
