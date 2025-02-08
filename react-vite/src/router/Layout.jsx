@@ -20,7 +20,7 @@ export default function Layout() {
       <ModalProvider>
         <Navigation />
         {isLoaded && <Outlet />}
-        {location.pathname !== "/" && <FriendsList/>}
+        {(location.pathname !== "/" && location.pathname !== "/friends") && <FriendsList/>}
         <Modal />
       </ModalProvider>
     </>
