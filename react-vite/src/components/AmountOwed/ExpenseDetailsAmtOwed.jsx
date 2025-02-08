@@ -13,6 +13,9 @@ const ExpenseDetailsAmtOwed = () => {
   const { id } = useParams();
 
   const amount_owed = useSelector((state) => state.expenses);
+  const current_user = useSelector((state) => state.session);
+
+  // console.log(current_user.user.username)
 
   // This useEffect will fetch the details of an expense when the component mounts
   useEffect(() => {
@@ -33,7 +36,7 @@ const ExpenseDetailsAmtOwed = () => {
       <div>
         <h3>Total owed to you: {amount_owed[id]?.amount}</h3>
         <p>For: {amount_owed[id]?.description}</p>
-        <p>Created By: CURRENT USER </p>
+        <p>Created By: {current_user.user.username} </p>
       </div>
       <div>
         <h4>Owes you:</h4>
