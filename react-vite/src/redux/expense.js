@@ -161,10 +161,8 @@ const expenseReducer = (state={}, action) => {
             const amountOwed = action.payload;
             return {
                 ...state,
-                expense: {
-                    ...state.expense,
-                    [action.payload.id]: action.payload
-                }
+                ...state.expense,
+                [action.payload.id]: action.payload
             };
         }
         default:
