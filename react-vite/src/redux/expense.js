@@ -1,6 +1,6 @@
 import { csrfFetch } from "./csrf";
 
-////////////////////////////// Action Creators///////////////////////
+/***************** Action Creators *************************/
 
 // Make an action for settling/updating an expense -ASL
 const SETTLE_EXPENSE = "SETTLE_EXPENSE"
@@ -20,6 +20,13 @@ const create = (expense) => ({
 const LOAD_ALL_USER_EXPENSES = "LOAD_ALL_USER_EXPENSES"
 const loadAll = (expense) => ({
     type: LOAD_ALL_USER_EXPENSES,
+    payload: expense
+})
+
+// Make an action creator for deleting an expense -ASL
+const DELETE_EXPENSE = "DELETE_EXPENSE"
+const deleteExpense = (expense) => ({
+    type: DELETE_EXPENSE,
     payload: expense
 })
 
@@ -43,7 +50,7 @@ const amountOwed = (expense) => ({
 
 
 
-////////////////////// Thunk Actions ////////////////////////////
+/******************* Thunk Actions *******************/
 
 // Make a thunk action for grabbing all using expense info -ASL
 export const loadAllUserExpensesThunk = () => async dispatch => {
@@ -73,7 +80,7 @@ export const settleExpenseThunk = (settled, expenseId) => async dispatch => {
     }
 }
 
-// Thunk action for creating an expense
+// Thunk action for creating an expense -ASL
 export const createExpenseThunk = (payload) => async dispatch => {
     const response = await csrfFetch("/api/expenses/", {
         method: 'POST',
@@ -88,6 +95,28 @@ export const createExpenseThunk = (payload) => async dispatch => {
         const errorResult = await response.json()
         console.error(errorResult)
         throw new Error("Failed to create expense")
+    }
+}
+
+// Thunk action for deleting an expense -ASL
+export const deleteExpenseThunk = (id) => async dispatch => {
+    const response = await csrfFetch(`/api/expenses/${id}`, {
+        method: 'DELETE',
+    })
+
+    if (response.ok) {
+        dispatch(deleteExpense(id))
+    }
+}
+
+// Thunk action for deleting an expense -ASL
+export const deleteExpenseThunk = (id) => async dispatch => {
+    const response = await csrfFetch(`/api/expenses/${id}`, {
+        method: 'DELETE',
+    })
+
+    if (response.ok) {
+        dispatch(deleteExpense(id))
     }
 }
 
@@ -164,6 +193,16 @@ const expenseReducer = (state={}, action) => {
                 ...state.expense,
                 [action.payload.id]: action.payload
             };
+        }
+        case DELETE_EXPENSE: {
+            const newState = {...state}
+            delete newState[action.payload.id]
+            return newState
+        }
+        case DELETE_EXPENSE: {
+            const newState = {...state}
+            delete newState[action.payload.id]
+            return newState
         }
         default:
             return state
