@@ -1,14 +1,23 @@
 import { useModal } from "../../context/Modal"
+import { deleteExpenseThunk } from "../../redux/expense";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
-function DeleteExpenseModal() {
-
+function DeleteExpenseModal({expenseId, onDelete}) {
     const { closeModal } = useModal();
+    const dispatch = useDispatch()
+    
+    const handleDelete = async (e) => {
+        await dispatch(deleteExpenseThunk(expenseIdd))
+        closeModal()
+        onDelete(expenseId)
+    }
 
     return (
         <>
             <div>
                 <h1>Delete</h1>
-                <button onClick={closeModal}>X</button>
+                {/* <button onClick={closeModal}>X</button> */}
             </div>
 
             <div>
@@ -19,7 +28,7 @@ function DeleteExpenseModal() {
             </div>
 
             <div>
-                <button>DELETE</button>
+                <button onClick={handleDelete}>DELETE</button>
                 <button onClick={closeModal}>CLOSE</button>
             </div>
         </>
