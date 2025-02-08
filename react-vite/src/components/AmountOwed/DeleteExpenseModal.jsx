@@ -1,16 +1,20 @@
 import { useModal } from "../../context/Modal"
 import { deleteExpenseThunk } from "../../redux/expense";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 
 function DeleteExpenseModal({expenseId, onDelete}) {
     const { closeModal } = useModal();
     const dispatch = useDispatch()
     
     const handleDelete = async (e) => {
+        try {e.preventDefault()
         await dispatch(deleteExpenseThunk(expenseId))
         closeModal()
         onDelete(expenseId)
+        } catch(e){
+            console.error("Failed to delete an expense", e)
+        }
     }
 
     return (

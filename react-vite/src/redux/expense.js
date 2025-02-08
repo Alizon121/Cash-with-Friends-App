@@ -25,9 +25,9 @@ const loadAll = (expense) => ({
 
 // Make an action creator for deleting an expense -ASL
 const DELETE_EXPENSE = "DELETE_EXPENSE"
-const deleteExpense = (expense) => ({
+const deleteExpense = (id) => ({
     type: DELETE_EXPENSE,
-    payload: expense
+    payload: {id}
 })
 
 // action for fetching expense details for payment_due page
@@ -100,6 +100,7 @@ export const createExpenseThunk = (payload) => async dispatch => {
 
 // Thunk action for deleting an expense -ASL
 export const deleteExpenseThunk = (id) => async dispatch => {
+    // console.log("IJAHBFIHABSFLUHASBFLUHASFB", typeof id)
     const response = await csrfFetch(`/api/expenses/${id}`, {
         method: 'DELETE',
     })
@@ -182,11 +183,6 @@ const expenseReducer = (state={}, action) => {
                 ...state.expense,
                 [action.payload.id]: action.payload
             };
-        }
-        case DELETE_EXPENSE: {
-            const newState = {...state}
-            delete newState[action.payload.id]
-            return newState
         }
         case DELETE_EXPENSE: {
             const newState = {...state}
