@@ -4,12 +4,12 @@ import { useDispatch } from "react-redux"
 import { settleExpenseThunk } from "../../redux/expense"
 import "./SettleForm.css"
 
-function SettleFormModal({expenseId}) {
+function SettleFormModal({expenseId, amount}) {
     const {closeModal} = useModal()
     const dispatch = useDispatch()
     const [settled, setSettled] = useState(false)
     // Set the default value to the fetched amount
-    const [payment, setPayment] = useState()
+    const [payment, setPayment] = useState(amount)
 
     // We need to handle changing the payment amount to 0 when settle is clicked
     
@@ -21,9 +21,13 @@ function SettleFormModal({expenseId}) {
         if (settled === false) {
             setSettled(true)
         }
+        if (payment > 0) {
+            setPayment(Number(0).toFixed(2))
+        }
 
         const payload = {
-            settled
+            settled,
+            payment
         }
 
         await dispatch(settleExpenseThunk(payload, expenseId))
@@ -33,9 +37,9 @@ function SettleFormModal({expenseId}) {
     return (
         <div className="settle_form_container">
             <h2>Settle</h2>
-            <p>Pay{}</p>
+            <p>Pay ${amount}</p>
             <div>
-                <button id="settle_button" onClick={handleSettle}>Save</button>
+                <button id="settle_button" onClick={handleSettle}>Save</button> 
                 <button id="cancel_settle_button" onClick={closeModal}>Cancel</button>
             </div>
         </div>

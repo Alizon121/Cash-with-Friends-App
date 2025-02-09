@@ -322,6 +322,8 @@ def settle_expense(id):
             # Check and make sure that the input is a Boolean
             if isinstance(data["settled"], bool):
                 select_expense.settled = data["settled"]
+                if data["settled"]:
+                    select_expense.amount = 0 
             else:
                 return jsonify({"Error": "Please provide Boolean type"}), 400
 

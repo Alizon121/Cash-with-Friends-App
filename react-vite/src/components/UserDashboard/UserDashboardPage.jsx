@@ -67,11 +67,11 @@ function UserDashboardPage() {
                                 <button>
                                     <OpenModalMenuItem
                                         itemText={"Settle"}
-                                        modalComponent={<SettleFormModal settled={participant.settled}/>}
+                                        modalComponent={<SettleFormModal settled={participant.settled} expenseId={participant.id} amount={participant.amount.toFixed(2)}/>}
                                     />
                                 </button>
                                 <button onClick={() => navigatePaymentDuePage(participant.id)}>
-                                    Details
+                                    Details {participant.id}
                                 </button>
                             </span>
                         </>

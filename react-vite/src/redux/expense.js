@@ -68,14 +68,18 @@ export const loadAllUserExpensesThunk = () => async dispatch => {
 
 // Make a thunk action that will settle an expense -ASL
 export const settleExpenseThunk = (settled, expenseId) => async dispatch => {
-    const response = await csrfFetch(`/api/expenses/${expenseId}`, {
-        method: 'POST',
-        body: JSON.stringify(settled)
+    console.log(typeof expenseId)
+    const response = await csrfFetch(`/api/expenses/${expenseId}/settle`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+          },
+        body: JSON.stringify({settled})
     })
 
     if (response.ok) {
         const result = await response.json()
-        dispatch(settle)
+        dispatch(settle(result))
         return result
     }
 }
