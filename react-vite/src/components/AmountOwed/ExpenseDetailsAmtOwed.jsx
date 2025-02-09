@@ -15,8 +15,6 @@ const ExpenseDetailsAmtOwed = () => {
   const amount_owed = useSelector((state) => state.expenses);
   const current_user = useSelector((state) => state.session);
 
-  // console.log(current_user.user.username)
-
   // This useEffect will fetch the details of an expense when the component mounts
   useEffect(() => {
     if (id) {
@@ -24,9 +22,17 @@ const ExpenseDetailsAmtOwed = () => {
     }
   }, [dispatch, id]);
 
+  const handleUpdateSuccess = () => {
+    if (id) {
+      dispatch(amountOwedThunk(id));
+    }
+  };
+
   if (!amount_owed[id]) {
     return <div>No payments owed for this expense</div>;
   }
+
+  const currentExpense = amount_owed[id];
 
   return (
     //! What is the best way to get the user from the front end?
@@ -43,7 +49,7 @@ const ExpenseDetailsAmtOwed = () => {
         {amount_owed[id]?.participants.map((participant, index) => (
           <div key={index}>
             {participant}
-            {amount_owed?.amount}
+            {amount_owed[id]?.amount}
             <button>Delete</button>
           </div>
         ))}
@@ -58,7 +64,11 @@ const ExpenseDetailsAmtOwed = () => {
         <div>
           <OpenModalButton
             buttonText="Update Details"
-            modalComponent={<UpdateExpenseModal />}
+            modalComponent={<UpdateExpenseModal
+              expenseId={id}
+              currentExpense={currentExpense}
+              onUpdateSuccess={handleUpdateSuccess}
+            />}
           />
         </div>
       </div>

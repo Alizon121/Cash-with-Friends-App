@@ -48,6 +48,11 @@ const amountOwed = (expense) => ({
     payload: expense
 })
 
+const UPDATE_EXPENSE = "UPDATE_EXPENSE"
+const updateExpense = (expense) => ({
+    type: UPDATE_EXPENSE,
+    payload: expense
+})
 
 
 /******************* Thunk Actions *******************/
@@ -136,6 +141,20 @@ export const amountOwedThunk = (expenseId) => async dispatch => {
     }
 }
 
+export const updateExpenseThunk = (id, updatedExpenseData) => async dispatch => {
+    const response = await csrfFetch(`/api/expenses/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedExpenseData)
+    })
+
+    if (response.ok) {
+        dispatch(updateExpense(id))
+    }
+}
+
 
 // Make the expense reducer -ASL
 const expenseReducer = (state={}, action) => {
@@ -193,6 +212,13 @@ const expenseReducer = (state={}, action) => {
             delete newState[action.payload.id]
             return newState
         }
+        case UPDATE_EXPENSE:
+            const updatedExpenses = { ...state.expenses };
+            updatedExpenses[action.payload.id] = action.payload;
+            return {
+                ...state,
+                expenses: updatedExpenses
+            }
         default:
             return state
     }
