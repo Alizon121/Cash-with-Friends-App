@@ -19,6 +19,10 @@ function UserDashboardPage() {
         dispatch(loadAllUserExpensesThunk())
     }, [dispatch])
 
+    const handleSettleExpense = (expenseId) => {
+        dispatch(loadAllUserExpensesThunk())
+    }
+
     // Make helper funciton to navigate to payment_due details page
     const navigatePaymentDuePage = async (id) => {
         navigate(`/expenses/${id}/payment_due`)
@@ -67,7 +71,7 @@ function UserDashboardPage() {
                                 <button>
                                     <OpenModalMenuItem
                                         itemText={"Settle"}
-                                        modalComponent={<SettleFormModal settled={participant.settled} expenseId={participant.id} amount={participant.amount.toFixed(2)}/>}
+                                        modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant.amount.toFixed(2)}/>}
                                     />
                                 </button>
                                 <button onClick={() => navigatePaymentDuePage(participant.id)}>
