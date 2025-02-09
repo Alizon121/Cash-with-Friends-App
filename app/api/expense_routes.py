@@ -310,20 +310,18 @@ def settle_expense(id):
 
     # Query the expense from the path
     select_expense = Expense.query.get(id)
-
+    print(select_expense.settled)
     # Authorization
-    if select_expense.created_by == current_user.id:
-
+    if ",".join([user.username for user in select_expense.participants if current_user.username == user.username]):
         # Get data from the request body
         data=request.get_json()
-
-        if "settled" in data:
-
+        # print("THIS IS A BOOLEAN", data["settled"]["settled"])
+        if "settled" in data["settled"]:
             # Check and make sure that the input is a Boolean
-            if isinstance(data["settled"], bool):
-                select_expense.settled = data["settled"]
-                if data["settled"]:
-                    select_expense.amount = 0 
+            if isinstance(data["settled"]["settled"], bool):
+                select_expense.settled = data["settled"]["settled"]
+                if data["settled"]["settled"]:
+                    select_expense.amount = data["settled"]["amount"]
             else:
                 return jsonify({"Error": "Please provide Boolean type"}), 400
 
