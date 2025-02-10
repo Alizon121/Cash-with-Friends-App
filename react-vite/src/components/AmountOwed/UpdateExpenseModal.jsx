@@ -9,6 +9,7 @@ function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
     const dispatch = useDispatch();
     const [description, setDescription] = useState(currentExpense.description);
     const [amount, setAmount] = useState(currentExpense.amount);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         setDescription(currentExpense.description);
@@ -21,6 +22,19 @@ function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
             amount: parseFloat(amount)
         };
 
+        const newErrors = {};
+
+        console.log(typeof amount)
+
+        if (typeof amount !== "number") {
+            newErrors.amount = "Amount must be a number!"
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors)
+            return
+        }
+
         dispatch(updateExpenseThunk(expenseId, updatedExpenseData))
             .then(() => {
                 closeModal();
@@ -32,9 +46,7 @@ function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
         <>
             <div>
                 <h1>Update Details</h1>
-                <button onClick={closeModal}>X</button>
             </div>
-
             <div>
                 <h2>FOR:</h2>
                 <p>DESCRIPTION</p>
@@ -43,17 +55,19 @@ function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
-
                 <h2>EXPENSE TOTAL:</h2>
                 <p>TOTAL</p>
                 <input
+                    type='number'
+                    min='1'
                     placeholder="New Total"
                     value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    onChange={(e) => setAmount(Number(e.target.value))}
                 />
+                {errors.amount && <p className='error'>{errors.amount}</p>}
             </div>
             <div>
-                <h4>Owes you:</h4>
+                <h2>OWES YOU:</h2>
                 {currentExpense?.participants.map((participant, index) => (
                     <div key={index}>
                     {participant}
@@ -61,7 +75,6 @@ function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
                     </div>
                 ))}
             </div>
-
             <div>
                 <button onClick={() => {
                     closeModal();
