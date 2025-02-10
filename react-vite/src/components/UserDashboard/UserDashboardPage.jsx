@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem"
 import CreateExpenseModal from "../CreateExpenseModal/CreateExpenseModal"
 import AddFriendModal from "../AddFriendModal/AddFriendModal"
@@ -68,14 +68,23 @@ function UserDashboardPage() {
                                 <div>{participant.amount.toFixed(2)}</div>
                             </span>
                             <span>
-                                <button>
+                                {
+                                participant.amount === 0 ?    
+                                <button disabled={true}>
                                     <OpenModalMenuItem
                                         itemText={"Settle"}
                                         modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant.amount.toFixed(2)}/>}
                                     />
-                                </button>
+                                </button> :
+                                 <button disabled={false}>
+                                 <OpenModalMenuItem
+                                     itemText={"Settle"}
+                                     modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant.amount.toFixed(2)}/>}
+                                 />
+                             </button> 
+                                }
                                 <button onClick={() => navigatePaymentDuePage(participant.id)}>
-                                    Details {participant.id}
+                                    Details
                                 </button>
                             </span>
                         </>
