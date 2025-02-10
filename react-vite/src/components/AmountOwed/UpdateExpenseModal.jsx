@@ -52,6 +52,15 @@ function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
                     onChange={(e) => setAmount(e.target.value)}
                 />
             </div>
+            <div>
+                <h4>Owes you:</h4>
+                {currentExpense?.participants.map((participant, index) => (
+                    <div key={index}>
+                    {participant}
+                    {currentExpense?.amount}
+                    </div>
+                ))}
+            </div>
 
             <div>
                 <button onClick={() => {

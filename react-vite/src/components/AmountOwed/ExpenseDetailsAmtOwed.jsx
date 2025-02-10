@@ -50,7 +50,6 @@ const ExpenseDetailsAmtOwed = () => {
           <div key={index}>
             {participant}
             {amount_owed[id]?.amount}
-            <button>Delete</button>
           </div>
         ))}
       </div>
