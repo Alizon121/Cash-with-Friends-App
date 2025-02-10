@@ -2,6 +2,8 @@ import { csrfFetch } from "./csrf";
 
 const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
+// Add action for loading all users -ASL
+const LOAD_ALL_USERS = 'session/loadAllUsers'
 
 const setUser = (user) => ({
   type: SET_USER,
@@ -12,6 +14,11 @@ const removeUser = () => ({
   type: REMOVE_USER
 });
 
+// Create an action creator for loading all users
+const loadAllUsers = (user) => ({
+  type: LOAD_ALL_USERS,
+
+}) 
 export const thunkAuthenticate = () => async (dispatch) => {
 	const response = await fetch("/api/auth/");
 	if (response.ok) {

@@ -35,8 +35,8 @@ def pending_expenses():
         # Query to get what expenses the user is owed
         user_is_owed = User.query.get(current_user.id).expenses
         # Error message for no user being owed something
-        if not user_is_owed:
-            return jsonify({"Message": "User is currently not owed any amount."})
+        # if not user_is_owed:
+        #     return jsonify({"Message": "User is currently not owed any amount."})
 
         for expense in user_is_owed:
             total_amount += expense.amount

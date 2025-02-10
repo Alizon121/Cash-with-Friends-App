@@ -27,7 +27,7 @@ const loadAll = (expense) => ({
 const DELETE_EXPENSE = "DELETE_EXPENSE"
 const deleteExpense = (id) => ({
     type: DELETE_EXPENSE,
-    payload: {id}
+    payload: id
 })
 
 // action for fetching expense details for payment_due page
@@ -134,7 +134,7 @@ export const amountOwedThunk = (expenseId) => async dispatch => {
 
     if (response.ok) {
         const result = await response.json()
-        console.log("Fetched Data:", result);
+        // console.log("Fetched Data:", result);
         dispatch(amountOwed(result.Expense[0]))
         return result
     }
@@ -188,9 +188,13 @@ const expenseReducer = (state={}, action) => {
             };
         }
         case DELETE_EXPENSE: {
-            const newState = {...state}
-            delete newState[action.payload.id]
-            return newState
+            const deletedExpense = state.expenses.expensesOwed?.find(expense => expense.id === action.payload);
+            return {
+                ...state,
+                expensesOwed: state.expenses.expensesOwed.filter(expense => expense.id !== action.payload),
+                totalAmountOwed: state.expenses.totalAmountOwed-(deletedExpense ? deletedExpense.amount : 0),
+                totalOwedAmount: state.expenses.totalOwedAmount-(deletedExpense ? deletedExpense.amount : 0)
+                }
         }
         default:
             return state

@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 function UserDashboardPage() {
     const user = useSelector(state => state.session)
     const expense = useSelector(state => state.expenses)
+    const expensesOwed = useSelector(state => state.expenses.expenses?.expensesOwed)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -73,15 +74,15 @@ function UserDashboardPage() {
                                 <button disabled={true}>
                                     <OpenModalMenuItem
                                         itemText={"Settle"}
-                                        modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant.amount.toFixed(2)}/>}
+                                        modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant?.amount.toFixed(2)}/>}
                                     />
                                 </button> :
                                  <button disabled={false}>
                                  <OpenModalMenuItem
                                      itemText={"Settle"}
-                                     modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant.amount.toFixed(2)}/>}
+                                     modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant?.amount.toFixed(2)}/>}
                                  />
-                             </button> 
+                             </button>
                                 }
                                 <button onClick={() => navigatePaymentDuePage(participant.id)}>
                                     Details
@@ -93,7 +94,8 @@ function UserDashboardPage() {
                 </div>
                 <div>
                     <h3>You Are Owed:</h3>
-                    {expense.expenses?.expensesOwed.map(expense => (
+                    {expensesOwed && expensesOwed.length > 0 ? 
+                        expensesOwed.map(expense => (
                         <>
                             <div>
                                 {expense.username.map(user => (
@@ -113,7 +115,8 @@ function UserDashboardPage() {
                                 ))}
                             </div>
                         </>
-                        ))}
+                        )) : <p>No expenses found</p>
+                    }
                 </div>
             </div>
         </div>
