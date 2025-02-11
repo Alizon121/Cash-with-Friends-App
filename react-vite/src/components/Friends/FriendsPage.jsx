@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { friendActions } from "../../redux";
 import "./Friends.css";
@@ -33,8 +33,8 @@ function FriendsPage() {
     fetchFriendsAndRequests();
   }, [dispatch]);
 
-  const friends = Object.values(friendsById);
-  const pendingRequests = Object.values(pendingRequestsById);
+  const friends = useMemo(() => Object.values(friendsById), [friendsById]);
+  const pendingRequests = useMemo(() => Object.values(pendingRequestsById), [pendingRequestsById]);
 
   const handleDeleteFriend = async (friendId) => {
     try {
