@@ -20,10 +20,17 @@ const ExpenseDetailsPmtDue = () => {
         return <div>No payment due for this expense</div>;
     }
 
+    const currentExpense = payment_due[id]
+
+    const formattedPrice = currentExpense?.amount.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      });
+
     return (
         <div className={Styles.container}>
             <div className={Styles.headerContainer}>
-                <h2 className={Styles.header}>Expenses</h2>
+                <h2 className={Styles.header}>Expense</h2>
                 <div onClick={() => navigate(`/expenses/${id}/comments`)} className={Styles.viewComments}>View Comments</div>
             </div>
             <div className={Styles.totalAmount}>
@@ -31,7 +38,7 @@ const ExpenseDetailsPmtDue = () => {
                     Total you owe:
                 </p>
                 <p>
-                    ${payment_due[id]?.amount}
+                    {formattedPrice}
                 </p>
             </div>
 
@@ -41,13 +48,15 @@ const ExpenseDetailsPmtDue = () => {
             <div className={Styles.oweSection}>
                 <div className={Styles.oweSectionDetails}>
                     <p>{payment_due[id]?.created_by}</p>
-                    <p className={Styles.oweAmount}>${payment_due[id]?.amount}</p>
+                    <p className={Styles.oweAmount}>{formattedPrice}</p>
                 <button className={Styles.settleButton}>Settle</button>
                 </div>
             </div>
 
             <div className={Styles.details}>
                 <p>For: {payment_due[id]?.description}</p>
+            </div>
+            <div className={Styles.details}>
                 <p>Created By: {payment_due[id]?.created_by}</p>
             </div>
 

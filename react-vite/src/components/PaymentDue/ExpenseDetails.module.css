@@ -17,14 +17,14 @@
 .headerContainer {
     display: flex;
     width: 75%;
-    max-width: 500px;
+    max-width: 750px;
     justify-content: space-between;
     align-items: center;
 }
 
 .totalAmount {
     width: 100%;
-    max-width: 500px;
+    max-width: 750px;
     background-color: #ddd;
     padding: 15px;
     border-radius: 8px;
@@ -41,13 +41,13 @@
 
 .oweSection {
     width: 50%;
-    max-width: 250px;
+    max-width: 375px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    background-color: #e0e0e0;
+    background-color: white;
     border-radius: 8px;
     margin-top: 5px;
 }
@@ -61,7 +61,7 @@
 .youOweText {
     /* border: 2px solid red; */
     width: 50%;
-    max-width: 250px;
+    max-width: 375px;
     display: flex;
     justify-content: left;
 }
@@ -73,7 +73,7 @@
 }
 
 .settleButton {
-    background-color: #5cb85c;
+    background-color: #20c997;
     max-height: 30px;
     color: white;
     border: none;
@@ -88,21 +88,28 @@
 }
 
 .details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
     background-color: #e0e0e0;
     width: 50%;
-    max-width: 250px;
+    max-width: 375px;
     padding: 10px;
     border-radius: 8px;
     margin: 5px;
 }
 
 .participants {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
     background-color: #e0e0e0;
     width: 50%;
-    max-width: 250px;
+    max-width: 375px;
     padding: 10px;
     border-radius: 8px;
-
 }
 
 .participant {

@@ -1,27 +1,29 @@
-// import styles from "./ExpenseDetails.module.css"
-// import { useParams } from 'react-router-dom'
+import styles from "./ExpenseDetails.module.css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { amountOwedThunk } from "../../redux/expense";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import OpenModalButton from "../OpenModalButton";
 import DeleteExpenseModal from "./DeleteExpenseModal";
 import UpdateExpenseModal from "./UpdateExpenseModal";
 
 const ExpenseDetailsAmtOwed = () => {
-  const dispatch = useDispatch(); // used to dispatch actions to the Redux store
+  const dispatch = useDispatch();
   const { id } = useParams();
   const [deletedExpenseId, setDeletedExpenseId] = useState(null);
   const amount_owed = useSelector((state) => state.expenses);
   const current_user = useSelector((state) => state.session);
+  const navigate = useNavigate();
 
-  // This useEffect will fetch the details of an expense when the component mounts
   useEffect(() => {
     if (id) {
       dispatch(amountOwedThunk(id));
     }
-    }, [dispatch, id, deletedExpenseId])
+  }, [dispatch, id, deletedExpenseId]);
 
+  if (!amount_owed[id]) {
+    return <div>No payments owed for this expense</div>;
+  }
 
   const handleUpdateSuccess = () => {
     if (id) {
@@ -29,54 +31,65 @@ const ExpenseDetailsAmtOwed = () => {
     }
   };
 
-  if (!amount_owed[id]) {
-    return <div>No payments owed for this expense</div>;
-  }
-
   const handleExpenseDelete = (id) => {
-    setDeletedExpenseId(id)
+    setDeletedExpenseId(id);
   };
 
   const currentExpense = amount_owed[id];
 
-  return (
-    //! What is the best way to get the user from the front end?
-    // For the purpose of displaying the user's name for 'Created By:'
+  const formattedPrice = currentExpense?.amount.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  });
 
-    <>
-      <div>
-        <h3>Total owed to you: {amount_owed[id]?.amount}</h3>
-        <p>For: {amount_owed[id]?.description}</p>
-        <p>Created By: {current_user.user.username} </p>
+  return (
+    <div className={styles.container}>
+      <div className={styles.headerContainer}>
+        <h2 className={styles.header}>Expense Details</h2>
+        <div onClick={() => navigate(`/expenses/${id}/comments`)} className={styles.viewComments}>
+          View Comments
+        </div>
       </div>
-      <div>
-        <h4>Owes you:</h4>
+
+      <div className={styles.totalAmount}>
+        <div className={styles.totalAmountLeft}>
+          <p className={styles.totalText}>Total owed to you:</p>
+          <p>${amount_owed[id]?.amount}</p>
+        </div>
+        <div className={styles.details}>
+          <p>For: {amount_owed[id]?.description}</p>
+          <p>Created By: {current_user.user.username}</p>
+        </div>
+      </div>
+
+
+      <div className={styles.owesYouSection}>
+        <p className={styles.owesYouHeader}>Owes you:</p>
         {amount_owed[id]?.participants.map((participant, index) => (
-          <div key={index}>
-            {participant}
-            {amount_owed[id]?.amount}
+          <div key={index} className={styles.participantRow}>
+            <div className={styles.participant}>
+              <p>{`${participant}`}</p>
+              <p className={styles.participantAmount}>{`${formattedPrice}`}</p>
+            </div>
+            {/* <p className={styles.participantAmount}>${participant.amount}</p> */}
           </div>
         ))}
       </div>
-      <div>
-        <div>
-          <OpenModalButton
-            buttonText="Delete Expense"
-            modalComponent={<DeleteExpenseModal expenseId={Number(id)} onDelete={() => handleExpenseDelete(id)} currentExpense={currentExpense} />}
-          />
-        </div>
-        <div>
-          <OpenModalButton
-            buttonText="Update Details"
-            modalComponent={<UpdateExpenseModal
-              expenseId={id}
-              currentExpense={currentExpense}
-              onUpdateSuccess={handleUpdateSuccess}
-            />}
-          />
-        </div>
+
+      <div className={styles.buttonContainer}>
+        <OpenModalButton
+          buttonText="Delete Expense"
+          modalComponent={<DeleteExpenseModal expenseId={Number(id)} onDelete={() => handleExpenseDelete(id)} currentExpense={currentExpense} />}
+          className={styles.deleteExpense}
+        />
+
+        <OpenModalButton
+          buttonText="Update Details"
+          modalComponent={<UpdateExpenseModal expenseId={id} currentExpense={currentExpense} onUpdateSuccess={handleUpdateSuccess} />}
+          className={styles.updateExpense}
+        />
       </div>
-    </>
+    </div>
   );
 };
 
