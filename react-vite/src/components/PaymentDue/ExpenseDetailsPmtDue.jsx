@@ -1,13 +1,14 @@
 import Styles from "./ExpenseDetails.module.css";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { paymentDueThunk } from "../../redux/expense";
 
 const ExpenseDetailsPmtDue = () => {
     const dispatch = useDispatch();
     const { id } = useParams();
     const payment_due = useSelector((state) => state.expenses.expenses);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (id) {
@@ -23,7 +24,7 @@ const ExpenseDetailsPmtDue = () => {
         <div className={Styles.container}>
             <div className={Styles.headerContainer}>
                 <h2 className={Styles.header}>Expenses</h2>
-                <div className={Styles.viewComments}>View Comments</div>
+                <div onClick={() => navigate(`/expenses/${id}/comments`)} className={Styles.viewComments}>View Comments</div>
             </div>
             <div className={Styles.totalAmount}>
                 <p className={Styles.totalText}>
