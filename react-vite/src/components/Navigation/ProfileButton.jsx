@@ -48,6 +48,21 @@ function ProfileButton() {
     closeMenu()
   }
 
+  const navigateToDashboard = (e) => {
+    e.preventDefault();
+    navigate('/users/dashboard')
+  }
+
+  const navigateToProfile = (e) => {
+    e.preventDefault();
+    navigate('/users/profile')
+  }
+
+  const navigateToFriends = (e) => {
+    e.preventDefault();
+    navigate('/friends')
+  }
+
   return (
     <>
       <button onClick={toggleMenu}>
@@ -60,7 +75,16 @@ function ProfileButton() {
             {/* Should we add links to different pages here? */}
               <li>{user.username}</li>
               <li>{user.email}</li>
+              <li>
+                <button onClick={navigateToProfile}>Profile</button>
+              </li>
+              <li>
+                <button onClick={navigateToDashboard}>Dashboard</button>
+              </li>
               <li><button onClick={navigateToComments}>User Comments</button></li>
+              <li>
+                <button onClick={navigateToFriends}>Friends</button>
+              </li>
               <li>
                 {/* Should we remove this? */}
                 <button onClick={logout}>Log Out</button>
