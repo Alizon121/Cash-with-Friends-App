@@ -1,10 +1,14 @@
 import { csrfFetch } from "./csrf";
 
+
+/*********************** Actions **************************************/
 const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
+
 // Add action for loading all users -ASL
 const LOAD_ALL_USERS = 'session/loadAllUsers'
 
+/**************************** Action Creators **************************/
 const setUser = (user) => ({
   type: SET_USER,
   payload: user
@@ -14,11 +18,14 @@ const removeUser = () => ({
   type: REMOVE_USER
 });
 
-// Create an action creator for loading all users
-const loadAllUsers = (user) => ({
+// Create an action creator for loading all users -ASL
+const loadAllUsers = (users) => ({
   type: LOAD_ALL_USERS,
+  payload: users
 
-}) 
+})
+
+/********************************* Thunk Actions **********************/
 export const thunkAuthenticate = () => async (dispatch) => {
 	const response = await fetch("/api/auth/");
 	if (response.ok) {
@@ -77,6 +84,10 @@ export const thunkLogout = () => async (dispatch) => {
   await fetch("/api/auth/logout");
   dispatch(removeUser());
 };
+
+export const thunkLoadAllUsers = () => async dispatch => {
+  const resposne = await csrfFetch(`/api/users/`)
+}
 
 const initialState = { user: null };
 

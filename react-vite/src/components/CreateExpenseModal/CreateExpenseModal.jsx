@@ -29,8 +29,8 @@ function CreateExpenseModal() {
         if (!amount) newErrors.amount = "Amount is required"
         if (amount < 0.01) newErrors.amount = "Amount must be greater than 1"
 
-        if (!forDescription) newErrors = "Description is required"
-        if (!participants) newErrors = "Provide at least one participant"
+        if (!forDescription) newErrors.forDescription = "Description is required"
+        if (!participants) newErrors.participants = "Provide at least one participant"
 
         if (Object.keys(newErrors).length > 0) { 
             setErrors(newErrors); 
@@ -61,6 +61,7 @@ function CreateExpenseModal() {
                     <input
 
                     />
+                    {errors.participants && <p className="error">{errors.participants}</p>}
                 </div>
                 <div>Amount: 
                     <input
