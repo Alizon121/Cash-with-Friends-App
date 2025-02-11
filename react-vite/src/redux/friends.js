@@ -81,7 +81,7 @@ export const createFriend = (userId, friendData) => async (dispatch) => {
 // Delete a friend
 export const deleteFriend = (friendId, userId) => async (dispatch) => {
   try {
-    const res = await csrfFetch(`/api/users/${userId}/friends/${friendId}`, {
+    const res = await csrfFetch(`/api/friends/${friendId}`, {
       method: "DELETE",
     });
     if (!res.ok) throw Error("Failed to delete friend");
