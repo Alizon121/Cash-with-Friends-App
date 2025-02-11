@@ -65,6 +65,7 @@ const ExpenseDetailsAmtOwed = () => {
 
       <div className={styles.owesYouSection}>
         <p className={styles.owesYouHeader}>Owes you:</p>
+        <div>
         {amount_owed[id]?.participants.map((participant, index) => (
           <div key={index} className={styles.participantRow}>
             <div className={styles.participant}>
@@ -74,6 +75,7 @@ const ExpenseDetailsAmtOwed = () => {
             {/* <p className={styles.participantAmount}>${participant.amount}</p> */}
           </div>
         ))}
+        </div>
       </div>
 
       <div className={styles.buttonContainer}>

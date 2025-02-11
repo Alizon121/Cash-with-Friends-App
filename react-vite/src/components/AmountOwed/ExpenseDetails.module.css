@@ -4,13 +4,13 @@
     align-items: center;
     padding: 20px;
     font-family: Arial, sans-serif;
-    max-width: 75%;
+    max-width: 50%;
     margin: auto;
 }
 
 .headerContainer {
     display: flex;
-    width: 50%;
+    width: 100%;
     max-width: 750px;
     justify-content: space-between;
     align-items: center;
@@ -68,6 +68,7 @@
     padding: 15px;
     border-radius: 8px;
     margin: 10px 0;
+    /* border: 2px solid red; */
 }
 
 .owesYouHeader {
@@ -81,7 +82,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    /* border-bottom: 1px solid #ccc; */
+    /* border: 1px solid blue; */
 }
 
 .participant {
