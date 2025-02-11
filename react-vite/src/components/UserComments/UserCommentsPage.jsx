@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { commentActions } from "../../redux";
 import CommentCard from "../CommentCard";
-import { useModal } from "../../context/Modal";
 import "./UserComments.css";
 
 function UserCommentPage() {
