@@ -18,12 +18,12 @@ const removeUser = () => ({
   type: REMOVE_USER
 });
 
-// Create an action creator for loading all users -ASL
-const loadAllUsers = (users) => ({
-  type: LOAD_ALL_USERS,
-  payload: users
+// // Create an action creator for loading all users -ASL
+// const loadAllUsers = (users) => ({
+//   type: LOAD_ALL_USERS,
+//   payload: users
 
-})
+// })
 
 /********************************* Thunk Actions **********************/
 export const thunkAuthenticate = () => async (dispatch) => {
@@ -85,9 +85,9 @@ export const thunkLogout = () => async (dispatch) => {
   dispatch(removeUser());
 };
 
-export const thunkLoadAllUsers = () => async dispatch => {
-  const resposne = await csrfFetch(`/api/users/`)
-}
+// export const thunkLoadAllUsers = () => async dispatch => {
+//   const resposne = await csrfFetch(`/api/users/`)
+// }
 
 const initialState = { user: null };
 
