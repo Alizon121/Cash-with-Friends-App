@@ -1,0 +1,68 @@
+/* Main */
+.expense-comments-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Expense Card */
+.expense-card {
+  margin-bottom: 15px;
+  background-color: lightgrey;
+  padding: 10px;
+}
+
+/* Expense Title */
+.expense-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+  margin-right: 5px;
+}
+
+/* Expense Description */
+.expense-description {
+  font-size: 18px;
+  font-weight: bold;
+  color: #FF4F03;
+}
+
+/* Comments Section */
+.comments-section {
+  margin-top: 20px;
+}
+
+.expense-comments {
+  list-style: none;
+  padding: 0;
+}
+
+/* No Comments Text */
+.no-comments-text {
+  text-align: center;
+  font-size: 16px;
+  color: #777;
+  margin-top: 20px;
+}
+
+/* Add Comment Button */
+.add-comment-btn {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.add-comment-btn button {
+  background-color: #24CEA4;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.add-comment-btn button:hover {
+  background-color: #54a58a;
+}

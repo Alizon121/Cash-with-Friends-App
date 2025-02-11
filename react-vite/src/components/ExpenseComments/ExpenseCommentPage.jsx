@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { commentActions, expenseActions, userActions } from "../../redux";
@@ -6,6 +6,7 @@ import CommentCard from "../CommentCard";
 import { useModal } from "../../context/Modal";
 import OpenModalButton from "../OpenModalButton";
 import AddCommentModal from "../AddCommentModal";
+import "./ExpenseComments.css";
 
 function ExpenseCommentPage() {
   const dispatch = useDispatch();
@@ -36,12 +37,18 @@ function ExpenseCommentPage() {
       <header className="expense-comments-header"></header>
       <div className="main-content">
 
-        {/* Comments Section */}
         <section className="comments-section">
           <h2>Comments:</h2>
-          <div className="expense-description">
-            <p>Expense: {expense ? expense.description : "Loading..."}</p>
+          <div className="expense-card">
+            <p>
+              <span className="expense-title">Expense:</span>
+              <span className="expense-description">
+                {expense ? expense.description : "Loading..."}
+              </span>
+            </p>
           </div>
+
+          {/* Comments Section */}
           <ul className="expense-comments">
             {comments.length > 0 ? (
               comments.map((comment) => {
@@ -56,14 +63,17 @@ function ExpenseCommentPage() {
           </ul>
 
           {/* Add Comment Button */}
-          <OpenModalButton
-            modalComponent={
-              <AddCommentModal
-                onClose={() => setModalContent(null)}
-                onModalClose={() => setModalContent(null)}
-              />
-            } buttonText="Add Comment"
-          />
+          <div className="add-comment-btn">
+            <OpenModalButton
+              modalComponent={
+                <AddCommentModal
+                  onClose={() => setModalContent(null)}
+                  onModalClose={() => setModalContent(null)}
+                />
+              }
+              buttonText="Add Comment"
+            />
+          </div>
         </section>
       </div>
     </div>

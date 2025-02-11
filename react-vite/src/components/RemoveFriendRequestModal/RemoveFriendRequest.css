@@ -1,0 +1,70 @@
+/* Modal Container */
+.remove-friend-modal {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal Header */
+.remove-friend-modal h3 {
+  background-color: #F26722;
+  color: white;
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 10px 10px 0 0;
+}
+
+/* Error Message */
+.error {
+  color: red;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+/* Friend Name */
+.friend-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Modal Footer: Buttons */
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Remove Button */
+.remove-button {
+  background-color: #FF4F03;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.remove-button:hover {
+  background-color: #d5561a;
+}
+
+/* Close Button */
+.close-button {
+  background-color: #A5A5A5;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.close-button:hover {
+  background-color: #8c8c8c;
+}

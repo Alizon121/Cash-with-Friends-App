@@ -3,14 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { commentActions } from "../../redux";
 import CommentCard from "../CommentCard";
 import { useModal } from "../../context/Modal";
-import OpenModalButton from "../OpenModalButton";
-import AddCommentModal from "../AddCommentModal";
+import "./UserComments.css";
 
 function UserCommentPage() {
   const dispatch = useDispatch();
   const userComments = useSelector((state) => state.comments.comments);
   const user = useSelector((state) => state.session.user);
-  const { setModalContent, setOnModalClose } = useModal();
 
   useEffect(() => {
     dispatch(commentActions.getUserComments());
@@ -32,7 +30,7 @@ function UserCommentPage() {
             alt={user?.first_name}
             className="user-avatar"
           />
-          <h2>{user?.name}</h2>
+          <h2>{user?.first_name} {user?.last_name}</h2>
           <p>Email: {user?.email}</p>
         </aside>
 
@@ -45,7 +43,7 @@ function UserCommentPage() {
                 <CommentCard key={comment.id} comment={comment} user={user} />
               ))
             ) : (
-              <p>No comments yet.</p>
+              <p className="no-comments-text">No comments yet.</p>
             )}
           </ul>
         </section>

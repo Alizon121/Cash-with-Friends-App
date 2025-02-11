@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { commentActions, userActions } from '../../redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { commentActions } from '../../redux';
+import "./CommentCard.css";
 
 const CommentCard = ({ comment, user }) => {
   const dispatch = useDispatch();
@@ -10,8 +11,8 @@ const CommentCard = ({ comment, user }) => {
   const handleEdit = () => {
       if (editing && newCommentText !== comment.comment_text) {
         dispatch(commentActions.updateComment({ ...comment, comment_text: newCommentText }));
-    }
-    setEditing(!editing);
+      }
+      setEditing(!editing);
   };
     
   const handleDelete = () => {
@@ -19,17 +20,25 @@ const CommentCard = ({ comment, user }) => {
   };
 
   return (
-    <div>
+    <div className="comment-card">
       {editing ? (
         <textarea
+          className="comment-edit-textarea"
           value={newCommentText}
           onChange={(e) => setNewCommentText(e.target.value)}
         />
       ) : (
-          <p><strong>{user.first_name}</strong> said: "<strong>{comment.comment_text}</strong>"</p>
+        <p className="comment-text">
+          <strong className="comment-author">{user.first_name}</strong> said: 
+          <span className="comment-content"> "{comment.comment_text}"</span>
+        </p>
       )}
-      <button onClick={handleEdit}>{editing ? 'Save' : 'Edit'}</button>
-      <button onClick={handleDelete}>Delete</button>
+      <div className="comment-actions">
+        <button className="btn-edit" onClick={handleEdit}>
+          {editing ? 'Save' : 'Edit'}
+        </button>
+        <button className="btn-delete" onClick={handleDelete}>Delete</button>
+      </div>
     </div>
   );
 };

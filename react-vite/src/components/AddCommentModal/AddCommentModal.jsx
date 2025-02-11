@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { commentActions } from "../../redux";
 import { useParams, useNavigate } from "react-router-dom";
+import "./AddComment.css";
 
 function AddCommentModal({ onClose }) {
     const dispatch = useDispatch();
@@ -19,15 +20,18 @@ function AddCommentModal({ onClose }) {
     };
 
   return (
-    <div>
-      <h2>Add a Comment</h2>
+    <div className="add-comment-modal">
+      <h2 className="modal-header">Create a Comment</h2>
       <textarea
+        className="comment-textarea"
         value={commentText}
         onChange={(e) => setCommentText(e.target.value)}
-        placeholder="Write your comment here"
+        placeholder="Add comment"
       />
-      <button onClick={handleSubmit}>Submit</button>
-      <button onClick={onClose}>Cancel</button>
+      <div className="modal-footer">
+        <button className="btn-create" onClick={handleSubmit}>Create</button>
+        <button className="btn-cancel" onClick={onClose}>Cancel</button>
+      </div>
     </div>
   );
 }
