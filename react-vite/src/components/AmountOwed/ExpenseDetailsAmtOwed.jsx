@@ -22,6 +22,7 @@ const ExpenseDetailsAmtOwed = () => {
     }
     }, [dispatch, id, deletedExpenseId])
 
+
   const handleUpdateSuccess = () => {
     if (id) {
       dispatch(amountOwedThunk(id));
@@ -61,7 +62,7 @@ const ExpenseDetailsAmtOwed = () => {
         <div>
           <OpenModalButton
             buttonText="Delete Expense"
-            modalComponent={<DeleteExpenseModal expenseId={Number(id)} onDelete={()=>handleExpenseDelete(id)}/>}
+            modalComponent={<DeleteExpenseModal expenseId={Number(id)} onDelete={() => handleExpenseDelete(id)} currentExpense={currentExpense} />}
           />
         </div>
         <div>
