@@ -1,8 +1,11 @@
-// react-vite/src/components/Friends/FriendsPage.jsx
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { friendActions } from "../../redux";
 import "./Friends.css";
+import RemoveFriendRequestModal from "../RemoveFriendRequestModal/RemoveFriendRequestModal";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+
+
 
 function FriendsPage() {
   const dispatch = useDispatch();
@@ -10,6 +13,8 @@ function FriendsPage() {
   const pendingRequestsById = useSelector((state) => state.friends.pendingRequests);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
 
   useEffect(() => {
     const fetchFriendsAndRequests = async () => {
@@ -37,6 +42,16 @@ function FriendsPage() {
     } catch (err) {
       setError("Failed to delete friend. Please try again.");
     }
+  };
+
+  const openModal = (request) => {
+    setSelectedRequest(request);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedRequest(null);
+    setModalOpen(false);
   };
 
   return (
@@ -71,7 +86,7 @@ function FriendsPage() {
             {pendingRequests.map((request) => (
               <div key={request.id} className="friend-card">
                 <p>
-                👤 <strong>{request.firstName}</strong> ({request.username})
+                  👤 <strong>{request.firstName}</strong> ({request.username})
                 </p>
                 <button
                   onClick={() => dispatch(friendActions.acceptFriendRequest(request.id))}
@@ -79,16 +94,25 @@ function FriendsPage() {
                 >
                   Add
                 </button>
-                <button
-                  onClick={() => dispatch(friendActions.rejectFriendRequest(request.id))}
-                  className="reject-button"
-                >
-                  Delete
-                </button>
+                <button>
+                <OpenModalMenuItem
+                modalComponent={<RemoveFriendRequestModal request={request} />}
+                itemtext="Remove-Friend-request"
+                />
+                Remove
+               </button>
               </div>
             ))}
           </div>
         </>
+      )}
+
+      {/* Modal Section */}
+      {modalOpen && selectedRequest && (
+        <RemoveFriendRequestModal
+          request={selectedRequest}
+          closeModal={closeModal}
+        />
       )}
     </div>
   );
