@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem"
 import CreateExpenseModal from "../CreateExpenseModal/CreateExpenseModal"
 import AddFriendModal from "../AddFriendModal/AddFriendModal"
@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 function UserDashboardPage() {
     const user = useSelector(state => state.session)
     const expense = useSelector(state => state.expenses)
+    const expensesOwed = useSelector(state => state.expenses.expenses?.expensesOwed)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -18,6 +19,10 @@ function UserDashboardPage() {
         //     We may need to modify the backend to have the route diaply the total amounts
         dispatch(loadAllUserExpensesThunk())
     }, [dispatch])
+
+    const handleSettleExpense = (expenseId) => {
+        dispatch(loadAllUserExpensesThunk())
+    }
 
     // Make helper funciton to navigate to payment_due details page
     const navigatePaymentDuePage = async (id) => {
@@ -64,12 +69,21 @@ function UserDashboardPage() {
                                 <div>{participant.amount.toFixed(2)}</div>
                             </span>
                             <span>
-                                <button>
+                                {
+                                participant.amount === 0 ?    
+                                <button disabled={true}>
                                     <OpenModalMenuItem
                                         itemText={"Settle"}
-                                        modalComponent={<SettleFormModal settled={participant.settled}/>}
+                                        modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant?.amount.toFixed(2)}/>}
                                     />
-                                </button>
+                                </button> :
+                                 <button disabled={false}>
+                                 <OpenModalMenuItem
+                                     itemText={"Settle"}
+                                     modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant?.amount.toFixed(2)}/>}
+                                 />
+                             </button>
+                                }
                                 <button onClick={() => navigatePaymentDuePage(participant.id)}>
                                     Details
                                 </button>
@@ -80,7 +94,8 @@ function UserDashboardPage() {
                 </div>
                 <div>
                     <h3>You Are Owed:</h3>
-                    {expense.expenses?.expensesOwed.map(expense => (
+                    {expensesOwed && expensesOwed.length > 0 ? 
+                        expensesOwed.map(expense => (
                         <>
                             <div>
                                 {expense.username.map(user => (
@@ -100,7 +115,8 @@ function UserDashboardPage() {
                                 ))}
                             </div>
                         </>
-                        ))}
+                        )) : <p>No expenses found</p>
+                    }
                 </div>
             </div>
         </div>
