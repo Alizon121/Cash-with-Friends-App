@@ -27,7 +27,7 @@ const loadAll = (expense) => ({
 const DELETE_EXPENSE = "DELETE_EXPENSE"
 const deleteExpense = (id) => ({
     type: DELETE_EXPENSE,
-    payload: {id}
+    payload: id
 })
 
 // action for fetching expense details for payment_due page
@@ -68,14 +68,17 @@ export const loadAllUserExpensesThunk = () => async dispatch => {
 
 // Make a thunk action that will settle an expense -ASL
 export const settleExpenseThunk = (settled, expenseId) => async dispatch => {
-    const response = await csrfFetch(`/api/expenses/${expenseId}`, {
-        method: 'POST',
-        body: JSON.stringify(settled)
+    const response = await csrfFetch(`/api/expenses/${expenseId}/settle`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+          },
+        body: JSON.stringify({settled})
     })
 
     if (response.ok) {
         const result = await response.json()
-        dispatch(settle)
+        dispatch(settle(result))
         return result
     }
 }
@@ -131,7 +134,7 @@ export const amountOwedThunk = (expenseId) => async dispatch => {
 
     if (response.ok) {
         const result = await response.json()
-        console.log("Fetched Data:", result);
+        // console.log("Fetched Data:", result);
         dispatch(amountOwed(result.Expense[0]))
         return result
     }
@@ -185,9 +188,13 @@ const expenseReducer = (state={}, action) => {
             };
         }
         case DELETE_EXPENSE: {
-            const newState = {...state}
-            delete newState[action.payload.id]
-            return newState
+            const deletedExpense = state.expenses.expensesOwed?.find(expense => expense.id === action.payload);
+            return {
+                ...state,
+                expensesOwed: state.expenses.expensesOwed.filter(expense => expense.id !== action.payload),
+                totalAmountOwed: state.expenses.totalAmountOwed-(deletedExpense ? deletedExpense.amount : 0),
+                totalOwedAmount: state.expenses.totalOwedAmount-(deletedExpense ? deletedExpense.amount : 0)
+                }
         }
         default:
             return state
