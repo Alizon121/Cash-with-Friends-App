@@ -25,9 +25,9 @@ const loadAll = (expense) => ({
 
 // Make an action creator for deleting an expense -ASL
 const DELETE_EXPENSE = "DELETE_EXPENSE"
-const deleteExpense = (id) => ({
+const deleteExpense = (expense) => ({
     type: DELETE_EXPENSE,
-    payload: id
+    payload: expense
 })
 
 // action for fetching expense details for payment_due page
@@ -48,6 +48,11 @@ const amountOwed = (expense) => ({
     payload: expense
 })
 
+const UPDATE_EXPENSE = "UPDATE_EXPENSE"
+const updateExpense = (expense) => ({
+    type: UPDATE_EXPENSE,
+    payload: expense
+})
 
 
 /******************* Thunk Actions *******************/
@@ -103,7 +108,6 @@ export const createExpenseThunk = (payload) => async dispatch => {
 
 // Thunk action for deleting an expense -ASL
 export const deleteExpenseThunk = (id) => async dispatch => {
-    // console.log("IJAHBFIHABSFLUHASBFLUHASFB", typeof id)
     const response = await csrfFetch(`/api/expenses/${id}`, {
         method: 'DELETE',
     })
@@ -137,6 +141,20 @@ export const amountOwedThunk = (expenseId) => async dispatch => {
         // console.log("Fetched Data:", result);
         dispatch(amountOwed(result.Expense[0]))
         return result
+    }
+}
+
+export const updateExpenseThunk = (id, updatedExpenseData) => async dispatch => {
+    const response = await csrfFetch(`/api/expenses/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedExpenseData)
+    })
+
+    if (response.ok) {
+        dispatch(updateExpense(id))
     }
 }
 
@@ -196,6 +214,13 @@ const expenseReducer = (state={}, action) => {
                 totalOwedAmount: state.expenses.totalOwedAmount-(deletedExpense ? deletedExpense.amount : 0)
                 }
         }
+        case UPDATE_EXPENSE:
+            const updatedExpenses = { ...state.expenses };
+            updatedExpenses[action.payload.id] = action.payload;
+            return {
+                ...state,
+                expenses: updatedExpenses
+            }
         default:
             return state
     }
