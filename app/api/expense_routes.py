@@ -361,7 +361,7 @@ def add_comment(id):
     new_comment = Comment(
         comment_text=comment_text,
         expense_id=expense.id,
-        user_id=current_user.id
+        user_id=current_user.id,
     )
     db.session.add(new_comment)
     db.session.commit()

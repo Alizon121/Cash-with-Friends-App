@@ -15,11 +15,8 @@ export { default as expenseReducer } from "./expense";
 export * as friendActions from "./friends"; 
 export { default as friendsReducer } from "./friends";
 
-// these aren't built yet but I assume that's what we will call them?
-// export * as paymentActions from "./payments";
-// export { default as paymentsReducer } from "./payments";
+export * as userActions from "./users";
+export { default as usersReducer } from "./users";
 
-// not entirely sure we need this one:
-// export * as userActions from "./users";
-// export { default as usersReducer } from "./users";
+
 

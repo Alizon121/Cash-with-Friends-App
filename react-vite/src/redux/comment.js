@@ -126,7 +126,6 @@ const commentsReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_COMMENTS: {
       const commentsById = action.payload.reduce((acc, comment) => {
-        console.log("COMMMEEENNNNTTTSSS: ", comment);
         acc[comment.id] = comment;
         return acc;
       }, {});

@@ -8,6 +8,7 @@ import * as sessionActions from "./redux/session";
 import * as friendActions from "./redux/friends";
 import * as commentActions from "./redux/comment";
 import * as expenseActions from "./redux/expense";
+import * as userActions from "./redux/users";
 import "./index.css";
 
 const store = configureStore();
@@ -18,6 +19,7 @@ if (import.meta.env.MODE !== "production") {
   window.friendActions = friendActions;
   window.commentActions = commentActions;
   window.expenseActions = expenseActions;
+  window.userActions = userActions;
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(

@@ -42,7 +42,7 @@ function UserCommentPage() {
           <ul className="user-comments">
             {comments.length > 0 ? (
               comments.map((comment) => (
-                <CommentCard key={comment.id} comment={comment} />
+                <CommentCard key={comment.id} comment={comment} user={user} />
               ))
             ) : (
               <p>No comments yet.</p>

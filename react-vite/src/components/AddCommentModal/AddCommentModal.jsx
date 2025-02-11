@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { commentActions } from "../../redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 function AddCommentModal({ onClose }) {
     const dispatch = useDispatch();
+    const navi = useNavigate();
     const [commentText, setCommentText] = useState("");
-      const { id } = useParams();
+    const { id } = useParams();
   
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -14,6 +15,7 @@ function AddCommentModal({ onClose }) {
       await dispatch(commentActions.createComment(id, commentData));
       setCommentText("");
       onClose();
+      navi(0);
     };
 
   return (
