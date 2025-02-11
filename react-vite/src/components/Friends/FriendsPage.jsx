@@ -31,45 +31,59 @@ function FriendsPage() {
   const friends = Object.values(friendsById);
   const pendingRequests = Object.values(pendingRequestsById);
 
+  const handleDeleteFriend = async (friendId) => {
+    try {
+      await dispatch(friendActions.deleteFriend(friendId));
+    } catch (err) {
+      setError("Failed to delete friend. Please try again.");
+    }
+  };
+
   return (
     <div className="friends-container">
-      <h1>My Friends</h1>
+      <h1>Friends</h1>
       {loading && <p>Loading friends and requests...</p>}
       {error && <p className="error-message">{error}</p>}
 
       {!loading && !error && (
         <>
           <div className="friends-section">
-            <h2>Friends List</h2>
+            <h2>Friends</h2>
             {friends.length === 0 && <p>You have no friends yet. Start adding some!</p>}
             {friends.map((friend) => (
               <div key={friend.id} className="friend-card">
                 <p>
                   👤 <strong>{friend.firstName}</strong> ({friend.username})
                 </p>
+                <button
+                  onClick={() => handleDeleteFriend(friend.id)}
+                  className="delete-button"
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>
 
           <div className="pending-requests-section">
-            <h2>Pending Friend Requests</h2>
+            <h2>Incoming Requests</h2>
             {pendingRequests.length === 0 && <p>No pending friend requests.</p>}
             {pendingRequests.map((request) => (
               <div key={request.id} className="friend-card">
                 <p>
-                  ✉️ <strong>{request.firstName}</strong> ({request.username})
+                👤 <strong>{request.firstName}</strong> ({request.username})
                 </p>
                 <button
                   onClick={() => dispatch(friendActions.acceptFriendRequest(request.id))}
                   className="accept-button"
                 >
-                  Accept
+                  Add
                 </button>
                 <button
                   onClick={() => dispatch(friendActions.rejectFriendRequest(request.id))}
                   className="reject-button"
                 >
-                  Reject
+                  Delete
                 </button>
               </div>
             ))}
