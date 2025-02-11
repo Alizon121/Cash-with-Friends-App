@@ -1,6 +1,6 @@
 // import styles from "./ExpenseDetails.module.css"
 // import { useParams } from 'react-router-dom'
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { amountOwedThunk } from "../../redux/expense";
 import { useParams } from "react-router-dom";
@@ -11,7 +11,7 @@ import UpdateExpenseModal from "./UpdateExpenseModal";
 const ExpenseDetailsAmtOwed = () => {
   const dispatch = useDispatch(); // used to dispatch actions to the Redux store
   const { id } = useParams();
-
+  const [deletedExpenseId, setDeletedExpenseId] = useState(null);
   const amount_owed = useSelector((state) => state.expenses);
   const current_user = useSelector((state) => state.session);
 
@@ -20,7 +20,7 @@ const ExpenseDetailsAmtOwed = () => {
     if (id) {
       dispatch(amountOwedThunk(id));
     }
-  }, [dispatch, id]);
+    }, [dispatch, id, deletedExpenseId])
 
   const handleUpdateSuccess = () => {
     if (id) {
@@ -31,6 +31,10 @@ const ExpenseDetailsAmtOwed = () => {
   if (!amount_owed[id]) {
     return <div>No payments owed for this expense</div>;
   }
+
+  const handleExpenseDelete = (id) => {
+    setDeletedExpenseId(id)
+  };
 
   const currentExpense = amount_owed[id];
 
@@ -57,7 +61,7 @@ const ExpenseDetailsAmtOwed = () => {
         <div>
           <OpenModalButton
             buttonText="Delete Expense"
-            modalComponent={<DeleteExpenseModal />}
+            modalComponent={<DeleteExpenseModal expenseId={Number(id)} onDelete={()=>handleExpenseDelete(id)}/>}
           />
         </div>
         <div>
