@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux"
+import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem"
 import CreateExpenseModal from "../CreateExpenseModal/CreateExpenseModal"
@@ -9,19 +9,17 @@ import { useNavigate } from "react-router-dom"
 
 function UserDashboardPage() {
     const user = useSelector(state => state.session)
-    const expense = useSelector(state => state.expenses)
-    const expensesOwed = useSelector(state => state.expenses.expenses?.expensesOwed)
+    const expense = useSelector(state => state.expenses, shallowEqual)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     useEffect(() => {
-        // Add the thunk actions for amount user owes and amount user is owed
-        //     We may need to modify the backend to have the route diaply the total amounts
         dispatch(loadAllUserExpensesThunk())
     }, [dispatch])
 
     const handleSettleExpense = (expenseId) => {
         dispatch(loadAllUserExpensesThunk())
+        // setRefreshKey((prevKey) => prevKey + 1)
     }
 
     // Make helper funciton to navigate to payment_due details page
@@ -43,6 +41,7 @@ function UserDashboardPage() {
                 <OpenModalMenuItem
                     modalComponent={<CreateExpenseModal />}
                     itemText={"Create"}
+                    
                 />
             </button>
             <button>
@@ -52,9 +51,9 @@ function UserDashboardPage() {
                 />
             </button>
             <div>
-                <div>Total Amount: {expense.expenses?.totalAmountOwed.toFixed(2)}</div>
-                <div>Amount Owed: {expense.expenses?.totalOwedAmount.toFixed(2)}</div>
-                <div>User Owes: {expense.expenses?.totalOwesAmount.toFixed(2)}</div>
+                <div>Total Amount: {expense?.totalAmountOwed?.toFixed(2)}</div>
+                <div>Amount Owed: {expense?.totalOwedAmount?.toFixed(2)}</div>
+                <div>User Owes: {expense?.totalOwesAmount?.toFixed(2)}</div>
             </div>
 
 
@@ -62,8 +61,8 @@ function UserDashboardPage() {
                 <h3>You Owe:</h3>
                 <div>
                     <div>
-                        {expense.expenses?.owesExpenses.map(participant => (
-                        <>
+                        {expense?.owesExpenses?.map(participant => (
+                        <div key={participant.id}>
                             <span>
                                 <div>{participant.createdBy}</div>
                                 <div>{participant.amount.toFixed(2)}</div>
@@ -88,18 +87,17 @@ function UserDashboardPage() {
                                     Details
                                 </button>
                             </span>
-                        </>
+                        </div>
                         ))}
                         </div>
                 </div>
                 <div>
                     <h3>You Are Owed:</h3>
-                    {expensesOwed && expensesOwed.length > 0 ? 
-                        expensesOwed.map(expense => (
-                        <>
-                            <div>
+                    {expense?.expensesOwed && expense?.expensesOwed.length > 0 ? 
+                        expense?.expensesOwed.map(expense => (
+                            <div key={expense.id}>
                                 {expense.username.map(user => (
-                                    <>  
+                                    <div key={user.id}>  
                                         <div>
                                             <div>{user}</div>
                                             <div>
@@ -111,10 +109,9 @@ function UserDashboardPage() {
                                                 Details
                                             </button>
                                         </div>       
-                                    </>
+                                    </div>
                                 ))}
                             </div>
-                        </>
                         )) : <p>No expenses found</p>
                     }
                 </div>

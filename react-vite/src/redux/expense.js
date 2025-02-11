@@ -90,6 +90,7 @@ export const settleExpenseThunk = (settled, expenseId) => async dispatch => {
 
 // Thunk action for creating an expense -ASL
 export const createExpenseThunk = (payload) => async dispatch => {
+    // console.log("APIHFPIAWHFPIAOSHF", payload)
     const response = await csrfFetch("/api/expenses/", {
         method: 'POST',
         body: JSON.stringify(payload)
@@ -163,15 +164,16 @@ export const updateExpenseThunk = (id, updatedExpenseData) => async dispatch => 
 const expenseReducer = (state={}, action) => {
     switch(action.type) {
         case LOAD_ALL_USER_EXPENSES: {
-            const expenses = action.payload
+            const expenses = action.payload 
             return {
                 ...state,
-                expenses: {
-                    ...state.expenses,
-                    ...expenses
-                }
+                ...expenses
             }
+           
         }
+        // let newState = structuredClone(state)
+        // newState =  structuredClone(expenses)
+        // return newState
         case SETTLE_EXPENSE: {
             const settledExpense = action.payload
             return {
@@ -180,12 +182,11 @@ const expenseReducer = (state={}, action) => {
             }
         }
         case CREATE_EXPENSE: {
+            const newExpense = action.payload;
             return {
                 ...state,
-                [action.payload.id]: {
-                    ...action.payload
-                }
-            }
+                ...newExpense
+            };
         }
         case PAYMENT_DUE: {
             const paymentDue = action.payload;
@@ -206,12 +207,12 @@ const expenseReducer = (state={}, action) => {
             };
         }
         case DELETE_EXPENSE: {
-            const deletedExpense = state.expenses.expensesOwed?.find(expense => expense.id === action.payload);
+            const deletedExpense = state.expenses?.expensesOwed?.find(expense => expense.id === action.payload);
             return {
                 ...state,
-                expensesOwed: state.expenses.expensesOwed.filter(expense => expense.id !== action.payload),
-                totalAmountOwed: state.expenses.totalAmountOwed-(deletedExpense ? deletedExpense.amount : 0),
-                totalOwedAmount: state.expenses.totalOwedAmount-(deletedExpense ? deletedExpense.amount : 0)
+                expensesOwed: state.expenses?.expensesOwed.filter(expense => expense.id !== action.payload),
+                totalAmountOwed: state.expenses?.totalAmountOwed-(deletedExpense ? deletedExpense.amount : 0),
+                totalOwedAmount: state.expenses?.totalOwedAmount-(deletedExpense ? deletedExpense.amount : 0)
                 }
         }
         case UPDATE_EXPENSE:
