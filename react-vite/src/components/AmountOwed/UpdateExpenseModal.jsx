@@ -27,7 +27,11 @@ function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
         console.log(typeof amount)
 
         if (typeof amount !== "number") {
-            newErrors.amount = "Amount must be a number!"
+            newErrors.amount = "Amount must be a number"
+        }
+
+        if (amount == 0) {
+            newErrors.amount = "Amount must be greater than 0"
         }
 
         if (Object.keys(newErrors).length > 0) {
