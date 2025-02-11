@@ -1,0 +1,171 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 50%;
+    margin: auto;
+}
+
+.headerContainer {
+    display: flex;
+    width: 100%;
+    max-width: 750px;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 2px solid red; */
+}
+
+.header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.totalAmount {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    max-width: 750px;
+    background-color: #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #FF4F03;
+    margin-bottom: 15px;
+    /* border: 2px solid red; */
+}
+
+.totalText {
+    color: black;
+}
+
+.details {
+    background-color: #ddd;
+    color: black;
+    width: 50%;
+    max-width: 500px;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px;
+    /* border: 2px solid green; */
+}
+
+.totalAmountLeft {
+    width: 50%;
+    /* border: 2px solid blue; */
+}
+
+.owesYouSection {
+    width: 100%;
+    max-width: 375px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    /* border: 2px solid red; */
+}
+
+.owesYouHeader {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.participantRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    /* border: 1px solid blue; */
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    justify-self: left;
+    width: 100%;
+    /* border: 2px solid red; */
+}
+
+.participantAmount {
+    font-size: 16px;
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.deleteButton {
+    background-color: #ff7043;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.deleteButton:hover {
+    background-color: #d9534f;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 750px;
+    margin-top: 15px;
+    /* border: 2px solid red; */
+}
+
+.deleteExpense {
+    background-color: #ff5722;
+    color: white;
+    padding: 12px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    width: 48%;
+    max-width: 250px;
+}
+
+.deleteExpense:hover {
+    background-color: #e64a19;
+}
+
+.updateExpense {
+    background-color: #20c997;
+    color: white;
+    padding: 12px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    width: 48%;
+    max-width: 250px;
+}
+
+.updateExpense:hover {
+    background-color: #17a589;
+}
+
+.viewComments {
+    background-color: #20c997;
+    color: white;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+    border-radius: 25px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+}
