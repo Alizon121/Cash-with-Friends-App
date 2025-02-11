@@ -31,8 +31,8 @@ const RemoveFriendRequestModal = ({ request }) => {
       <div className="modal-content">
         <h3>Remove Friend Request</h3>
         {error && <p className="error">{error}</p>}
-        <p>Are you sure you want to remove this friend request?</p>
-        <p>{request.firstName}</p>
+        <p>Are you sure you want to remove friend request?</p>
+        <p> {request.firstName} </p>
         <button onClick={handleRemoval} className="remove-button">
           Remove
         </button>
