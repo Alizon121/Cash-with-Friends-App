@@ -35,8 +35,8 @@ def pending_expenses():
         # Query to get what expenses the user is owed
         user_is_owed = User.query.get(current_user.id).expenses
         # Error message for no user being owed something
-        if not user_is_owed:
-            return jsonify({"Message": "User is currently not owed any amount."})
+        # if not user_is_owed:
+        #     return jsonify({"Message": "User is currently not owed any amount."})
 
         for expense in user_is_owed:
             total_amount += expense.amount
@@ -277,22 +277,22 @@ def update_expense(id):
                 return jsonify({"Error": "amount must be greater than $0.00"}), 403
             selected_expense.amount = data["amount"]
 
-        if "participants" in data:
-            participant_usernames = data["participants"]
+        # if "participants" in data:
+        #     participant_usernames = data["participants"]
 
-            # Query for the existing usernames
-            participants = User.query.filter(User.username.in_(participant_usernames)).all()
+        #     # Query for the existing usernames
+        #     participants = User.query.filter(User.username.in_(participant_usernames)).all()
 
-            # We need to add a validation for checking if a user exists in the database or not
-            existing_usernames = [user.username for user in participants]
+        #     # We need to add a validation for checking if a user exists in the database or not
+        #     existing_usernames = [user.username for user in participants]
 
-            # Find usernames that do not exist in the database
-            non_existent_usernames = [username for username in participant_usernames if username not in existing_usernames]
+        #     # Find usernames that do not exist in the database
+        #     non_existent_usernames = [username for username in participant_usernames if username not in existing_usernames]
 
-            if non_existent_usernames:
-                return jsonify({"Error": f"These users do not exist: {', '.join(non_existent_usernames)}"}), 400
+        #     if non_existent_usernames:
+        #         return jsonify({"Error": f"These users do not exist: {', '.join(non_existent_usernames)}"}), 400
 
-            selected_expense.participants = participants
+        #     selected_expense.participants = participants
 
         db.session.commit()
 
@@ -311,18 +311,18 @@ def settle_expense(id):
 
     # Query the expense from the path
     select_expense = Expense.query.get(id)
-
+    print(select_expense.settled)
     # Authorization
-    if select_expense.created_by == current_user.id:
-
+    if ",".join([user.username for user in select_expense.participants if current_user.username == user.username]):
         # Get data from the request body
         data=request.get_json()
-
-        if "settled" in data:
-
+        # print("THIS IS A BOOLEAN", data["settled"]["settled"])
+        if "settled" in data["settled"]:
             # Check and make sure that the input is a Boolean
-            if isinstance(data["settled"], bool):
-                select_expense.settled = data["settled"]
+            if isinstance(data["settled"]["settled"], bool):
+                select_expense.settled = data["settled"]["settled"]
+                if data["settled"]["settled"]:
+                    select_expense.amount = data["settled"]["amount"]
             else:
                 return jsonify({"Error": "Please provide Boolean type"}), 400
 

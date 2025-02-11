@@ -79,7 +79,7 @@ def remove_friend(friend_id):
 
 
 
-@friends_routes.route("/requests", methods=["GET"])
+@friends_routes.route("/requests/", methods=["GET"])
 @login_required
 def get_pending_friend_requests():
     """Retrieve all pending friend requests for the logged-in user."""
@@ -121,3 +121,10 @@ def get_all_friends():
         })
 
     return jsonify({"friends": friends_list}), 200
+
+@friends_routes.route('/')
+@login_required
+def get_friends():
+    user = current_user
+    friends = user.friends  # Assuming a many-to-many relationship between users
+    return jsonify([friend.to_dict() for friend in friends])

@@ -3,6 +3,7 @@ import { csrfFetch } from "./csrf";
 /******************************* ACTION TYPES *******************************************/
 
 export const LOAD_FRIENDS = "friends/loadFriends";
+export const LOAD_PENDING_REQUESTS = "friends/loadPendingRequests";
 export const ADD_FRIEND = "friends/addFriend";
 export const DELETE_FRIEND = "friends/deleteFriend";
 export const REMOVE_FRIEND_REQUEST = "friends/removeFriendRequest";
@@ -19,6 +20,12 @@ export const addFriend = (friend) => ({
   payload: friend,
 });
 
+
+export const loadPendingRequests = (pendingRequests) => ({
+  type: LOAD_PENDING_REQUESTS,
+  payload: pendingRequests,
+});
+
 export const removeFriend = (friendId) => ({
   type: DELETE_FRIEND,
   payload: friendId,
@@ -33,18 +40,24 @@ export const deleteRequest = (friendId) => ({
 // Get friends for a user
 export const getFriends = () => async (dispatch) => {
   try {
-    const res = await csrfFetch("/api/friends");
-    if (!res.ok) throw Error("Failed to get friends");
-    const data = await res.json();
+      const res = await csrfFetch("/api/friends/");
+      const data = await res.json();
+      dispatch(loadFriends(data.friends));
+  } catch (error) {
+      console.error("Error loading friends:", error);
+  }
+};
 
-    if (!data.friends || data.friends.length === 0) {
-      console.log(`No friends found`);
-      return;
-    }
-
-    dispatch(loadFriends(data.friends));
-  } catch (e) {
-    console.error("Error loading friends", e);
+export const thunkFetchFriends = () => async (dispatch) => {
+  const response = await fetch("/api/friends/", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+  });
+  if (response.ok) {
+      const data = await response.json();
+      dispatch(loadFriends(data.friends));
+  } else {
+      console.error("Failed to fetch friends");
   }
 };
 
@@ -68,7 +81,7 @@ export const createFriend = (userId, friendData) => async (dispatch) => {
 // Delete a friend
 export const deleteFriend = (friendId, userId) => async (dispatch) => {
   try {
-    const res = await csrfFetch(`/api/users/${userId}/friends/${friendId}`, {
+    const res = await csrfFetch(`/api/friends/${friendId}`, {
       method: "DELETE",
     });
     if (!res.ok) throw Error("Failed to delete friend");
@@ -93,10 +106,49 @@ export const removeRequest = (friendId, userId) => async (dispatch) => {
   }
 };
 
+export const getPendingRequests = () => async (dispatch) => {
+  try {
+    const res = await csrfFetch("/api/friends/requests/");
+    const data = await res.json();
+    dispatch(loadPendingRequests(data.PendingRequests));
+  } catch (error) {
+    console.error("Error loading pending requests:", error);
+  }
+};
+
+// Accept a friend request
+export const acceptFriendRequest = (friendId) => async (dispatch) => {
+  try {
+    await csrfFetch("/api/friends/", {
+      method: "PUT",
+      body: JSON.stringify({ friend_id: friendId, accept: true }),
+    });
+    dispatch(getFriends());
+    dispatch(getPendingRequests());
+  } catch (error) {
+    console.error("Error accepting friend request:", error);
+  }
+};
+
+// Reject a friend request
+export const rejectFriendRequest = (friendId) => async (dispatch) => {
+  try {
+    await csrfFetch("/api/friends/", {
+      method: "PUT",
+      body: JSON.stringify({ friend_id: friendId, accept: false }),
+    });
+    dispatch(getPendingRequests());
+  } catch (error) {
+    console.error("Error rejecting friend request:", error);
+  }
+};
+
+
 /******************************* INITIAL STATE AND REDUCER *******************************************/
 
 const initialState = {
   friends: {},
+  pendingRequests: {}, // Added this to store pending requests
 };
 
 const friendsReducer = (state = initialState, action) => {
@@ -111,6 +163,16 @@ const friendsReducer = (state = initialState, action) => {
         friends: friendsById,
       };
     }
+    case LOAD_PENDING_REQUESTS: {
+      const pendingById = action.payload.reduce((acc, request) => {
+        acc[request.id] = request;
+        return acc;
+      }, {});
+      return {
+        ...state,
+        pendingRequests: pendingById,
+      };
+    }
     case ADD_FRIEND: {
       return {
         ...state,
@@ -121,19 +183,19 @@ const friendsReducer = (state = initialState, action) => {
       };
     }
     case DELETE_FRIEND: {
-      const newfriends = { ...state.friends };
-      delete newfriends[action.payload];
+      const newFriends = { ...state.friends };
+      delete newFriends[action.payload];
       return {
         ...state,
-        friends: newfriends,
+        friends: newFriends,
       };
     }
     case REMOVE_FRIEND_REQUEST: {
-      const requests = { ...state.friends };
-      delete requests[action.payload];
+      const newPendingRequests = { ...state.pendingRequests };
+      delete newPendingRequests[action.payload];
       return {
         ...state,
-        friends: requests,
+        pendingRequests: newPendingRequests,
       };
     }
     default:

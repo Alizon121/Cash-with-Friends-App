@@ -14,14 +14,19 @@ def seed_friends():
 
     # Create Friendships
     friendships = [
-        Friend(user_id=demo.id, friend_id=marnie.id, pending_status=False),  # Accepted Friend
-        Friend(user_id=demo.id, friend_id=bobbie.id, pending_status=True),   # Pending friend request
-        Friend(user_id=marnie.id, friend_id=chillguy12.id, pending_status=False),  # Accepted Friend
-        Friend(user_id=bobbie.id, friend_id=daGuy12.id, pending_status=False),     # Accepted Friend
-        Friend(user_id=chillguy12.id, friend_id=daDude12.id, pending_status=False),  # Accepted Friend
+        # Accepted Friendships
+        Friend(user_id=demo.id, friend_id=marnie.id, pending_status=False),
+        Friend(user_id=marnie.id, friend_id=chillguy12.id, pending_status=False),
+        Friend(user_id=bobbie.id, friend_id=daGuy12.id, pending_status=False),
+        Friend(user_id=chillguy12.id, friend_id=daDude12.id, pending_status=False),
 
-        Friend(user_id=daGuy12.id, friend_id=demo.id, pending_status=True),   # Pending
-        Friend(user_id=daDude12.id, friend_id=marnie.id, pending_status=True) # Pending
+        # Pending Friend Requests Sent by Demo
+        Friend(user_id=demo.id, friend_id=bobbie.id, pending_status=True),
+        Friend(user_id=demo.id, friend_id=daDude12.id, pending_status=True),
+
+        # Pending Friend Requests Sent to Demo
+        Friend(user_id=daGuy12.id, friend_id=demo.id, pending_status=True),
+        Friend(user_id=chillguy12.id, friend_id=demo.id, pending_status=True)
     ]
 
     # Add and commit to DB

@@ -1,6 +1,6 @@
 import { csrfFetch } from "./csrf";
 
-////////////////////////////// Action Creators///////////////////////
+/***************** Action Creators *************************/
 
 // Make an action for settling/updating an expense -ASL
 const SETTLE_EXPENSE = "SETTLE_EXPENSE"
@@ -23,6 +23,13 @@ const loadAll = (expense) => ({
     payload: expense
 })
 
+// Make an action creator for deleting an expense -ASL
+const DELETE_EXPENSE = "DELETE_EXPENSE"
+const deleteExpense = (expense) => ({
+    type: DELETE_EXPENSE,
+    payload: expense
+})
+
 // action for fetching expense details for payment_due page
 // and for amount_owed
 const PAYMENT_DUE = "PAYMENT_DUE"
@@ -41,9 +48,14 @@ const amountOwed = (expense) => ({
     payload: expense
 })
 
+const UPDATE_EXPENSE = "UPDATE_EXPENSE"
+const updateExpense = (expense) => ({
+    type: UPDATE_EXPENSE,
+    payload: expense
+})
 
 
-////////////////////// Thunk Actions ////////////////////////////
+/******************* Thunk Actions *******************/
 
 // Make a thunk action for grabbing all using expense info -ASL
 export const loadAllUserExpensesThunk = () => async dispatch => {
@@ -61,28 +73,31 @@ export const loadAllUserExpensesThunk = () => async dispatch => {
 
 // Make a thunk action that will settle an expense -ASL
 export const settleExpenseThunk = (settled, expenseId) => async dispatch => {
-    const response = await csrfFetch(`/api/expenses/${expenseId}`, {
-        method: 'POST',
-        body: JSON.stringify(settled)
+    const response = await csrfFetch(`/api/expenses/${expenseId}/settle`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+          },
+        body: JSON.stringify({settled})
     })
 
     if (response.ok) {
         const result = await response.json()
-        dispatch(settle)
+        dispatch(settle(result))
         return result
     }
 }
 
-// Thunk action for creating an expense
+// Thunk action for creating an expense -ASL
 export const createExpenseThunk = (payload) => async dispatch => {
     const response = await csrfFetch("/api/expenses/", {
         method: 'POST',
         body: JSON.stringify(payload)
     })
-      
+
      if (response.ok) {
         const result = await response.json()
-        dispatch(create) 
+        dispatch(create)
         return result
     } else {
         const errorResult = await response.json()
@@ -90,7 +105,18 @@ export const createExpenseThunk = (payload) => async dispatch => {
         throw new Error("Failed to create expense")
     }
 }
-      
+
+// Thunk action for deleting an expense -ASL
+export const deleteExpenseThunk = (id) => async dispatch => {
+    const response = await csrfFetch(`/api/expenses/${id}`, {
+        method: 'DELETE',
+    })
+
+    if (response.ok) {
+        dispatch(deleteExpense(id))
+    }
+}
+
 // Fetch expense details for payment_due page
 // and for amount_owed page
 export const paymentDueThunk = (expenseId) => async (dispatch) => {
@@ -112,9 +138,24 @@ export const amountOwedThunk = (expenseId) => async dispatch => {
 
     if (response.ok) {
         const result = await response.json()
-        dispatch(amountOwed(result))
+        // console.log("Fetched Data:", result);
+        dispatch(amountOwed(result.Expense[0]))
         return result
-    } 
+    }
+}
+
+export const updateExpenseThunk = (id, updatedExpenseData) => async dispatch => {
+    const response = await csrfFetch(`/api/expenses/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedExpenseData)
+    })
+
+    if (response.ok) {
+        dispatch(updateExpense(id))
+    }
 }
 
 
@@ -160,12 +201,26 @@ const expenseReducer = (state={}, action) => {
             const amountOwed = action.payload;
             return {
                 ...state,
-                expenses: {
-                    ...state.expenses,
-                    [amountOwed.id]: amountOwed
-                }
+                ...state.expense,
+                [action.payload.id]: action.payload
             };
         }
+        case DELETE_EXPENSE: {
+            const deletedExpense = state.expenses.expensesOwed?.find(expense => expense.id === action.payload);
+            return {
+                ...state,
+                expensesOwed: state.expenses.expensesOwed.filter(expense => expense.id !== action.payload),
+                totalAmountOwed: state.expenses.totalAmountOwed-(deletedExpense ? deletedExpense.amount : 0),
+                totalOwedAmount: state.expenses.totalOwedAmount-(deletedExpense ? deletedExpense.amount : 0)
+                }
+        }
+        case UPDATE_EXPENSE:
+            const updatedExpenses = { ...state.expenses };
+            updatedExpenses[action.payload.id] = action.payload;
+            return {
+                ...state,
+                expenses: updatedExpenses
+            }
         default:
             return state
     }

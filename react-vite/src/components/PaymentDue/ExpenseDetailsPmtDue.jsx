@@ -12,12 +12,11 @@ const ExpenseDetailsPmtDue = () => {
     useEffect(() => {
         if (id) {
             dispatch(paymentDueThunk(id));
-            console.log("Test")
         }
     }, [dispatch, id]);
 
     if (!payment_due) {
-        return <div>No payment owed for this expense</div>;
+        return <div>No payment due for this expense</div>;
     }
 
     return (
@@ -39,7 +38,6 @@ const ExpenseDetailsPmtDue = () => {
                         {payment_due[id]?.participants.map((participant, index) => (
                             <div key={index}>
                                 {participant}
-                                <button>Delete</button>
                             </div>
                         ))}
                     </div>

@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 function UserDashboardPage() {
     const user = useSelector(state => state.session)
     const expense = useSelector(state => state.expenses)
+    const expensesOwed = useSelector(state => state.expenses.expenses?.expensesOwed)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -19,10 +20,21 @@ function UserDashboardPage() {
         dispatch(loadAllUserExpensesThunk())
     }, [dispatch])
 
+    const handleSettleExpense = (expenseId) => {
+        dispatch(loadAllUserExpensesThunk())
+    }
+
     // Make helper funciton to navigate to payment_due details page
     const navigatePaymentDuePage = async (id) => {
         navigate(`/expenses/${id}/payment_due`)
     }
+
+    // Make a helper function to navigate to amount_owed details page:
+    const navigateAmountOwedPage = async(id) => {
+        navigate(`/expenses/${id}/amount_owed`)
+    }
+
+
     return (
     <>
         <div>
@@ -40,9 +52,9 @@ function UserDashboardPage() {
                 />
             </button>
             <div>
-                <div>Total Amount: {expense.expenses?.totalAmountOwed}</div>
-                <div>Amount Owed: {expense.expenses?.totalOwedAmount}</div>
-                <div>User Owes: {expense.expenses?.totalOwesAmount}</div>
+                <div>Total Amount: {expense.expenses?.totalAmountOwed.toFixed(2)}</div>
+                <div>Amount Owed: {expense.expenses?.totalOwedAmount.toFixed(2)}</div>
+                <div>User Owes: {expense.expenses?.totalOwesAmount.toFixed(2)}</div>
             </div>
 
 
@@ -54,15 +66,24 @@ function UserDashboardPage() {
                         <>
                             <span>
                                 <div>{participant.createdBy}</div>
-                                <div>{participant.amount}</div>
+                                <div>{participant.amount.toFixed(2)}</div>
                             </span>
                             <span>
-                                <button>
+                                {
+                                participant.amount === 0 ?    
+                                <button disabled={true}>
                                     <OpenModalMenuItem
                                         itemText={"Settle"}
-                                        modalComponent={<SettleFormModal settled={participant.settled}/>}
+                                        modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant?.amount.toFixed(2)}/>}
                                     />
-                                </button>
+                                </button> :
+                                 <button disabled={false}>
+                                 <OpenModalMenuItem
+                                     itemText={"Settle"}
+                                     modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant?.amount.toFixed(2)}/>}
+                                 />
+                             </button>
+                                }
                                 <button onClick={() => navigatePaymentDuePage(participant.id)}>
                                     Details
                                 </button>
@@ -70,6 +91,32 @@ function UserDashboardPage() {
                         </>
                         ))}
                         </div>
+                </div>
+                <div>
+                    <h3>You Are Owed:</h3>
+                    {expensesOwed && expensesOwed.length > 0 ? 
+                        expensesOwed.map(expense => (
+                        <>
+                            <div>
+                                {expense.username.map(user => (
+                                    <>  
+                                        <div>
+                                            <div>{user}</div>
+                                            <div>
+                                                {(expense.amount/((expense.username).length)).toFixed(2)}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button onClick={() => navigateAmountOwedPage(expense.id)}>
+                                                Details
+                                            </button>
+                                        </div>       
+                                    </>
+                                ))}
+                            </div>
+                        </>
+                        )) : <p>No expenses found</p>
+                    }
                 </div>
             </div>
         </div>
