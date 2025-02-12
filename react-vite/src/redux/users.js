@@ -19,8 +19,6 @@ export const getUsers = () => async (dispatch) => {
     const res = await csrfFetch('/api/users/');
     if (!res.ok) throw Error("Failed to get users");
       const data = await res.json();
-      console.log('DAAATTAAAAA: ', data);
-
     dispatch(loadUsers(data.users));
   } catch (e) {
     console.error("Error loading users", e);
@@ -36,7 +34,6 @@ const initialState = {
 const usersReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_USERS: {
-          console.log('ACTION IN THE REDUCER:', action);
           if (!Array.isArray(action.payload)) {
             console.error("Expected array but got:", action.payload);
             return state;

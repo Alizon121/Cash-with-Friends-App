@@ -23,10 +23,10 @@ function ExpenseCommentPage() {
   }, [dispatch, expenseId]);
 
   const expensesOwed = useSelector(
-    (state) => state.expenses?.expenses?.expensesOwed || []
+    (state) => state.expenses?.expensesOwed || []
   );
   const owesExpenses = useSelector(
-    (state) => state.expenses?.expenses?.owesExpenses || []
+    (state) => state.expenses?.owesExpenses || []
   );
   const allExpenses = [...expensesOwed, ...owesExpenses];
   const expense = allExpenses.find((expense) => expense.id === expenseId);
