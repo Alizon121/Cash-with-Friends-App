@@ -4,6 +4,7 @@ import { createExpenseThunk } from "../../redux/expense";
 import { useModal } from "../../context/Modal";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import "./CreateExpense.css"
 
 function CreateExpenseModal() {
     const [amount, setAmount] = useState(Number(0).toFixed(2))
@@ -63,51 +64,53 @@ function CreateExpenseModal() {
         }
     }
     return (
-        <>
+        <div className="create_expense_container">
             <h2>Create an Expense</h2>
-            <form onSubmit={handleSubmit}>
-                <div>Invite Usernames: 
-                    <input
-                    type="text"
-                        value={selectedFriends}
-                        onChange={(e) => setSelectedFriends(e.target.value)}
-                    />
-                    {errors.selectedFriends && <p className="error">{errors.selectedFriends}</p>}
-                </div>
-                <div>Amount: 
-                    <input
-                        type="number"
-                        min="1.00"
-                        value={amount}
-                        onChange={e => setAmount(e.target.value)}
-                    />
-                    {errors.amount && <p className="error">{errors.amount}</p>}
-                </div>
-                <div>
-                    For: 
-                    <input
-                        type="text"
-                        value={forDescription}
-                        onChange={e => setForDescription(e.target.value)}
-                    />
-                    {errors.forDescription && <p className="error">{errors.forDescription}</p>}
-                </div>
-                <div>Date: {`${month}/${day}/${year}`}</div>
-                <div>
-                    Comment:
-                    <input
-                        type="text"
-                        value={comment}
-                        onChange={e => setComment(e.target.value)}
-                    />     
-                </div>
-                {errors.forDescription && <p className="error">{errors.forDescription}</p>}
-                <div className="create_expense_buttons">
-                    <button type="submit">Create</button>
-                    <button type="button" onClick={closeModal}>Cancel</button>
-                </div>
+            <form className="create_expense_form_container" onSubmit={handleSubmit}>
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Add Usernames"
+                            value={selectedFriends}
+                            onChange={(e) => setSelectedFriends(e.target.value)}
+                        />
+                        {errors.selectedFriends && <p className="error">{errors.selectedFriends}</p>}
+                    </div>
+                    <div> 
+                        <input
+                            type="number"
+                            placeholder="Amount"
+                            min="1.00"
+                            value={amount}
+                            onChange={e => setAmount(e.target.value)}
+                        />
+                        {errors.amount && <p className="error">{errors.amount}</p>}
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Add Comment"
+                            value={comment}
+                            onChange={e => setComment(e.target.value)}
+                        />     
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="What is this for?"
+                            value={forDescription}
+                            onChange={e => setForDescription(e.target.value)}
+                        />
+                        {errors.forDescription && <p className="error">{errors.forDescription}</p>}
+                    </div>
+                    <div id="create_expense_form_date">Date: {`${month}/${day}/${year}`}</div>
+                    {/* {errors.forDescription && <p className="error">{errors.forDescription}</p>} */}
+                    <div className="create_expense_buttons">
+                        <button id="create_expense_submit_button" type="submit">Create</button>
+                        <button id="create_expense_cancel_button" type="button" onClick={closeModal}>Cancel</button>
+                    </div>
             </form>
-        </>
+        </div>
     )
 }
 
