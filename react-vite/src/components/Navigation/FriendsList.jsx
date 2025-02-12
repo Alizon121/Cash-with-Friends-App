@@ -26,6 +26,7 @@ const FriendsList = () => {
   }
 
   return (
+<<<<<<< HEAD
     <div className={styles.friendsListContainer}>
       <div className={styles.friendsHeader}>
         <h3>FRIENDS</h3>
@@ -39,6 +40,16 @@ const FriendsList = () => {
           <li key={friend.id} className={styles.friendItem}>
             <FaUserCircle className={styles.profileIcon} />
             <span className={styles.friendName}>{friend.username}</span>
+=======
+    <div className="friends-list">
+      <h3>Friends</h3> <button> + </button>
+      <ul>
+        {friends.map((friend) => (
+          <li key={friend.id}>
+            <p>
+            👤 <strong>{friend.username}</strong>
+            </p>
+>>>>>>> eb5dcc6 (changed some things around)
           </li>
         ))}
       </ul>
