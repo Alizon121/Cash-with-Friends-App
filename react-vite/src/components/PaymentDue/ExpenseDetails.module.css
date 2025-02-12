@@ -16,7 +16,7 @@
 
 .headerContainer {
     display: flex;
-    width: 75%;
+    width: 100%;
     max-width: 750px;
     justify-content: space-between;
     align-items: center;

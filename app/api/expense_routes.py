@@ -130,7 +130,7 @@ def amount_user_owes(id):
             "description": expense_owes.description,
             "amount": (expense_owes.amount/get_num_participants()),
             "settled": expense_owes.settled,
-            "participants": get_participants()
+            "participants": get_participants(),
         }
 
         print("EXEPNSE OWNER IS:", owe_data["created_by"])

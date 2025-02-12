@@ -191,12 +191,13 @@ const expenseReducer = (state={}, action) => {
             const paymentDue = action.payload;
             return {
                 ...state,
-                expenses: {
-                    ...state.expenses,
-                    [paymentDue.id]: paymentDue
+                ...paymentDue
+                // ...state,
+                // expenses: {
+                //     ...state.expenses,
+                //     [paymentDue.id]: paymentDue
                 }
             };
-        }
         case AMOUNT_OWED: {
             const amountOwed = action.payload;
             return {

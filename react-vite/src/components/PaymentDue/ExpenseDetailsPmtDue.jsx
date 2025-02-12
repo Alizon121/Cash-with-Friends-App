@@ -1,18 +1,20 @@
 import Styles from "./ExpenseDetails.module.css";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate} from "react-router-dom";
+import { useState } from "react";
 import { paymentDueThunk } from "../../redux/expense";
 
 const ExpenseDetailsPmtDue = () => {
     const dispatch = useDispatch();
     const { id } = useParams();
-    const payment_due = useSelector((state) => state.expenses.expenses);
+    const payment_due = useSelector((state) => state.expenses?.expenses?.owesExpenses);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (id) {
-            dispatch(paymentDueThunk(id));
+            dispatch(paymentDueThunk(id)).then(() => setLoading(false));
         }
     }, [dispatch, id]);
 
@@ -20,7 +22,16 @@ const ExpenseDetailsPmtDue = () => {
         return <div>No payment due for this expense</div>;
     }
 
-    const currentExpense = payment_due[id]
+    console.log(id)
+    console.log(payment_due)
+
+    // if (loading) {
+    //     return <div>Loading...</div>
+    // }
+
+    const currentExpense = payment_due.find(expense => expense.id === Number(id));
+
+    console.log(currentExpense)
 
     const formattedPrice = currentExpense?.amount.toLocaleString('en-US', {
         style: 'currency',
@@ -47,22 +58,22 @@ const ExpenseDetailsPmtDue = () => {
                 </div>
             <div className={Styles.oweSection}>
                 <div className={Styles.oweSectionDetails}>
-                    <p>{payment_due[id]?.created_by}</p>
+                    <p>{currentExpense[id]?.created_by}</p>
                     <p className={Styles.oweAmount}>{formattedPrice}</p>
                 <button className={Styles.settleButton}>Settle</button>
                 </div>
             </div>
 
             <div className={Styles.details}>
-                <p>For: {payment_due[id]?.description}</p>
+                <p>For: {currentExpense?.description}</p>
             </div>
             <div className={Styles.details}>
-                <p>Created By: {payment_due[id]?.created_by}</p>
+                <p>Created By: {currentExpense?.createdBy}</p>
             </div>
 
             <div className={Styles.participants}>
                 <p>Other Participants:</p>
-                {payment_due[id]?.participants.map((participant, index) => (
+                {currentExpense?.participants.map((participant, index) => (
                     <div key={index} className={Styles.participant}>
                         {participant}
                     </div>
