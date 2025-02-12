@@ -29,7 +29,7 @@ function AddCommentModal({ onClose }) {
         placeholder="Add comment"
       />
       <div className="modal-footer">
-        <button className="btn-create" onClick={handleSubmit}>Create</button>
+        <button className="btn-add" onClick={handleSubmit}>Add</button>
         <button className="btn-cancel" onClick={onClose}>Cancel</button>
       </div>
     </div>
