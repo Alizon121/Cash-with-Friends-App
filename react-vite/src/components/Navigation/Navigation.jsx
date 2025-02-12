@@ -1,69 +1,60 @@
+import styles from "./Navigation.module.css";
 import { NavLink, useNavigate } from "react-router-dom";
-import ProfileButton from "./ProfileButton";
+import ProfileButton from "./ProfileButton"; // Import the ProfileButton component
 import { useSelector } from "react-redux";
 import LoginFormModal from "../LoginFormModal";
-import "./Navigation.css";
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import { thunkLogin, thunkLogout } from "../../redux/session";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 
 function Navigation() {
-  const [errors, setErrors] = useState()
-  const sessionUser = useSelector(state => state.session.user)
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const [errors, setErrors] = useState();
+  const sessionUser = useSelector((state) => state.session.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleDemoUser = async () => {
-    // e.preventDefault();
-    const demoEmail = 'demo@aa.io'
-    const demoPassword = 'password'
+    const demoEmail = "demo@aa.io";
+    const demoPassword = "password";
 
-    setErrors({})
+    setErrors({});
     return dispatch(thunkLogin({ email: demoEmail, password: demoPassword }))
-    // .then(closeModal)
-    .catch(async (res) => {
-            const data = await res.json();
-            if (data && data.errors) setErrors(data.errors);
-            else setErrors({general: "The demo login failed. Please try again later"})
-        }
-        );
-}
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) setErrors(data.errors);
+        else setErrors({ general: "The demo login failed. Please try again later" });
+      });
+  };
 
-const logout = async (e) => {
-  e.preventDefault();
-  await dispatch(thunkLogout());
-  navigate("/")
-};
+  const logout = async (e) => {
+    e.preventDefault();
+    await dispatch(thunkLogout());
+    navigate("/");
+  };
 
   return (
-    <>
-        <div>
-          <li>
-            <NavLink to="/">Cash with Friends</NavLink>
-          </li>
+    <nav className={styles.navbar}>
+      <div className={styles.logo}>
+        <NavLink to="/">Cash with Friends</NavLink>
+      </div>
+      {sessionUser ? (
+        <div className={styles.navRight}>
+          <button onClick={logout} className={styles.logoutButton}>Logout</button>
+          <div className={styles.profile}>
+            <ProfileButton />  {/* Render ProfileButton instead of FaUserCircle */}
+            <span>{sessionUser.username}</span>
+          </div>
         </div>
-    { sessionUser ? ( 
-      <ul>
-        <button onClick={logout}>Logout</button>
-        <li>
-          <ProfileButton />
-        </li>
-      </ul>
       ) : (
-        <div>
-          <button>
-            <OpenModalMenuItem
-              itemText={"Login"}
-              modalComponent={<LoginFormModal/>}
-            />
+        <div className={styles.authButtons}>
+          <button className={styles.authButton}>
+            <OpenModalMenuItem itemText={"Login"} modalComponent={<LoginFormModal />} />
           </button>
-          <button onClick={handleDemoUser}>Demo</button>
-          
+          <button onClick={handleDemoUser} className={styles.demoButton}>Demo</button>
         </div>
-      )
-    }
-    </>
+      )}
+    </nav>
   );
 }
 

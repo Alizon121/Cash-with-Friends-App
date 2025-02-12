@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { createExpenseThunk } from "../../redux/expense";
 import { useModal } from "../../context/Modal";
 import { useDispatch } from "react-redux";
@@ -8,12 +9,29 @@ function CreateExpenseModal() {
     const [amount, setAmount] = useState(Number(0).toFixed(2))
     const [forDescription, setForDescription] =useState("")
     const [comment, setComment] = useState("")
-    const [participants, setParticipants] = useState(null)
+    const [selectedValue, setSelectedValue] = useState([])
     const [errors, setErrors] = useState({})
+    const [selectedFriends, setSelectedFriends] = useState([])
+    const friends = useSelector(state => state.friends)
     const dispatch = useDispatch()
     const {closeModal} = useModal()
     const navigate = useNavigate()
-    
+    const usernames = Object.values(friends.friends).map(user => user.username)
+
+    // Add logic for selecting participants
+    const handleChange = (event) =>  {
+        const options = event.target.options;
+        const selectedValues = [];
+        for (let i = 0, l = options.length; i < l; i++) {
+            if (options[i].selected) {
+                selectedValues.push(options[i].value);
+            }
+        }
+    setSelectedFriends(selectedValues);
+    // console.log(selectedValues);
+    }
+
+
     // Date logic -ASL
     const now = new Date(Date.now());
     // Get individual components
@@ -30,7 +48,7 @@ function CreateExpenseModal() {
         if (amount < 0.01) newErrors.amount = "Amount must be greater than 1"
 
         if (!forDescription) newErrors.forDescription = "Description is required"
-        if (!participants) newErrors.participants = "Provide at least one participant"
+        if (!selectedValue) newErrors.selectedFriends = "Provide at least one friend"
 
         if (Object.keys(newErrors).length > 0) { 
             setErrors(newErrors); 
@@ -38,19 +56,21 @@ function CreateExpenseModal() {
         }
 
         const payload = {
-            amount: amount,
+            amount: Number(amount),
             description: forDescription,
             date: `${month}/${day}/${year}`,
-            participants: participants,
-            settled: false
+            participants: selectedFriends
         }
 
         try {
             await dispatch(createExpenseThunk(payload))
-            navigate("/users/dashboard")
+            setAmount(0)
+            setForDescription("")
+            setSelectedValue("")
+            navigate("/")
             closeModal()
         } catch (e) {
-            console.error("Unable to create the expense")
+            console.error("Unable to create the expense", e)
         }
     }
     return (
@@ -58,10 +78,18 @@ function CreateExpenseModal() {
             <h2>Create an Expense</h2>
             <form onSubmit={handleSubmit}>
                 <div>Invite: 
-                    <input
-
-                    />
-                    {errors.participants && <p className="error">{errors.participants}</p>}
+                    <select
+                        onChange={handleChange}
+                        value={selectedFriends}
+                        multiple
+                    > 
+                        {usernames ? usernames.map((username, index) => (
+                            <option key={index} value={username}>{username}</option>
+                        )): 
+                            <option>Add friends to create an expense</option>
+                        }
+                    </select>
+                    {errors.selectedFriends && <p className="error">{errors.selectedFriends}</p>}
                 </div>
                 <div>Amount: 
                     <input

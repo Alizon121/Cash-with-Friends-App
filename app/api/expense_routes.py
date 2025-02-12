@@ -194,6 +194,8 @@ def add_expense():
     # Reassign the choices attribute from the ExpenseForm with a query
     form.participants.choices = [(user.username, user.username) for user in User.query.all()]
 
+    # Manually obtain the csrf-token from cookies
+    form['csrf_token'].data = request.cookies['csrf_token']
 
     if form.validate_on_submit():
         try:
@@ -224,7 +226,6 @@ def add_expense():
                 }), 201
         except Exception as e:
             return jsonify({"error": str(e)}), 400
-
     return jsonify(form.errors), 403
 
 @expense_routes.route("/<int:id>", methods=["DELETE"])

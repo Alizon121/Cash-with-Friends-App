@@ -49,7 +49,6 @@ function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
     <div className={styles.modal}>
       <div className={styles.header}>
         <h1 className={styles.title}>Update Details</h1>
-        <button className={styles.close} onClick={closeModal}>X</button>
       </div>
       <div className={styles.section}>
         <h2 className={styles["section-title"]}>FOR:</h2>
