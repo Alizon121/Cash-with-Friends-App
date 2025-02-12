@@ -1,6 +1,6 @@
 .create_expense_container {
     width: 400px;
-    height: 375px;
+    height: 415px;
 }
 
 .create_expense_container h2 {
@@ -53,6 +53,8 @@
 
 #create_expense_cancel_button {
     background-color: #FF4F03;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .create_expense_buttons button:hover {

@@ -13,11 +13,14 @@ function CreateExpenseModal() {
     const [errors, setErrors] = useState({})
     const [selectedFriends, setSelectedFriends] = useState([])
     const currentUser = useSelector(state => state.session.user)
+    const users = useSelector(state => state.users.users)
+    const usernames = Object.values(users).map(user => user.username)
     const dispatch = useDispatch()
     const {closeModal} = useModal()
     const navigate = useNavigate()
     const regex = /^(\w+(,\s)?)*$/;
 
+    
     // Date logic -ASL
     const now = new Date(Date.now());
     // Get individual components
@@ -28,18 +31,27 @@ function CreateExpenseModal() {
     // Logic for validations and submission
     const handleSubmit = async (e) => {
         e.preventDefault()
-
+        
         const newErrors = {}
-
+        
+        // Amount validations
         if (!amount) newErrors.amount = "Amount is required"
         if (amount < 1.00) newErrors.amount = "Amount must be greater than 1"
-
+        
+        // Description validations
         if (!forDescription) newErrors.forDescription = "Description is required"
         if (!selectedFriends) newErrors.selectedFriends = "Provide at least one friend"
-
+        
+        // Particiipants validations (selectedFriends)
         if (selectedFriends.includes(currentUser.username)) newErrors.selectedFriends = "Current user cannot be part of this expense"
         if (!regex.test(selectedFriends)) newErrors.selectedFriends = "Usernames must be separated by ', '"
+        
+        selectedFriends.split(", ").map(element => 
+            {if (!usernames.includes(element)) newErrors.selectedFriends = "Please provide a valid username"}
+        )
 
+        // if (selectedFriends.split(", ").filter(element => console.log(usernames.includes(element)))) {
+        // }
         if (Object.keys(newErrors).length > 0) { 
             setErrors(newErrors); 
             return; 
