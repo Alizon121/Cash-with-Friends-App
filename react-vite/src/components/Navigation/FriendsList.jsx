@@ -25,15 +25,12 @@ const FriendsList = () => {
 
   return (
     <div className="friends-list">
-      <h3>Friends</h3>
+      <h3>Friends</h3> <button> + </button>
       <ul>
         {friends.map((friend) => (
           <li key={friend.id}>
             <p>
-              <strong>{friend.username}</strong> ({friend.email})
-            </p>
-            <p>
-              {friend.firstName} {friend.lastName}
+            👤 <strong>{friend.username}</strong>
             </p>
           </li>
         ))}
