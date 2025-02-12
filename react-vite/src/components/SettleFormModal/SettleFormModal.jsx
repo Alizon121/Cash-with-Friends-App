@@ -30,11 +30,14 @@ function SettleFormModal({onSettle, settled, expenseId, amount}) {
 
     return (
         <div className="settle_form_container">
-            <h2>Settle</h2>
-            <p>Pay ${amount}</p>
-            <div>
-                <button id="settle_button" onClick={handleSettle}>Save</button> 
-                <button id="cancel_settle_button" onClick={closeModal}>Cancel</button>
+            <h2 id="settle_form_header">Settle</h2>
+            <div className="settle_form_pay_buttons_container">
+                    <p id="settle_form_pay">Select "Save" to pay amount</p>
+                    <li id="settle_form_amount">Pending Amount: ${amount}</li>
+                <div className="settle_form_button_container">
+                    <button id="settle_button" onClick={handleSettle}>Save</button> 
+                    <button id="cancel_settle_button" onClick={closeModal}>Cancel</button>
+                </div>
             </div>
         </div>
     )

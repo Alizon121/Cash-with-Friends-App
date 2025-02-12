@@ -32,32 +32,40 @@ function LoginFormModal() {
   };
 
   return (
-    <>
-      <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        {errors.email && <p>{errors.email}</p>}
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        {errors.password && <p>{errors.password}</p>}
-        <button type="submit">Log In</button>
+    <div className="login_form">
+      <div id="login_header">
+        <h2>Log In</h2>
+      </div>
+      <p id="sub_header_login">Sign in or create a new account</p>
+      <form className="login_form_container" onSubmit={handleSubmit}>
+          <label>
+            <input
+              id="login_email_input"
+              type="text"
+              value={email}
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </label>
+          {errors.email && <p>{errors.email}</p>}
+          <label>
+            <input
+            id="login_password_input"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </label>
+          {errors.password && <p>{errors.password}</p>}
+        <div className="login_form_button">
+          <button type="submit">Log In</button>
+        </div>
+        <a id="login_create_new_account" onClick={closeModal}>Create New Account</a>
       </form>
-    </>
+    </div>
   );
 }
 
