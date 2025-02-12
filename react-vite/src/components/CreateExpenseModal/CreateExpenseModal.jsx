@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { createExpenseThunk } from "../../redux/expense";
 import { useModal } from "../../context/Modal";
@@ -9,28 +9,13 @@ function CreateExpenseModal() {
     const [amount, setAmount] = useState(Number(0).toFixed(2))
     const [forDescription, setForDescription] =useState("")
     const [comment, setComment] = useState("")
-    const [selectedValue, setSelectedValue] = useState([])
     const [errors, setErrors] = useState({})
     const [selectedFriends, setSelectedFriends] = useState([])
-    const friends = useSelector(state => state.friends)
+    const currentUser = useSelector(state => state.session.user)
     const dispatch = useDispatch()
     const {closeModal} = useModal()
     const navigate = useNavigate()
-    const usernames = Object.values(friends.friends).map(user => user.username)
-
-    // Add logic for selecting participants
-    const handleChange = (event) =>  {
-        const options = event.target.options;
-        const selectedValues = [];
-        for (let i = 0, l = options.length; i < l; i++) {
-            if (options[i].selected) {
-                selectedValues.push(options[i].value);
-            }
-        }
-    setSelectedFriends(selectedValues);
-    // console.log(selectedValues);
-    }
-
+    const regex = /^(\w+(,\s)?)*$/;
 
     // Date logic -ASL
     const now = new Date(Date.now());
@@ -39,16 +24,20 @@ function CreateExpenseModal() {
     const day = String(now.getDate()).padStart(2, '0');
     const year = now.getFullYear();
     
+    // Logic for validations and submission
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         const newErrors = {}
 
         if (!amount) newErrors.amount = "Amount is required"
-        if (amount < 0.01) newErrors.amount = "Amount must be greater than 1"
+        if (amount < 1.00) newErrors.amount = "Amount must be greater than 1"
 
         if (!forDescription) newErrors.forDescription = "Description is required"
-        if (!selectedValue) newErrors.selectedFriends = "Provide at least one friend"
+        if (!selectedFriends) newErrors.selectedFriends = "Provide at least one friend"
+
+        if (selectedFriends.includes(currentUser.username)) newErrors.selectedFriends = "Current user cannot be part of this expense"
+        if (!regex.test(selectedFriends)) newErrors.selectedFriends = "Usernames must be separated by ', '"
 
         if (Object.keys(newErrors).length > 0) { 
             setErrors(newErrors); 
@@ -59,14 +48,14 @@ function CreateExpenseModal() {
             amount: Number(amount),
             description: forDescription,
             date: `${month}/${day}/${year}`,
-            participants: selectedFriends
+            participants: selectedFriends.split(", ")
         }
 
         try {
             await dispatch(createExpenseThunk(payload))
             setAmount(0)
             setForDescription("")
-            setSelectedValue("")
+            setSelectedFriends("")
             navigate("/")
             closeModal()
         } catch (e) {
@@ -77,18 +66,12 @@ function CreateExpenseModal() {
         <>
             <h2>Create an Expense</h2>
             <form onSubmit={handleSubmit}>
-                <div>Invite: 
-                    <select
-                        onChange={handleChange}
+                <div>Invite Usernames: 
+                    <input
+                    type="text"
                         value={selectedFriends}
-                        multiple
-                    > 
-                        {usernames ? usernames.map((username, index) => (
-                            <option key={index} value={username}>{username}</option>
-                        )): 
-                            <option>Add friends to create an expense</option>
-                        }
-                    </select>
+                        onChange={(e) => setSelectedFriends(e.target.value)}
+                    />
                     {errors.selectedFriends && <p className="error">{errors.selectedFriends}</p>}
                 </div>
                 <div>Amount: 
