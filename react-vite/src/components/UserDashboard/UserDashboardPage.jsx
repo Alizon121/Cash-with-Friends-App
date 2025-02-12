@@ -6,6 +6,7 @@ import AddFriendModal from "../AddFriendModal/AddFriendModal"
 import { loadAllUserExpensesThunk } from "../../redux/expense"
 import SettleFormModal from "../SettleFormModal/SettleFormModal"
 import { useNavigate } from "react-router-dom"
+import { getUsers } from "../../redux/users"
 
 function UserDashboardPage() {
     const user = useSelector(state => state.session)
@@ -13,7 +14,9 @@ function UserDashboardPage() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
+    
     useEffect(() => {
+        dispatch(getUsers())
         dispatch(loadAllUserExpensesThunk())
     }, [dispatch])
 
