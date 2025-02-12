@@ -1,0 +1,150 @@
+/* Header styling */
+
+._mainContent_8b3gf_16 .dashboard_header_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.dashboard_create_add_buttons_container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboard_create_add_buttons_container button {
+    list-style: none;
+    height: 35px;
+    width: 85px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+}
+
+.dashboard_create_add_buttons_container button:hover {
+    cursor: pointer;
+}
+
+#dashboard_create_expense_button {
+    background-color: #24CEA4;
+}
+
+#dashboard_add_friend_button {
+    background-color: #FF4F03;
+}
+
+/* Sub-header Styling */
+
+.dashboard_expenses_summary_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: rgb(215, 215, 215);
+    height: 75px;
+}
+
+/* Body Styling */
+.dashboard_body_titles {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    font-size: 24px;
+}
+
+.dashboard_owe_and_owed_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around
+}
+
+/* Dashboard Body: You Owe Container */
+.dashboard_owe_and_owed_container .dashboard_you_owe_container {
+    width: 300px;
+}
+
+.dashboard_body_created_amount {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.dashboard_settle_details_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+
+.dashboard_settle_details_container button{
+    height: 30px;
+    width: 90px;
+    border: none;
+    list-style: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#dashboard_settle_button {
+    background-color: #24CEA4;
+}
+
+#dashboard_you_owe_details_button {
+    background-color: #FF4F03;
+}
+
+/* Dashboard Body: You Are Owed */
+.dashboard_you_are_owed_container {
+    width: 300px;
+}
+
+/* .dashboard_you_are_owed_info_container {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+} */
+
+/* .dashboard_you_are_owed_user_amount_details {
+    display: flex;
+} */
+
+.dashboard_you_are_owed_user_expenses {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.dashboard_you_are_owed_details_container {
+    padding-bottom: 20px;
+}
+
+.dashboard_you_are_owed_details_container button{
+    background-color: #24CEA4;
+    height: 30px;
+    width: 90px;
+    border: none;
+    list-style: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.divider {
+        display: flex;
+        width: 2px;
+        background-color: rgb(215, 215, 215); /* Change color as needed */
+
+}
