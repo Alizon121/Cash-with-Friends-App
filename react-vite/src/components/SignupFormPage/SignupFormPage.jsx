@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { thunkSignup } from "../../redux/session";
+// import { getUsers } from "../../redux/users";
+import { useModal } from "../../context/Modal";
 import "./SignupForm.css" 
 
 function SignupFormPage() {
@@ -16,7 +18,10 @@ function SignupFormPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
 
-  // console.log("Sessionuser", sessionUser)
+  // useEffect(() => {
+  //   dispatch(getUsers()) 
+  // }, [dispatch])
+
   if (sessionUser) return <Navigate to="/users/dashboard" replace={true} />;
 
   const handleSubmit = async (e) => {
