@@ -22,9 +22,9 @@ const ExpenseDetailsPmtDue = () => {
         return <div>No payment due for this expense</div>;
     }
 
-    // if (loading) {
-    //     return <div>Loading...</div>
-    // }
+    if (loading) {
+        return <div>Loading...</div>
+    }
 
     // const currentExpense = payment_due.find(expense => expense.id === Number(id));
 
