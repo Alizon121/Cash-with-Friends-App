@@ -66,3 +66,9 @@
 #login_create_new_account:hover{
     cursor: pointer;
 }
+
+.error {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+}
