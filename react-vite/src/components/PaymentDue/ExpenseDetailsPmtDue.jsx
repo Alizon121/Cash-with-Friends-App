@@ -8,7 +8,7 @@ import { paymentDueThunk } from "../../redux/expense";
 const ExpenseDetailsPmtDue = () => {
     const dispatch = useDispatch();
     const { id } = useParams();
-    const payment_due = useSelector((state) => state.expenses?.expenses?.owesExpenses);
+    const payment_due = useSelector((state) => state.expenses.expenses.owesExpenses);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
 
