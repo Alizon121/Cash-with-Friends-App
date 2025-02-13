@@ -24,6 +24,8 @@
     right: 0;
     background: white;
     border-radius: 8px;
+    border: 2px;
+    border-color: black; 
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     list-style: none;
     padding: 10px;
@@ -32,7 +34,7 @@
   }
 
   .profileDropdown li {
-    padding: 8px 12px;
+    padding: 4px 12px;
     cursor: pointer;
     font-size: 14px;
     text-align: left;
@@ -43,23 +45,32 @@
     border-radius: 5px;
   }
 
+  .profileDropdown button{
+    color: #fff;
+    height: 30px;
+    width: 100%;
+    border: none;
+    background-color: #24CEA4;
+  }
+
   .userInfo {
     font-weight: bold;
     padding: 5px 12px;
     color: #333;
   }
 
-  .logoutButton {
-    background: none;
+  .profileDropdown .logoutButton {
+    background-color: #FF4F03;
     border: none;
-    color: red;
+    color: #fff;
     font-size: 14px;
     width: 100%;
-    text-align: left;
+    /* text-align: left; */
+    text-align: center;
     padding: 8px 12px;
   }
 
   .logoutButton:hover {
-    background: rgba(255, 0, 0, 0.1);
+    background-color: #a14016;
     border-radius: 5px;
   }
