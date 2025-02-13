@@ -3,7 +3,7 @@
   background-color: white;
   padding: 20px;
   border-radius: 10px;
-  width: 400px;
+  width: 350px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
@@ -20,7 +20,7 @@
 
 /* Textarea Styling */
 .comment-textarea {
-  width: 100%;
+  width: 80%;
   height: 80px;
   padding: 10px;
   border: 1px solid #ccc;
@@ -38,7 +38,7 @@
 }
 
 /* Create Button */
-.btn-create {
+.btn-add {
   background-color: #FF4F03;
   color: white;
   padding: 10px 15px;
