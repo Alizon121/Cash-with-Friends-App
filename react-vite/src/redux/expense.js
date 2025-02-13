@@ -166,10 +166,9 @@ const expenseReducer = (state={}, action) => {
         case LOAD_ALL_USER_EXPENSES: {
             const expenses = action.payload 
             return {
-                ...state,
+                // ...state,
                 ...expenses
             }
-           
         }
         // let newState = structuredClone(state)
         // newState =  structuredClone(expenses)

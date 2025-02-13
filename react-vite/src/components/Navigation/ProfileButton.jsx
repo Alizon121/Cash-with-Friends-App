@@ -50,7 +50,7 @@ function ProfileButton() {
       {showMenu && (
         <ul className={styles.profileDropdown} ref={ulRef}>
           {user ? (
-            <>
+            <div>
               <li className={styles.userInfo}>{user.username}</li>
               <li className={styles.userInfo}>{user.email}</li>
               <li>
@@ -68,7 +68,7 @@ function ProfileButton() {
               <li>
                 <button onClick={logout} className={styles.logoutButton}>Log Out</button>
               </li>
-            </>
+            </div>
           ) : (
             <>
               <OpenModalMenuItem

@@ -70,8 +70,12 @@ function UserDashboardPage() {
 
             {/* Body Title Headers */}
             <div className="dashboard_body_titles">
-                <h3>You Owe</h3>
-                <h3>You Are Owed</h3>
+                <div>
+                    <h3 id="dashboard_owes_title">You Owe</h3>
+                </div>
+                <div>
+                    <h3 id="dashboard_you_are_owed_title">You Are Owed</h3>
+                </div>
             </div>
 
              {/*Body  */}

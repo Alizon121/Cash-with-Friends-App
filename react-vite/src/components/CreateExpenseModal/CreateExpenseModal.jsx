@@ -43,12 +43,15 @@ function CreateExpenseModal() {
         if (!selectedFriends) newErrors.selectedFriends = "Provide at least one friend"
         
         // Particiipants validations (selectedFriends)
-        if (selectedFriends.includes(currentUser.username)) newErrors.selectedFriends = "Current user cannot be part of this expense"
-        if (!regex.test(selectedFriends)) newErrors.selectedFriends = "Usernames must be separated by ', '"
-        
-        selectedFriends.split(", ").map(element => 
-            {if (!usernames.includes(element)) newErrors.selectedFriends = "Please provide a valid username"}
-        )
+        if (!regex.test(selectedFriends)) {newErrors.selectedFriends = "Usernames must be separated by ', '"
+        } else {
+            if (selectedFriends.includes(currentUser.username)) {newErrors.selectedFriends = "Current user cannot be part of this expense"
+            }
+            
+            selectedFriends.split(", ").filter(element => 
+                {if (!usernames.includes(element)) newErrors.selectedFriends = "Please provide a valid username"}
+            )
+        }
 
         // if (selectedFriends.split(", ").filter(element => console.log(usernames.includes(element)))) {
         // }

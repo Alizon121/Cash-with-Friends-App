@@ -22,4 +22,5 @@ h1 {
     background-color: #24CEA4;
     color: #fff;
     font-weight: bold;
+    cursor: pointer;
 }
