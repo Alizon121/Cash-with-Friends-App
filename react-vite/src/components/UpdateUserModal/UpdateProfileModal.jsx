@@ -42,7 +42,6 @@ const UpdateProfileModal = ({ user }) => {
         <div className={styles.modal}>
             <div className={styles.header}>
                 <h3 className={styles.title}>Update Profile</h3>
-                <button onClick={closeModal} className={styles.close}>&times;</button>
             </div>
 
             {error && <p className={styles.error}>{error}</p>}
