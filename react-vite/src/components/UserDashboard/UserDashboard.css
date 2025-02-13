@@ -55,17 +55,19 @@
     flex-direction: row;
     justify-content: space-around;
     font-size: 24px;
+    gap:35px;
 }
 
 .dashboard_owe_and_owed_container {
     display: flex;
     flex-direction: row;
-    justify-content: space-around
+    justify-content: space-around;
+    margin-right: 20px;
 }
 
 /* Dashboard Body: You Owe Container */
 .dashboard_owe_and_owed_container .dashboard_you_owe_container {
-    width: 300px;
+    width: 450px;
 }
 
 .dashboard_body_created_amount {
@@ -104,7 +106,7 @@
 
 /* Dashboard Body: You Are Owed */
 .dashboard_you_are_owed_container {
-    width: 300px;
+    width: 450px;
 }
 
 /* .dashboard_you_are_owed_info_container {
