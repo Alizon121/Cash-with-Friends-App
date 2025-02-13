@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getFriends } from "../../redux/friends";
 import { FaUserCircle} from "react-icons/fa";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import AddFriendModal from "../AddFriendModal/AddFriendModal";
 
 const FriendsList = () => {
   const dispatch = useDispatch();
@@ -26,19 +28,21 @@ const FriendsList = () => {
   }
 
   return (
-    <div className={styles.friendsListContainer}>
-      <div className={styles.friendsHeader}>
-        <h3>FRIENDS</h3>
-        <p>|</p>
-        <button className={styles.addFriendButton}>
-          +<FaUserCircle />
-        </button>
-      </div>
-      <ul className={styles.friendsList}>
+     <div className="friends-list">
+      <h3>Friends</h3>
+      {/* + Button Connected to AddFriendModal */}
+      <button className={styles.addFriendButton}>
+        <OpenModalMenuItem
+          modalComponent={<AddFriendModal />}
+          itemText="+"
+        />
+      </button>
+      <ul>
         {friends.map((friend) => (
-          <li key={friend.id} className={styles.friendItem}>
-            <FaUserCircle className={styles.profileIcon} />
-            <span className={styles.friendName}>{friend.username}</span>
+          <li key={friend.id}>
+            <p>
+              👤 <strong>{friend.username}</strong>
+            </p>
           </li>
         ))}
       </ul>
