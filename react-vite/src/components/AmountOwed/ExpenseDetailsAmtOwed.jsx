@@ -35,9 +35,13 @@ const ExpenseDetailsAmtOwed = () => {
     setDeletedExpenseId(id);
   };
 
-  const currentExpense = amount_owed[id];
+  const currentExpense = amount_owed[id]
+  const numParticipants = Number(amount_owed[id]?.participants.length)
 
-  const formattedPrice = currentExpense?.amount.toLocaleString('en-US', {
+  // console.log("EXPENSE", currentExpense)
+  // console.log("NUM PARTICIPANTS", numParticipants)
+
+  const formattedPrice = ((currentExpense?.amount)/numParticipants).toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD'
   });
