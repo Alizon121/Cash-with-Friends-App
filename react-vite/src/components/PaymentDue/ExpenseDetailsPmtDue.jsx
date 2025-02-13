@@ -14,11 +14,10 @@ const ExpenseDetailsPmtDue = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
 
+    // Helper func for handling the updating the page when settle button is clicked
     const handleSettleExpense = (expenseId) => {
         dispatch(paymentDueThunk(expenseId))
     }
-
-    // modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant?.amount.toFixed(2)}/>}
 
     useEffect(() => {
         if (id) {
