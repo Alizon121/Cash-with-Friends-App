@@ -47,6 +47,7 @@ const UpdateProfileModal = ({ user }) => {
             {error && <p className={styles.error}>{error}</p>}
 
             <form onSubmit={handleSubmit} className={styles.section}>
+                <p><strong>First Name:</strong></p>
                 <input
                     type="text"
                     name="first_name"
@@ -56,6 +57,7 @@ const UpdateProfileModal = ({ user }) => {
                     required
                     className={styles.input}
                 />
+                <p><strong>Last Name:</strong></p>
                 <input
                     type="text"
                     name="last_name"
@@ -65,6 +67,7 @@ const UpdateProfileModal = ({ user }) => {
                     required
                     className={styles.input}
                 />
+                <p><strong>Username:</strong></p>
                 <input
                     type="text"
                     name="username"
@@ -74,6 +77,7 @@ const UpdateProfileModal = ({ user }) => {
                     required
                     className={styles.input}
                 />
+                <p><strong>Email:</strong></p>
                 <input
                     type="email"
                     name="email"
