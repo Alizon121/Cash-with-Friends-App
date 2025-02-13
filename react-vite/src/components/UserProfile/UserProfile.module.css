@@ -1,7 +1,9 @@
 /* UserProfile.module.css */
 .userProfileContainer {
     max-width: 75%;
-    margin: 40px auto;
+    margin-bottom: 40px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
@@ -14,18 +16,20 @@
 }
 
 .profileSection h2 {
-    background-color: #d3d3d3;
-    padding: 8px 12px;
+    /* background-color: #d3d3d3; */
+    /* padding: 12px; */
     border-radius: 5px;
     display: inline-block;
-    font-size: 18px;
+    font-size: 30px;
+    /* border-bottom: 2px solid black; */
 }
 
 .profileContent {
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: space-between;
     margin-top: 20px;
+    height: 800px;
 }
 
 .profileAvatarSection {
@@ -46,9 +50,15 @@
     flex-grow: 1;
 }
 
-.profileDetails p {
+.profileDetails .profile_content_subheaders {
     margin: 8px 0;
-    font-size: 16px;
+    font-size: 24px;
+}
+
+.profileDetails .profile_content_data {
+    font-size: 18px;
+    font-weight: 500;
+
 }
 
 .profileDetails strong {
@@ -68,4 +78,19 @@
 
 .updateProfileButton:hover {
     background-color: #1cb394;
+}
+
+
+/* Body Styling ASL */
+.profile_content_container {
+    padding-bottom: 15px;
+}
+
+.profileSection .divider {
+    width: 100%;
+    border: 1px solid black;
+}
+
+.profile_content_subheaders {
+    font-size: 30px;
 }
