@@ -1,33 +1,72 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { friendActions } from "../../redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addFriendByUsername, getPendingRequests, getSentRequests } from "../../redux/friends";
+import "./AddFriendModal.css";
 
 const AddFriendModal = ({ closeModal }) => {
   const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSearch = async () => {
-    setError("");
-    try {
-      // Dispatch a Redux action or make an API call to search users
-      const response = await dispatch(friendActions.searchUsers(searchQuery));
-      setResults(response); // Populate the results
-    } catch (err) {
-      setError("Failed to fetch users. Please try again.");
+  // Retrieve friends, pending requests, and sent requests from Redux store
+  const friends = useSelector((state) => state.friends.friends);
+  const pendingRequests = useSelector((state) => state.friends.pendingRequests);
+  const sentRequests = useSelector((state) => state.friends.sentRequests);
+
+  // Fetch pending and sent requests when the modal opens
+  useEffect(() => {
+    dispatch(getPendingRequests());
+    dispatch(getSentRequests());
+  }, [dispatch]);
+
+  // Map usernames for easier validation
+  const userFriendsUsernames = Object.values(friends).map((user) => user.username);
+  const pendingRequestUsernames = Object.values(pendingRequests).map((request) => request.username);
+  const sentRequestUsernames = Object.values(sentRequests).map((request) => request.username);
+
+  const handleAddFriend = async (e) => {
+    e.preventDefault();
+
+    // Reset messages
+    setErrors({});
+    setSuccessMessage("");
+
+    // Add validations here
+    const newErrors = {};
+
+    if (!username.trim()) {
+      newErrors.username = "Username is required.";
     }
-  };
 
-  const handleSendRequest = async (userId) => {
-    setError("");
+    if (userFriendsUsernames.includes(username)) {
+      newErrors.username = "Don't be needy, User is already your friend.";
+    }
+
+    if (pendingRequestUsernames.includes(username)) {
+      newErrors.username = "Check your pending requests.";
+    }
+
+    if (sentRequestUsernames.includes(username)) {
+      newErrors.username = "You already sent a request to this user.";
+    }
+
+    // If validation errors exist, stop execution
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Dispatch the API call
     try {
-      // Dispatch a Redux action to send a friend request
-      await dispatch(friendActions.sendFriendRequest(userId));
-      alert("Friend request sent!");
-      setResults(results.filter((user) => user.id !== userId)); // Remove user from results after sending request
+      await dispatch(addFriendByUsername({ username, nickname }));
+      setSuccessMessage("Friend request sent successfully!");
+      setUsername("");
+      setNickname("");
     } catch (err) {
-      setError("Failed to send friend request. Please try again.");
+      const errorMessage = err.message || "Failed to send friend request.";
+      setErrors({ username: errorMessage });
     }
   };
 
@@ -35,36 +74,36 @@ const AddFriendModal = ({ closeModal }) => {
     <div className="add-friend-modal">
       <div className="modal-content">
         <h2>Add a Friend</h2>
-        {error && <p className="error-message">{error}</p>}
-        <input
-          type="text"
-          placeholder="Search by username or email"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-        />
-        <button onClick={handleSearch} className="search-button">
-          Search
-        </button>
-        <div className="search-results">
-          {results.length === 0 && <p>No users found.</p>}
-          {results.map((user) => (
-            <div key={user.id} className="user-card">
-              <p>
-                👤 <strong>{user.firstName}</strong> ({user.username})
-              </p>
-              <button
-                onClick={() => handleSendRequest(user.id)}
-                className="add-friend-button"
-              >
-                Add Friend
-              </button>
-            </div>
-          ))}
+        {successMessage && <p className="success-message">{successMessage}</p>}
+        <div className="form-group">
+          <label htmlFor="username">Username:</label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter username"
+          />
+          {errors.username && <p className="error">{errors.username}</p>}
         </div>
-        <button onClick={closeModal} className="close-button">
-          Close
-        </button>
+        <div className="form-group">
+          <label htmlFor="nickname">Nickname (optional):</label>
+          <input
+            id="nickname"
+            type="text"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="Enter nickname"
+          />
+        </div>
+        <div className="button-group">
+          <button onClick={handleAddFriend} className="add-button">
+            Add
+          </button>
+          <button onClick={closeModal} className="cancel-button">
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
