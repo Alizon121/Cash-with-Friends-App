@@ -123,7 +123,7 @@ def amount_user_owes(id):
 
         # Querying inside of a query will result in n+1 (lazy loading)
 
-        expense_owner = User.query.get(expense_owes.id)
+        expense_owner = User.query.get(expense_owes.created_by)
 
         owe_data = {
             "id": expense_owes.id,
