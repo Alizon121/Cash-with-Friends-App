@@ -35,7 +35,7 @@ function LoginFormModal() {
     try{
       const response = await dispatch(thunkLogin({
         email,
-        password,
+        password
       }));
     if (response) {
       navigate("/users/dashboard")
