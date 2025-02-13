@@ -1,3 +1,4 @@
+import styles from "./UpdateProfileModal.module.css";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { thunkUpdateUser } from "../../redux/session";
@@ -33,30 +34,65 @@ const UpdateProfileModal = ({ user }) => {
             setIsSubmitting(false);
         } else {
             console.log("✅ Profile updated successfully! Closing modal.");
-            closeModal();  // ✅ This will now work because `OpenModalMenuItem` provides it
+            closeModal();
         }
     };
 
     return (
-        <div className="modal">
-            <div className="modal-content">
-                <h3>Update Profile</h3>
-                {error && <p className="error">{error}</p>}
-                <form onSubmit={handleSubmit}>
-                    <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} placeholder="First Name" required />
-                    <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} placeholder="Last Name" required />
-                    <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" required />
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
+        <div className={styles.modal}>
+            <div className={styles.header}>
+                <h3 className={styles.title}>Update Profile</h3>
+            </div>
 
-                    <button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? "Saving..." : "Save Changes"}
-                    </button>
+            {error && <p className={styles.error}>{error}</p>}
 
-                    <button type="button" onClick={closeModal} className="cancel-button">
+            <form onSubmit={handleSubmit} className={styles.section}>
+                <input
+                    type="text"
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleChange}
+                    placeholder="First Name"
+                    required
+                    className={styles.input}
+                />
+                <input
+                    type="text"
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleChange}
+                    placeholder="Last Name"
+                    required
+                    className={styles.input}
+                />
+                <input
+                    type="text"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    placeholder="Username"
+                    required
+                    className={styles.input}
+                />
+                <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email"
+                    required
+                    className={styles.input}
+                />
+
+                <div className={styles.buttonContainer}>
+                    <button type="button" onClick={closeModal} className={`${styles.button} ${styles.cancel}`}>
                         Cancel
                     </button>
-                </form>
-            </div>
+                    <button type="submit" disabled={isSubmitting} className={`${styles.button} ${styles.update}`}>
+                        {isSubmitting ? "Saving..." : "Save Changes"}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 };
