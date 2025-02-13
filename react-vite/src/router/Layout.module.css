@@ -9,7 +9,7 @@
   .sidebar {
     width: 250px; /* Adjust width as needed */
     flex-shrink: 0;
-    background-color: #f5f5f5; /* Optional: Light background for contrast */
+    /* background-color: #f5f5f5; Optional: Light background for contrast */
     padding: 10px;
   }
 
