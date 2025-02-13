@@ -1,15 +1,19 @@
 .friendsListContainer {
     width: 100%;
     max-width: 300px;
-    /* background-color: #f5f5f5; */
+    background-color: #f5f5f5;
     padding: 10px;
     border-radius: 8px;
     font-family: Arial, sans-serif;
+    height: 750px;
+    display: flex;
+    flex-direction: column;
+    /* border: 2px solid red; */
   }
 
   .friendsHeader {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     /* border-bottom: 1px solid #ccc; */
     padding-right: 10px;

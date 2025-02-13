@@ -4,7 +4,7 @@ import { useModal } from "../../context/Modal";
 import { useEffect, useState } from "react";
 import { updateExpenseThunk } from "../../redux/expense";
 
-function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
+function UpdateExpenseModal({ expenseId, currentExpense, formattedPrice, onUpdateSuccess }) {
   const { closeModal } = useModal();
   const dispatch = useDispatch();
   const [description, setDescription] = useState(currentExpense.description);
@@ -75,7 +75,7 @@ function UpdateExpenseModal({ expenseId, currentExpense, onUpdateSuccess }) {
         <h2 className={styles["section-title"]}>PARTICIPANTS:</h2>
         {currentExpense?.participants.map((participant, index) => (
           <div key={index}>
-            {`${participant}: $${currentExpense?.amount}\n`}
+            {`${participant}: ${formattedPrice}\n`}
           </div>
         ))}
       </div>
