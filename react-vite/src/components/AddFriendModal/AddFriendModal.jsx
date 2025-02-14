@@ -66,7 +66,9 @@ const AddFriendModal = () => {
   return (
     <div className={styles.addFriendModal}>
       <div className={styles.modalContent}>
-        <h2>Add a Friend</h2>
+        <div className={styles.header}>
+          <h2>Add a Friend</h2>
+        </div>
         {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
         <div className={styles.formGroup}>
           <label htmlFor="username">Username:</label>

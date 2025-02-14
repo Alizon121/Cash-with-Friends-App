@@ -11,6 +11,16 @@
     text-align: center;
 }
 
+.header {
+    justify-content: space-between;
+    align-items: center;
+    background-color: #24CEA4;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px 8px 0 0;
+  }
+
 .modalContent {
     display: flex;
     flex-direction: column;
@@ -60,7 +70,7 @@ input {
 }
 
 .addButton {
-    background-color: #24CEA4;
+    background-color: #FF4F03;
     color: white;
     border: none;
     padding: 10px 15px;
