@@ -38,7 +38,9 @@ const FriendsList = () => {
             itemText={
               <div className={styles.addFriendContent}>
                 <span className={styles.plusSign}>+</span>
+                <div className={styles.iconWrapper}>
                 <FaUserCircle className={styles.addFriendIcon} />
+                </div>
               </div>
             }
           />
