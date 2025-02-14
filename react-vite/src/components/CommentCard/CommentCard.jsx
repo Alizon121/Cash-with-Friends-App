@@ -29,8 +29,8 @@ const CommentCard = ({ comment, user }) => {
         />
       ) : (
         <p className="comment-text">
-          <strong className="comment-author">{user.first_name}</strong> said: 
-          <span className="comment-content"> "{comment.comment_text}"</span>
+          <strong className="comment-author">{user?.first_name}</strong> said: 
+          <span className="comment-content"> "{comment?.comment_text}"</span>
         </p>
       )}
       <div className="comment-actions">

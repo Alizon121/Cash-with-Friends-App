@@ -24,6 +24,7 @@ function UserCommentPage() {
       <div className="main-content">
         {/* User Info Section */}
         <aside className="user-info-sidebar">
+          {/* This img appears to be coming from a local file */}
           <img
             src={user?.avatar || "/default-avatar.png"}
             alt={user?.first_name}
