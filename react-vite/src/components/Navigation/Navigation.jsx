@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import LoginFormModal from "../LoginFormModal";
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import { thunkLogin, thunkLogout } from "../../redux/session";
+// import { useModal } from "../../context/Modal";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 
@@ -13,6 +14,7 @@ function Navigation() {
   const sessionUser = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // const { closeModal } = useModal()
 
   const handleDemoUser = async () => {
     const demoEmail = "demo@aa.io";
@@ -49,7 +51,10 @@ function Navigation() {
       ) : (
         <div className={styles.authButtons}>
           <button className={styles.authButton}>
-            <OpenModalMenuItem itemText={"Login"} modalComponent={<LoginFormModal />} />
+            <OpenModalMenuItem 
+                itemText={"Login"} 
+                modalComponent={<LoginFormModal/>} //closeModal={closeModal}
+            />
           </button>
           <button onClick={handleDemoUser} className={styles.demoButton}>Demo</button>
         </div>

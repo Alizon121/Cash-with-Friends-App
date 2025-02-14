@@ -23,7 +23,6 @@ function UserDashboardPage() {
 
     const handleSettleExpense = (expenseId) => {
         dispatch(loadAllUserExpensesThunk())
-        // setRefreshKey((prevKey) => prevKey + 1)
     }
 
     // Make helper funciton to navigate to payment_due details page

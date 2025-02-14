@@ -91,7 +91,7 @@ const ExpenseDetailsAmtOwed = () => {
 
         <OpenModalButton
           buttonText="Update Details"
-          modalComponent={<UpdateExpenseModal expenseId={id} currentExpense={currentExpense} onUpdateSuccess={handleUpdateSuccess} />}
+          modalComponent={<UpdateExpenseModal expenseId={id} currentExpense={currentExpense} formattedPrice={formattedPrice} onUpdateSuccess={handleUpdateSuccess} />}
           className={styles.updateExpense}
         />
       </div>

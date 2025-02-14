@@ -1,15 +1,19 @@
 .friendsListContainer {
     width: 100%;
     max-width: 300px;
-    /* background-color: #f5f5f5; */
+    background-color: #f5f5f5;
     padding: 10px;
     border-radius: 8px;
     font-family: Arial, sans-serif;
+    height: 750px;
+    display: flex;
+    flex-direction: column;
+    /* border: 2px solid red; */
   }
 
   .friendsHeader {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     /* border-bottom: 1px solid #ccc; */
     padding-right: 10px;
@@ -27,7 +31,8 @@
     border: none;
     cursor: pointer;
     font-size: 20px;
-    color: #0056b3
+    color: #0056b3;
+    list-style-type: none;
   }
 
   .addFriendButton:hover {
@@ -62,4 +67,24 @@
     text-align: center;
     color: #777;
     font-size: 14px;
+  }
+
+  .friendsList {
+    list-style: none; /* Removes bullet points */
+    padding: 0;
+    margin: 0;
+  }
+
+  .addFriendIcon {
+    font-size: 22px; /* Make the add-friend icon the right size */
+    color: #0056b3;
+  }
+
+  .addFriendButton:hover .addFriendIcon {
+    color: #006bdd; /* Hover effect */
+  }
+
+  .plusSign {
+    font-size: 20px;
+    font-weight: bold;
   }

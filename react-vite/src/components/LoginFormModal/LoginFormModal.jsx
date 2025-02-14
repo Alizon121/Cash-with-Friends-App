@@ -1,9 +1,9 @@
-import { useState, useEffect, useInsertionEffect } from "react";
+import { useState } from "react";
 import { thunkLogin } from "../../redux/session";
 import { useSelector, useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import { useNavigate } from "react-router-dom";
-import { getUsers } from "../../redux/users";
+// import { getUsers } from "../../redux/users";
 import "./LoginForm.css";
 
 function LoginFormModal() {
@@ -11,37 +11,37 @@ function LoginFormModal() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const users = useSelector(state => state.users.users)
+  // const users = useSelector(state => state.users.users)
   const { closeModal } = useModal();
   const navigate = useNavigate()
 
-  const emails = Object.values(users).map(user => user.email)
+  // const emails = Object.values(users).map(user => user.email)
 
-  useEffect(() => {
-    dispatch(getUsers()) 
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(getUsers()) 
+  // }, [dispatch])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Add validations to login
     const newErrors = {}
-    if (!emails.includes(email)) newErrors.email = "Invalid email"
 
     if (Object.values(newErrors).length > 0) {
       setErrors(newErrors)
       return
     }
-
-    try{ 
+    
+    try{
       const response = await dispatch(thunkLogin({
         email,
-        password,
-      })
-    );
+        password
+      }));
     if (response) {
       navigate("/users/dashboard")
       closeModal();
+    } else {
+      closeModal()
     }
   } catch (error) {
     if (error instanceof Error) {

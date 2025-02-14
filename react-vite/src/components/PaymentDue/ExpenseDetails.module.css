@@ -55,6 +55,7 @@
 .oweSectionDetails {
     display: flex;
     justify-content: space-around;
+    align-items: center;
     width: 100%;
 }
 
@@ -76,12 +77,14 @@
 .settleButton {
     background-color: #20c997;
     max-height: 30px;
+    width: 70px;
     color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 25px;
     cursor: pointer;
     font-size: 14px;
+    list-style: none;
 }
 
 .settleButton:hover {

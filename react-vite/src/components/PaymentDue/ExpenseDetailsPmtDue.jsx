@@ -1,9 +1,11 @@
 import Styles from "./ExpenseDetails.module.css";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate} from "react-router-dom";
+import { useParams, useNavigate, useLocation} from "react-router-dom";
 import { useState } from "react";
 import { paymentDueThunk } from "../../redux/expense";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import SettleFormModal from "../SettleFormModal/SettleFormModal";
 
 const ExpenseDetailsPmtDue = () => {
     const dispatch = useDispatch();
@@ -11,6 +13,11 @@ const ExpenseDetailsPmtDue = () => {
     const paymentDue = useSelector((state) => state.expenses);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+
+    // Helper func for handling the updating the page when settle button is clicked
+    const handleSettleExpense = (expenseId) => {
+        dispatch(paymentDueThunk(expenseId))
+    }
 
     useEffect(() => {
         if (id) {
@@ -25,10 +32,6 @@ const ExpenseDetailsPmtDue = () => {
     if (loading) {
         return <div>Loading...</div>
     }
-
-    // const currentExpense = payment_due.find(expense => expense.id === Number(id));
-
-    // console.log(currentExpense)
 
     const formattedPrice = paymentDue?.amount.toLocaleString('en-US', {
         style: 'currency',
@@ -57,7 +60,12 @@ const ExpenseDetailsPmtDue = () => {
                 <div className={Styles.oweSectionDetails}>
                     <p>{paymentDue?.created_by}</p>
                     <p className={Styles.oweAmount}>{formattedPrice}</p>
-                <button className={Styles.settleButton}>Settle</button>
+                <button className={Styles.settleButton}>
+                    <OpenModalMenuItem
+                        itemText={"Settle"}
+                        modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(paymentDue?.id)} settled={paymentDue?.settled} expenseId={paymentDue?.id} amount={paymentDue?.amount.toFixed(2)}/>}
+                    />
+                </button>
                 </div>
             </div>
 

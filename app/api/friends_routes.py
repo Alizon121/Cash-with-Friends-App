@@ -27,13 +27,16 @@ def send_friend_request():
     ).first()
 
     if existing_friendship:
-        return jsonify({"message": "User is already your friend"}), 400
+        if existing_friendship.pending_status:
+            return jsonify({"message": "Oh, you already sent that request. Don't be annoying!"}), 400
+        return jsonify({"message": "You are already friends with this user."}), 400
 
     new_friend_request = Friend(user_id=current_user.id, friend_id=friend.id, pending_status=True)
     db.session.add(new_friend_request)
     db.session.commit()
 
-    return jsonify({"message": "Friend request sent successfully"}), 201
+    return jsonify({"message": "Friend request sent successfully!"}), 201
+
 
 
 @friends_routes.route("/", methods=["PUT"])
@@ -128,3 +131,32 @@ def get_friends():
     user = current_user
     friends = user.friends  # Assuming a many-to-many relationship between users
     return jsonify([friend.to_dict() for friend in friends])
+
+@friends_routes.route("/sent/", methods=["GET"])
+@login_required
+def get_sent_friend_requests():
+    """Retrieve all friend requests sent by the logged-in user."""
+    sent_requests = Friend.query.filter_by(user_id=current_user.id, pending_status=True).all()
+    sent_list = [{
+        "id": request.friend_id,
+        "firstName": User.query.get(request.friend_id).first_name,
+        "lastName": User.query.get(request.friend_id).last_name,
+        "email": User.query.get(request.friend_id).email,
+        "username": User.query.get(request.friend_id).username
+    } for request in sent_requests]
+
+    return jsonify({"SentRequests": sent_list}), 200
+
+@friends_routes.route("/sent/<int:friend_id>", methods=["DELETE"])
+@login_required
+def cancel_sent_request(friend_id):
+    """Cancel a sent friend request."""
+    sent_request = Friend.query.filter_by(user_id=current_user.id, friend_id=friend_id, pending_status=True).first()
+
+    if not sent_request:
+        return jsonify({"message": "Sent request not found"}), 404
+
+    db.session.delete(sent_request)
+    db.session.commit()
+    return jsonify({"message": "Friend request canceled successfully"}), 200
+
