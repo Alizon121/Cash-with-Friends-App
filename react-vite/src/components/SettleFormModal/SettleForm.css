@@ -43,7 +43,9 @@ font-weight:600;
     width: 90px;
     background-color: #24CEA4;
     border: 0px;
-    border-radius: 3px;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: bold;
 }
 
 #settle_button:hover {
@@ -54,8 +56,10 @@ font-weight:600;
     height: 30px;
     width: 90px;
     border: 0px;
-    border-radius: 3px;
+    border-radius: 20px;
     background-color: #FF4F03;
+    color: #fff;
+    font-weight: bold;
 }
 
 #cancel_settle_button:hover {

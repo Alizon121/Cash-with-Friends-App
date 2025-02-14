@@ -7,11 +7,17 @@
     margin-bottom: 30px;
 }
 
+.dashboard_header_container h2 {
+    color: #000;
+    font-size: 30px;
+}
+
 .dashboard_create_add_buttons_container {
     display: inline-flex;
     flex-direction: row;
     align-items: center;
     gap: 10px;
+    border-radius: 20px;
 }
 
 .dashboard_create_add_buttons_container button {
@@ -22,6 +28,7 @@
     font-weight: bold;
     color: #fff;
     border: none;
+    border-radius: 20px;
 }
 
 .dashboard_create_add_buttons_container button:hover {
@@ -90,10 +97,12 @@
     height: 30px;
     width: 90px;
     border: none;
+    border-radius: 20px;
     list-style: none;
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
+    color: #fff;
 }
 
 #dashboard_settle_button {
@@ -134,6 +143,8 @@
 }
 
 .dashboard_you_are_owed_details_container button{
+    color: #fff;
+    border-radius: 20px;
     background-color: #24CEA4;
     height: 30px;
     width: 90px;

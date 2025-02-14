@@ -70,25 +70,25 @@ const AddFriendModal = () => {
           <h2>Add a Friend</h2>
         </div>
         {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
+        {/* <label className={styles.addFriendLabel} htmlFor="username">Username:</label> */}
         <div className={styles.formGroup}>
-          <label htmlFor="username">Username:</label>
           <input
-            id="username"
+            class={styles.addFriendInputs}
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter username"
+            placeholder="Add username"
           />
           {errors.username && <p className={styles.error}>{errors.username}</p>}
         </div>
+        {/* <label className={styles.addFriendLabel} htmlFor="nickname">Nickname (optional):</label> */}
         <div className={styles.formGroup}>
-          <label htmlFor="nickname">Nickname (optional):</label>
           <input
-            id="nickname"
+            class={styles.addFriendInputs}
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            placeholder="Enter nickname"
+            placeholder="Add nickname (optional)"
           />
         </div>
         <div className={styles.buttonGroup}>

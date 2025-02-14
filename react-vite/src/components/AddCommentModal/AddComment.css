@@ -1,9 +1,10 @@
 /* Main modal container */
 .add-comment-modal {
   background-color: white;
-  padding: 20px;
-  border-radius: 10px;
+  /* padding: 20px; */
+  border-radius: 5px;
   width: 350px;
+  height: 250px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
@@ -13,9 +14,10 @@
   background-color: #24CEA4;
   color: white;
   font-size: 18px;
-  text-align: center;
+  text-align: left;
+  margin: 0px;
   padding: 10px;
-  border-radius: 10px 10px 0 0;
+  border-radius: 0px;
 }
 
 /* Textarea Styling */
@@ -26,7 +28,7 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 14px;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 /* Modal Footer: Buttons */
@@ -44,8 +46,9 @@
   padding: 10px 15px;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 20px;
   font-weight: bold;
+  width: 120px;
 }
 
 .btn-create:hover {
@@ -59,7 +62,8 @@
   padding: 10px 15px;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 20px;
+  width: 120px;
   font-weight: bold;
 }
 

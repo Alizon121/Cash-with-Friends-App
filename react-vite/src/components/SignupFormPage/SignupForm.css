@@ -20,6 +20,7 @@ h1 {
     padding: 10px 10px;
     font-size: 16px;
     background-color: #24CEA4;
+    border: none;
     color: #fff;
     font-weight: bold;
     cursor: pointer;

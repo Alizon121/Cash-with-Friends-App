@@ -37,24 +37,29 @@
     display: flex;
     gap: 25px;
     margin-top: 10px;
+
 }
 
 .create_expense_buttons button {
     height: 30px;
     width: 80px;
     border: none;
+    border-radius: 20px;
+    color: #fff;
 }
 
 #create_expense_submit_button {
     background-color: #24CEA4;
     font-weight: bold;
     font-size: 16px;
+    width: 120px;
 }
 
 #create_expense_cancel_button {
     background-color: #FF4F03;
     font-weight: bold;
     font-size: 16px;
+    width: 120px;
 }
 
 .create_expense_buttons button:hover {
