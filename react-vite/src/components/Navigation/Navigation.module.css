@@ -1,0 +1,78 @@
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #20c997;
+  padding: 10px 20px;
+  color: white;
+  border-radius: 0;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.logo a {
+  color: white;
+  text-decoration: none;
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logoutButton {
+  background-color: #ff5722;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.logoutButton:hover {
+  background-color: #e64a19;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: bold;
+}
+
+.profileIcon {
+  font-size: 20px;
+  color: white;
+}
+
+.authButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.authButton,
+.demoButton {
+  background-color: #ff7043;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  list-style-type: none;
+}
+
+.authButton:hover,
+.demoButton:hover {
+  background-color: #d9534f;
+}

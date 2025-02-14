@@ -1,0 +1,87 @@
+/* Comment Card Container */
+.comment-card {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Expense description and date of creation */
+.expense-description {
+  font-family:'Times New Roman', Times, serif;
+  color: black !important;
+  font-weight: normal !important;
+  font-size: x-large !important;
+}
+
+.expense-creation {
+  font-family:'Times New Roman', Times, serif;
+  color: black !important;
+  font-weight: normal !important;
+  font-size: x-large !important;
+}
+
+/* Comment Author */
+.comment-author {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Comment Content */
+.comment-content {
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+}
+
+/* Editable Textarea */
+.comment-edit-textarea {
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Comment Actions */
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+/* Edit Button */
+.btn-edit {
+  background-color: #24CEA4;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 20px;
+  font-weight: bold;
+  width: 120px;
+}
+
+.btn-edit:hover {
+  background-color: #54a58a;
+}
+
+/* Delete Button */
+.btn-delete {
+  background-color: #FF4F03;
+  color: white;
+  width: 120px;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.btn-delete:hover {
+  background-color: #d5561a;
+}

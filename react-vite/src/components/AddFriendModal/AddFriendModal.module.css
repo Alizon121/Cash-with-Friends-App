@@ -1,0 +1,123 @@
+.addFriendModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 450px;
+    height: 275px;
+
+}
+
+.header {
+    justify-content: space-between;
+    background-color: #24CEA4;
+    color: white;
+    border-radius: 8px 8px 0 0;
+  }
+
+ .addFriendLabel {
+    width: 50%;
+    display: flex;
+    justify-content: center
+    ;
+ }
+
+.modalContent {
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    font-size: 22px;
+    color: #fff;
+    margin-bottom: 15px;
+    margin-left: 15px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    text-align: left;
+    /* width: 70% */
+}
+
+.formGroup .addFriendInputs{
+    width: 50%;
+    border: none;
+    border-bottom: 2px solid #000; 
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.successMessage {
+    color: green;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.addButton {
+    background-color: #FF4F03;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 5px;
+    width: 120px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.addButton:hover {
+    background-color: #1cb394;
+}
+
+.cancelButton {
+    background-color: #ccc;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 5px;
+    width: 120px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.cancelButton:hover {
+    background-color: #b3b3b3;
+}

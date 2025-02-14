@@ -1,0 +1,87 @@
+/* DeleteExpenseModal.module.css */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 5px;
+}
+
+.modal {
+    width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FF4F03;
+    color: white;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+  }
+
+  .section-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+  }
+
+  .error {
+    color: red;
+    font-size: 14px;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .button {
+    font-size: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+  }
+
+  .button.close {
+    background-color: #24CEA4;
+  }
+
+  .button.delete {
+    background-color: #FF4F03;
+  }

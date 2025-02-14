@@ -1,0 +1,128 @@
+.friendsListContainer {
+    width: 100%;
+    max-width: 300px;
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    height: 750px;
+    display: flex;
+    flex-direction: column;
+    /* border: 2px solid red; */
+  }
+
+  .addFriendContent {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plusSign {
+    font-size: 30px !important;
+    /* color: #24CEA4; */
+    color: #FF4F03;
+    color: black;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-250%, -55%);
+    z-index: 2;
+    /* pointer-events: none; */
+    cursor: pointer;
+  }
+
+  .addFriendIcon {
+    font-size: 30px;
+    color: #24CEA4;
+    color: white;
+  }
+
+  /* .iconWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid black;
+    background-color: white;
+} */
+
+
+  .friendsHeader {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    /* border-bottom: 1px solid #ccc; */
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    /* padding: 10px; */
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+    background-color: lightgray;
+  }
+
+  .addFriendButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #0056b3;
+    list-style-type: none;
+  }
+
+  .addFriendButton:hover {
+    color: #006bdd;
+  }
+
+  .friendsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .friendItem {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    /* border-bottom: 1px solid #ddd; */
+  }
+
+  .profileIcon {
+    font-size: 20px;
+    color: #999;
+    margin-right: 8px;
+  }
+
+  .friendName {
+    font-size: 14px;
+    color: #333;
+  }
+
+  .message {
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+  }
+
+  .friendsList {
+    list-style: none; /* Removes bullet points */
+    padding: 0;
+    margin: 0;
+  }
+
+
+
+  .addFriendButton:hover .addFriendIcon {
+    color: #006bdd; /* Hover effect */
+  }
+
+  .plusSign {
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 10px;
+  }

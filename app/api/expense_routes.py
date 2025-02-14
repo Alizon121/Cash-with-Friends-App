@@ -29,17 +29,23 @@ def pending_expenses():
     ############Optimize the queries to use JOIN (Eager Loading!)###############
 
         total_amount = 0
+        total_owed_amount = 0
+        total_owes_amount = 0
+
         # Query to get what expenses the user is owed
         user_is_owed = User.query.get(current_user.id).expenses
         # Error message for no user being owed something
-        if not user_is_owed:
-            return jsonify({"Message": "User is currently not owed any amount."})
+        # if not user_is_owed:
+        #     return jsonify({"Message": "User is currently not owed any amount."})
 
         for expense in user_is_owed:
             total_amount += expense.amount
+            total_owed_amount += expense.amount
+
             owed_data= {
             "id": expense.id,
             "amount": expense.amount,
+            "description": expense.description,
             # A query inside a query results in n+1
             "username": [user.username for user in Expense.query.get(expense.id).participants],
             "settled": expense.settled,
@@ -54,23 +60,27 @@ def pending_expenses():
             return jsonify({"Message": "User does not currently owe anything."})
 
         for expense in user_owes:
+            expense_owner = User.query.get(expense.created_by)
             owes_data = {
                 "id": expense.id,
                 "userId": current_user.id,
-                "amount": (expense.amount/len(expense.participants)),
+                "amount": (expense.amount/(len(expense.participants)+1)),
                 "description": expense.description,
                 "settled": expense.settled,
-                "createdBy": expense.created_by,
-                # A query inside a query results in n+1
+                "createdBy": expense_owner.username,
                 "participants": [user.username for user in expense.participants],
                 # "createdAt": user_owes.created_at
             }
+            total_owes_amount+=(expense.amount/(len(expense.participants)+1))
+            total_amount-= (expense.amount/(len(expense.participants)+1))
             expense_data_owes_to.append(owes_data)
 
         return jsonify({
-            "Expenses Owed": expense_data_owed,
-            "Owes Expenses": expense_data_owes_to,
-            "Total Amount Owed": total_amount
+            "expensesOwed": expense_data_owed,
+            "owesExpenses": expense_data_owes_to,
+            "totalAmountOwed": total_amount,
+            "totalOwedAmount": total_owed_amount,
+            "totalOwesAmount": total_owes_amount
                         })
 
     else:
@@ -95,7 +105,7 @@ def amount_user_owes(id):
         ).first()
 
         if not expense_owes:
-            return jsonify({"Message": "User does not currently owe any amount"}),404
+            return jsonify({"Message": "User does not currently owe any amount"}), 404
 
         # Query to get who the participants are in the expense
         # Will serve to get the user's amount owed
@@ -111,13 +121,20 @@ def amount_user_owes(id):
             for participant in user_data:
                 return [users.username for users in participant.participants]
 
+        # Querying inside of a query will result in n+1 (lazy loading)
+
+        expense_owner = User.query.get(expense_owes.created_by)
+
         owe_data = {
             "id": expense_owes.id,
+            "created_by": expense_owner.username.capitalize(),
             "description": expense_owes.description,
             "amount": (expense_owes.amount/get_num_participants()),
             "settled": expense_owes.settled,
-            "participants": get_participants()
+            "participants": get_participants(),
         }
+
+        print("EXEPNSE OWNER IS:", owe_data["created_by"])
 
         expense_data.append(owe_data)
 
@@ -177,6 +194,8 @@ def add_expense():
     # Reassign the choices attribute from the ExpenseForm with a query
     form.participants.choices = [(user.username, user.username) for user in User.query.all()]
 
+    # Manually obtain the csrf-token from cookies
+    form['csrf_token'].data = request.cookies['csrf_token']
 
     if form.validate_on_submit():
         try:
@@ -207,7 +226,6 @@ def add_expense():
                 }), 201
         except Exception as e:
             return jsonify({"error": str(e)}), 400
-
     return jsonify(form.errors), 403
 
 @expense_routes.route("/<int:id>", methods=["DELETE"])
@@ -260,22 +278,22 @@ def update_expense(id):
                 return jsonify({"Error": "amount must be greater than $0.00"}), 403
             selected_expense.amount = data["amount"]
 
-        if "participants" in data:
-            participant_usernames = data["participants"]
-            
-            # Query for the existing usernames
-            participants = User.query.filter(User.username.in_(participant_usernames)).all()
+        # if "participants" in data:
+        #     participant_usernames = data["participants"]
 
-            # We need to add a validation for checking if a user exists in the database or not
-            existing_usernames = [user.username for user in participants]
+        #     # Query for the existing usernames
+        #     participants = User.query.filter(User.username.in_(participant_usernames)).all()
 
-            # Find usernames that do not exist in the database
-            non_existent_usernames = [username for username in participant_usernames if username not in existing_usernames]
+        #     # We need to add a validation for checking if a user exists in the database or not
+        #     existing_usernames = [user.username for user in participants]
 
-            if non_existent_usernames:
-                return jsonify({"Error": f"These users do not exist: {', '.join(non_existent_usernames)}"}), 400
+        #     # Find usernames that do not exist in the database
+        #     non_existent_usernames = [username for username in participant_usernames if username not in existing_usernames]
 
-            selected_expense.participants = participants
+        #     if non_existent_usernames:
+        #         return jsonify({"Error": f"These users do not exist: {', '.join(non_existent_usernames)}"}), 400
+
+        #     selected_expense.participants = participants
 
         db.session.commit()
 
@@ -294,19 +312,18 @@ def settle_expense(id):
 
     # Query the expense from the path
     select_expense = Expense.query.get(id)
-
-    print("POIAFLIAUFHNOAIJFHGNAIUWEHF", select_expense.settled)
+    print(select_expense.settled)
     # Authorization
-    if select_expense.created_by == current_user.id:
-        
+    if ",".join([user.username for user in select_expense.participants if current_user.username == user.username]):
         # Get data from the request body
         data=request.get_json()
-
-        if "settled" in data:
-            
+        # print("THIS IS A BOOLEAN", data["settled"]["settled"])
+        if "settled" in data["settled"]:
             # Check and make sure that the input is a Boolean
-            if isinstance(data["settled"], bool):
-                select_expense.settled = data["settled"]
+            if isinstance(data["settled"]["settled"], bool):
+                select_expense.settled = data["settled"]["settled"]
+                if data["settled"]["settled"]:
+                    select_expense.amount = data["settled"]["amount"]
             else:
                 return jsonify({"Error": "Please provide Boolean type"}), 400
 
@@ -345,7 +362,7 @@ def add_comment(id):
     new_comment = Comment(
         comment_text=comment_text,
         expense_id=expense.id,
-        user_id=current_user.id
+        user_id=current_user.id,
     )
     db.session.add(new_comment)
     db.session.commit()
@@ -405,7 +422,7 @@ def expense_payments(id):
 
     for payment, payer in payments:
 
-        payment_amount = expense.amount / len(expense.participants)
+        payment_amount = expense.amount / len(expense.participants)+1
 
         payment_data = {
             "id": payment.id,
@@ -455,7 +472,7 @@ def add_payment(id):
     if not expense:
         return jsonify({"Message": "Expense couldn't be found"}), 404
 
-    payment_amount = expense.amount / len(expense.participants)
+    payment_amount = expense.amount / len(expense.participants)+1
 
     # Get request data
     data = request.get_json()

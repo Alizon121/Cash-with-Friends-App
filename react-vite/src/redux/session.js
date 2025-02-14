@@ -1,6 +1,14 @@
+import { csrfFetch } from "./csrf";
+
+
+/*********************** Actions **************************************/
 const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
 
+// Add action for loading all users -ASL
+const LOAD_ALL_USERS = 'session/loadAllUsers'
+
+/**************************** Action Creators **************************/
 const setUser = (user) => ({
   type: SET_USER,
   payload: user
@@ -10,6 +18,14 @@ const removeUser = () => ({
   type: REMOVE_USER
 });
 
+// // Create an action creator for loading all users -ASL
+// const loadAllUsers = (users) => ({
+//   type: LOAD_ALL_USERS,
+//   payload: users
+
+// })
+
+/********************************* Thunk Actions **********************/
 export const thunkAuthenticate = () => async (dispatch) => {
 	const response = await fetch("/api/auth/");
 	if (response.ok) {
@@ -23,10 +39,14 @@ export const thunkAuthenticate = () => async (dispatch) => {
 };
 
 export const thunkLogin = (credentials) => async dispatch => {
-  const response = await fetch("/api/auth/login", {
+  const {email, password} = credentials
+  const response = await csrfFetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(credentials)
+    body: JSON.stringify({
+      email,
+      password
+    })
   });
 
   if(response.ok) {
@@ -41,7 +61,7 @@ export const thunkLogin = (credentials) => async dispatch => {
 };
 
 export const thunkSignup = (user) => async (dispatch) => {
-  const response = await fetch("/api/auth/signup", {
+try { const response = await csrfFetch("/api/auth/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user)
@@ -55,6 +75,8 @@ export const thunkSignup = (user) => async (dispatch) => {
     return errorMessages
   } else {
     return { server: "Something went wrong. Please try again" }
+  }} catch (e){
+    return {Server: "network error please try again later"}
   }
 };
 
@@ -63,6 +85,10 @@ export const thunkLogout = () => async (dispatch) => {
   dispatch(removeUser());
 };
 
+// export const thunkLoadAllUsers = () => async dispatch => {
+//   const resposne = await csrfFetch(`/api/users/`)
+// }
+
 const initialState = { user: null };
 
 function sessionReducer(state = initialState, action) {
@@ -70,10 +96,40 @@ function sessionReducer(state = initialState, action) {
     case SET_USER:
       return { ...state, user: action.payload };
     case REMOVE_USER:
-      return { ...state, user: null };
+      const newState={...state}
+      delete newState.user
+      // return { ...state};
+      return newState
     default:
       return state;
   }
 }
+
+export const thunkUpdateUser = (userData) => async (dispatch) => {
+  console.log("📤 Sending profile update request:", userData);
+
+  const response = await fetch("/api/users/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+  });
+
+  console.log("🔍 API Response Status:", response.status);
+
+  if (response.ok) {
+      const updatedUser = await response.json();
+      console.log("✅ Successfully updated:", updatedUser);
+
+      dispatch(setUser(updatedUser));  // Ensure Redux state updates
+      return null; // No errors
+  } else {
+      const errorResponse = await response.json();
+      console.log("⚠️ Validation Errors:", errorResponse);
+
+      return errorResponse; // Return validation errors
+  }
+};
+
+
 
 export default sessionReducer;

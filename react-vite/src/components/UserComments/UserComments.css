@@ -1,0 +1,30 @@
+/* Main Container */
+.user-comments-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Comments Section */
+.comments-section {
+  flex: 1;
+}
+
+.comments-section h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.user-comments {
+  list-style: none;
+  padding: 0;
+}
+
+/* No Comments Message */
+.no-comments-text {
+  text-align: center;
+  font-size: 16px;
+  color: #777;
+  margin-top: 20px;
+}

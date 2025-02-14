@@ -1,0 +1,76 @@
+.profileButtonContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .profileIcon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  .profileIcon:hover {
+    color: #ccc;
+  }
+
+  .profileDropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    border: 2px;
+    border-color: black; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    list-style: none;
+    padding: 10px;
+    min-width: 150px;
+    z-index: 1000;
+  }
+
+  .profileDropdown li {
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .profileDropdown li:hover {
+    background: #f5f5f5;
+    border-radius: 5px;
+  }
+
+  .profileDropdown button{
+    color: #fff;
+    height: 30px;
+    width: 100%;
+    border: none;
+    background-color: #24CEA4;
+  }
+
+  .userInfo {
+    font-weight: bold;
+    padding: 5px 12px;
+    color: #333;
+  }
+
+  .profileDropdown .logoutButton {
+    background-color: #FF4F03;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    width: 100%;
+    /* text-align: left; */
+    text-align: center;
+    padding: 8px 12px;
+  }
+
+  .logoutButton:hover {
+    background-color: #a14016;
+    border-radius: 5px;
+  }

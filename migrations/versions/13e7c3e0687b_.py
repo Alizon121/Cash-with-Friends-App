@@ -7,6 +7,10 @@ Create Date: 2025-01-28 10:01:40.611910
 """
 from alembic import op
 import sqlalchemy as sa
+# Add imports for production schema
+import os
+environment = os.getenv("FLASK_ENV")
+SCHEMA = os.environ.get("SCHEMA")
 
 
 # revision identifiers, used by Alembic.
@@ -22,6 +26,10 @@ def upgrade():
         batch_op.alter_column('settled',
                existing_type=sa.BOOLEAN(),
                nullable=False)
+    # Add alter table logic for production
+    if environment == "production":
+        op.execute(f"ALTER TABLE <table_name> SET SCHEMA {SCHEMA};")
+
 
     # ### end Alembic commands ###
 
