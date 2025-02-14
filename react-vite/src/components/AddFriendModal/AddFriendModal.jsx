@@ -1,39 +1,35 @@
+import styles from "./AddFriendModal.module.css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addFriendByUsername, getPendingRequests, getSentRequests } from "../../redux/friends";
-import "./AddFriendModal.css";
+import { useModal } from "../../context/Modal";
 
-const AddFriendModal = ({ closeModal }) => {
+const AddFriendModal = () => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
+  const { closeModal } = useModal();
 
-  // Retrieve friends, pending requests, and sent requests from Redux store
   const friends = useSelector((state) => state.friends.friends);
   const pendingRequests = useSelector((state) => state.friends.pendingRequests);
   const sentRequests = useSelector((state) => state.friends.sentRequests);
 
-  // Fetch pending and sent requests when the modal opens
   useEffect(() => {
     dispatch(getPendingRequests());
     dispatch(getSentRequests());
   }, [dispatch]);
 
-  // Map usernames for easier validation
   const userFriendsUsernames = Object.values(friends).map((user) => user.username);
   const pendingRequestUsernames = Object.values(pendingRequests).map((request) => request.username);
   const sentRequestUsernames = Object.values(sentRequests).map((request) => request.username);
 
   const handleAddFriend = async (e) => {
     e.preventDefault();
-
-    // Reset messages
     setErrors({});
     setSuccessMessage("");
 
-    // Add validations here
     const newErrors = {};
 
     if (!username.trim()) {
@@ -52,30 +48,29 @@ const AddFriendModal = ({ closeModal }) => {
       newErrors.username = "You already sent a request to this user.";
     }
 
-    // If validation errors exist, stop execution
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    // Dispatch the API call
     try {
       await dispatch(addFriendByUsername({ username, nickname }));
       setSuccessMessage("Friend request sent successfully!");
       setUsername("");
       setNickname("");
     } catch (err) {
-      const errorMessage = err.message || "Failed to send friend request.";
-      setErrors({ username: errorMessage });
+      setErrors({ username: err.message || "Failed to send friend request." });
     }
   };
 
   return (
-    <div className="add-friend-modal">
-      <div className="modal-content">
-        <h2>Add a Friend</h2>
-        {successMessage && <p className="success-message">{successMessage}</p>}
-        <div className="form-group">
+    <div className={styles.addFriendModal}>
+      <div className={styles.modalContent}>
+        <div className={styles.header}>
+          <h2>Add a Friend</h2>
+        </div>
+        {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
+        <div className={styles.formGroup}>
           <label htmlFor="username">Username:</label>
           <input
             id="username"
@@ -84,9 +79,9 @@ const AddFriendModal = ({ closeModal }) => {
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter username"
           />
-          {errors.username && <p className="error">{errors.username}</p>}
+          {errors.username && <p className={styles.error}>{errors.username}</p>}
         </div>
-        <div className="form-group">
+        <div className={styles.formGroup}>
           <label htmlFor="nickname">Nickname (optional):</label>
           <input
             id="nickname"
@@ -96,11 +91,11 @@ const AddFriendModal = ({ closeModal }) => {
             placeholder="Enter nickname"
           />
         </div>
-        <div className="button-group">
-          <button onClick={handleAddFriend} className="add-button">
+        <div className={styles.buttonGroup}>
+          <button onClick={handleAddFriend} className={styles.addButton}>
             Add
           </button>
-          <button onClick={closeModal} className="cancel-button">
+          <button onClick={closeModal} className={styles.cancelButton}>
             Cancel
           </button>
         </div>
