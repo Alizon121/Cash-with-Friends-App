@@ -11,6 +11,45 @@
     /* border: 2px solid red; */
   }
 
+  .addFriendContent {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plusSign {
+    font-size: 30px !important;
+    /* color: #24CEA4; */
+    color: #FF4F03;
+    color: black;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-250%, -55%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .addFriendIcon {
+    font-size: 30px;
+    color: #24CEA4;
+    color: white;
+  }
+
+  /* .iconWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid black;
+    background-color: white;
+} */
+
+
   .friendsHeader {
     display: flex;
     justify-content: space-around;
@@ -75,10 +114,7 @@
     margin: 0;
   }
 
-  .addFriendIcon {
-    font-size: 22px; /* Make the add-friend icon the right size */
-    color: #0056b3;
-  }
+
 
   .addFriendButton:hover .addFriendIcon {
     color: #006bdd; /* Hover effect */
@@ -87,4 +123,5 @@
   .plusSign {
     font-size: 20px;
     font-weight: bold;
+    margin-left: 10px;
   }
