@@ -7,6 +7,21 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Expense description and date of creation */
+.expense-description {
+  font-family:'Times New Roman', Times, serif;
+  color: black !important;
+  font-weight: normal !important;
+  font-size: x-large !important;
+}
+
+.expense-creation {
+  font-family:'Times New Roman', Times, serif;
+  color: black !important;
+  font-weight: normal !important;
+  font-size: x-large !important;
+}
+
 /* Comment Author */
 .comment-author {
   font-size: 16px;
@@ -16,8 +31,9 @@
 
 /* Comment Content */
 .comment-content {
-  font-size: 14px;
-  color: #555;
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
 }
 
 /* Editable Textarea */

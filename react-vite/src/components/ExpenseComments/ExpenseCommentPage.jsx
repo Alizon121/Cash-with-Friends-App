@@ -12,7 +12,7 @@ function ExpenseCommentPage() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const expenseId = parseInt(id, 10);
-  const commentsById = useSelector((state) => state.comments.comments);
+  const commentsById = useSelector((state) => state.comments?.comments);
   const users = useSelector((state) => state.users.users || {});
   const { setModalContent } = useModal();
 

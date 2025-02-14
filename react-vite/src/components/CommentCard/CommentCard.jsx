@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { commentActions } from '../../redux';
+import { useLocation } from 'react-router-dom';
 import "./CommentCard.css";
 
-const CommentCard = ({ comment, user }) => {
+const CommentCard = ({ comment, user, showExpenseInfo }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const [editing, setEditing] = useState(false);
   const [newCommentText, setNewCommentText] = useState(comment.comment_text);
 
@@ -21,6 +23,14 @@ const CommentCard = ({ comment, user }) => {
 
   return (
     <div className="comment-card">
+      {location.pathname === "/comments" || showExpenseInfo ? (
+        <>
+        <p className="expense-info">
+            <span className="expense-description">{comment.description} </span>
+            <span className="expense-creation">{new Date(comment.created_at).toLocaleString()}</span>
+        </p>
+      </>
+      ) : null}
       {editing ? (
         <textarea
           className="comment-edit-textarea"

@@ -24,7 +24,7 @@
 .expense-description {
   font-size: 18px;
   font-weight: bold;
-  color: #FF4F03;
+  color: #FF4F03 !important;
 }
 
 /* Comments Section */

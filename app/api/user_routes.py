@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import User, Comment, db
+from app.models import User, Comment, Expense, db
 
 user_routes = Blueprint('users', __name__)
 
@@ -38,15 +38,14 @@ def get_user_comments(id):
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
 
-    # Paginate the user's comments
-    comments = Comment.query.filter_by(user_id=user_id).paginate(page=page, per_page=per_page, error_out=False)
+    # Do the thing and get the users comments and expense info to display
+    comments = Comment.query.filter_by(user_id=user_id).all()
+    result = [comment.expense.description for comment in comments]
 
-    # Return paginated comments with metadata
+    # Return comments with metadata
     return jsonify({
-        'comments': [comment.to_dict() for comment in comments.items],
-        'total': comments.total,
-        'pages': comments.pages,
-        'current_page': comments.page
+        'comments': [comment.to_dict() for comment in comments],
+        'description': result,
     })
 
 # profile routes

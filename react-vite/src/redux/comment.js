@@ -9,9 +9,9 @@ export const DELETE_COMMENT = "comments/deleteComment";
 
 /******************************* ACTION CREATORS *******************************************/
 
-export const loadComments = (comments) => ({
+export const loadComments = (comments, descriptions = []) => ({
   type: LOAD_COMMENTS,
-  payload: comments,
+  payload: { comments, descriptions },
 });
 
 export const addComment = (comment) => ({
@@ -31,40 +31,53 @@ export const removeComment = (commentId) => ({
 
 /******************************* THUNK ACTIONS *******************************************/
 
-// Helper Func for Both "Get Comments"
-export const getComments = async (url, dispatch) => {
-  try {
-    const res = await csrfFetch(url);
-    if (!res.ok) throw Error("Failed to get comments");
-    const data = await res.json();
-
-    if (!data.comments || data.comments.length === 0) {
-      console.log(`No comments found for ${url}`);
-      return;
-    }
-
-    dispatch(loadComments(data.comments));
-  } catch (e) {
-    console.error("Error loading comments", e);
-  }
-};
-
 // Get Comments for the current User
 export const getUserComments = () => async (dispatch, getState) => {
   const userId = getState().session.user.id;
-
   const url = `/api/users/${userId}/comments`;
-  await getComments(url, dispatch);
-};
 
+  try {
+    const res = await csrfFetch(url);
+    if (!res.ok) throw Error("Failed to get user comments");
+    const data = await res.json();
+    console.log("USER COMMENTS DATA:", data);
+
+    if (!data.comments || !Array.isArray(data.comments)) {
+      console.warn(`Invalid response format from ${url}:`, data);
+      dispatch(loadComments([], []));
+      return;
+    }
+
+    dispatch(loadComments(data.comments, data.description));
+  } catch (e) {
+    console.error("Error loading user comments", e);
+  }
+};
 // Get Comments for the expense by id
 export const getExpenseComments = (id) => async (dispatch) => {
   if (!id) {
     console.error("getExpenseComments called with an undefined id");
     return;
   }
+  
   const url = `/api/expenses/${id}/comments`;
-  await getComments(url, dispatch);
+
+  try {
+    const res = await csrfFetch(url);
+    if (!res.ok) throw Error("Failed to get expense comments");
+    const data = await res.json();
+    console.log("EXPENSE COMMENTS DATA:", data);
+
+    if (!data.comments || !Array.isArray(data.comments)) {
+      console.warn(`Invalid response format from ${url}:`, data);
+      dispatch(loadComments([]));
+      return;
+    }
+
+    dispatch(loadComments(data.comments));
+  } catch (e) {
+    console.error("Error loading expense comments", e);
+  }
 };
 
 // Add a Comment to an Expense
@@ -125,8 +138,11 @@ const initialState = {
 const commentsReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_COMMENTS: {
-      const commentsById = action.payload.reduce((acc, comment) => {
-        acc[comment.id] = comment;
+      const commentsById = action.payload.comments.reduce((acc, comment, index) => {
+        acc[comment.id] = {
+          ...comment,
+          description: action.payload.descriptions[index],
+        };
         return acc;
       }, {});
       return {

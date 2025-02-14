@@ -22,17 +22,6 @@ function UserCommentPage() {
       </header>
 
       <div className="main-content">
-        {/* User Info Section */}
-        <aside className="user-info-sidebar">
-          {/* This img appears to be coming from a local file */}
-          <img
-            src={user?.avatar || "/default-avatar.png"}
-            alt={user?.first_name}
-            className="user-avatar"
-          />
-          <h2>{user?.first_name} {user?.last_name}</h2>
-          <p>Email: {user?.email}</p>
-        </aside>
 
         {/* Comments Section */}
         <section className="comments-section">
@@ -40,7 +29,7 @@ function UserCommentPage() {
           <ul className="user-comments">
             {comments.length > 0 ? (
               comments.map((comment) => (
-                <CommentCard key={comment.id} comment={comment} user={user} />
+                <CommentCard key={comment.id} comment={comment} user={user} showExpenseInfo={true} />
               ))
             ) : (
               <p className="no-comments-text">No comments yet.</p>
