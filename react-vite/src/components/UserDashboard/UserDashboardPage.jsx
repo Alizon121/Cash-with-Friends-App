@@ -2,7 +2,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem"
 import CreateExpenseModal from "../CreateExpenseModal/CreateExpenseModal"
-import AddFriendModal from "../AddFriendModal/AddFriendModal"
+import AddFriendModal from "../AddFriendModal"
 import { loadAllUserExpensesThunk } from "../../redux/expense"
 import SettleFormModal from "../SettleFormModal/SettleFormModal"
 import { useNavigate } from "react-router-dom"
@@ -89,7 +89,7 @@ function UserDashboardPage() {
                                 </div>
                                 <span className="dashboard_settle_details_container">
                                     {
-                                    participant.amount === 0 ?    
+                                    participant?.amount === 0 ?    
                                     <button disabled={true}>
                                         <OpenModalMenuItem
                                             itemText={"Settle"}

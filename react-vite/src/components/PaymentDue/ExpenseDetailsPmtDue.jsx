@@ -60,12 +60,20 @@ const ExpenseDetailsPmtDue = () => {
                 <div className={Styles.oweSectionDetails}>
                     <p>{paymentDue?.created_by}</p>
                     <p className={Styles.oweAmount}>{formattedPrice}</p>
-                <button className={Styles.settleButton}>
-                    <OpenModalMenuItem
-                        itemText={"Settle"}
-                        modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(paymentDue?.id)} settled={paymentDue?.settled} expenseId={paymentDue?.id} amount={paymentDue?.amount.toFixed(2)}/>}
-                    />
-                </button>
+                    {paymentDue?.amount === 0 ? 
+                        <button className={Styles.settleButton} disabled={true}>
+                            <OpenModalMenuItem
+                                itemText={"Settle"}
+                                modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(paymentDue?.id)} settled={paymentDue?.settled} expenseId={paymentDue?.id} amount={paymentDue?.amount.toFixed(2)}/>}
+                            />
+                        </button> :
+                         <button className={Styles.settleButton} disabled={false}>
+                         <OpenModalMenuItem
+                             itemText={"Settle"}
+                             modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(paymentDue?.id)} settled={paymentDue?.settled} expenseId={paymentDue?.id} amount={paymentDue?.amount.toFixed(2)}/>}
+                         />
+                     </button> 
+                    }
                 </div>
             </div>
 
