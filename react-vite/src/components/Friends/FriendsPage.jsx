@@ -35,57 +35,63 @@ function FriendsPage() {
 
   return (
     <div className="friends-container">
-      <h1>Friends</h1>
+      <h1 id="friends-page-header">Friends</h1>
       {loading && <p>Loading friends and requests...</p>}
       {error && <p className="error-message">{error}</p>}
 
       {!loading && !error && (
         <>
           {/* Friends Section */}
-          <div className="friends-section">
-            <h2>Friends</h2>
-            {friends.length === 0 && <p>You have no friends yet. Start adding some!</p>}
-            {friends.map((friend) => (
-              <div key={friend.id} className="friend-card">
-                <p>
-                  👤 <strong>{friend.firstName}</strong> 
-                </p>
-                {/* Delete Button */}
-                <button>
-                  <OpenModalMenuItem
-                    modalComponent={<RemoveFriendModal friend={friend} />}
-                    itemText="Delete"
-                  />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Pending Requests Section */}
-          <div className="pending-requests-section">
-            <h2>Incoming Requests</h2>
-            {pendingRequests.length === 0 && <p>No pending friend requests.</p>}
-            {pendingRequests.map((request) => (
-              <div key={request.id} className="friend-card">
-                <p>
-                  👤 <strong>{request.firstName}</strong> 
-                </p>
-                {/* Add Button */}
-                <button
-                  onClick={() => dispatch(friendActions.acceptFriendRequest(request.id))}
-                  className="accept-button"
-                >
-                  Add
-                </button>
-                {/* Delete Button */}
-                <button>
-                  <OpenModalMenuItem
-                    modalComponent={<RemoveFriendRequestModal request={request} />}
-                    itemText="Delete"
-                  />
-                </button>
-              </div>
-            ))}
+            <div className="friends-section-headers">
+              <h3>Friends</h3>
+              <h3>Incoming Requests</h3>
+            </div>
+          <div className="friends-and-pending-friend-request">
+            <div className="friends-section">
+              {friends.length === 0 && <p>You have no friends yet. Start adding some!</p>}
+              {friends.map((friend) => (
+                <div key={friend.id} className="friend-card">
+                  <p>
+                    👤 <strong>{friend.firstName}</strong> 
+                  </p>
+                  {/* Delete Button */}
+                  <button id="friends-delete-button">
+                    <OpenModalMenuItem
+                      modalComponent={<RemoveFriendModal friend={friend} />}
+                      itemText="Delete"
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div id="divider"></div>
+            {/* Pending Requests Section */}
+            <div className="pending-requests-section">
+              {pendingRequests.length === 0 && <p>No pending friend requests.</p>}
+              {pendingRequests.map((request) => (
+                <div key={request.id} className="pending-friends-card">
+                  <p>
+                    👤 <strong>{request.firstName}</strong> 
+                  </p>
+                  <div className="friends-pending-accept-delete-buttons">
+                      {/* Add Button */}
+                      <button
+                        onClick={() => dispatch(friendActions.acceptFriendRequest(request.id))}
+                        id="accept-button"
+                      >
+                        Add
+                      </button>
+                      {/* Delete Button */}
+                      <button id="pending-friends-delete-button">
+                        <OpenModalMenuItem
+                          modalComponent={<RemoveFriendRequestModal request={request} />}
+                          itemText="Delete"
+                        />
+                      </button>
+                  </div>    
+                </div>
+              ))}
+            </div>
           </div>
         </>
       )}

@@ -1,0 +1,76 @@
+
+
+.friends-and-pending-friend-request h3 {
+    font-size: 24px;
+}
+
+.friends-section-headers {
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #D9D9D9;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.friends-and-pending-friend-request{
+    display: flex;
+    justify-content: space-evenly;
+    list-style: none;
+    /* width: 500px; */
+}
+
+#divider {
+    border: 1px solid #6d6b6b;
+}
+
+.friend-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 500px;
+}
+
+.pending-friends-card {
+    display: flex;
+    justify-content: space-between;
+    width: 500px;
+}
+
+.friends-pending-accept-delete-buttons {
+    display: flex;
+    /* align-items: center; */
+    gap:10px;
+}
+
+.friends-and-pending-friend-request button {
+    border-radius: 20px;
+    border: none;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: bold;
+    width: 90px;
+    height: 30px;
+}
+
+.friends-pending-accept-delete-buttons button {
+    border-radius: 20px;
+    border: none;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: bold;
+    width: 90px;
+    height: 30px;
+}
+
+#friends-delete-button {
+    background-color: #FF4F03;
+}
+
+#accept-button {
+    background-color: #24CEA4;
+}
+
+#pending-friends-delete-button {
+    background-color: #D9D9D9;
+}
+
