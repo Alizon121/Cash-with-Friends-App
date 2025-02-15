@@ -70,7 +70,7 @@ export const getExpenseComments = (id) => async (dispatch) => {
 
     if (!data.comments || !Array.isArray(data.comments)) {
       console.warn(`Invalid response format from ${url}:`, data);
-      dispatch(loadComments([]));
+      dispatch(loadComments(data.comments));
       return;
     }
 
@@ -121,8 +121,8 @@ export const updateComment = (commentData) => async (dispatch) => {
     });
     if (!res.ok) throw new Error("Failed to update comment.");
     const updatedComment = await res.json();
-    dispatch(reviseComment(updatedComment));
-    return updatedComment;
+    dispatch(reviseComment(updatedComment.comment));
+    return updatedComment.comment;
   } catch (e) {
     console.error("Error updating comment:", e);
     throw e;

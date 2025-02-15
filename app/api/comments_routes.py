@@ -19,7 +19,7 @@ def get_comment(comment_id):
         'id': comment.id,
         'user.username': comment.user.username,
         'comment_text': comment.comment_text,
-        'created_at': comment.created_at.isoformat()
+        'created_at': comment.created_at.isoformat(),
     })
 
 
@@ -49,7 +49,7 @@ def edit_comment(comment_id):
     db.session.commit()
 
     # Return the updated comment
-    return {"comment": comment.to_dict()}, 200
+    return {"comment": comment.to_dict(), "user": comment.user.to_dict()}, 200
 
 
 @comment_routes.route('/<int:comment_id>', methods=["DELETE"])

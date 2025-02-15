@@ -354,13 +354,13 @@ def add_comment(id):
     if not expense:
         return {"error": "Expense not found"}, 404
 
-    # Check if user is a participant
-    if current_user not in expense.participants:
+    # Check if user is a participant or creator of expense
+    if current_user not in expense.participants and current_user.id != expense.created_by:
         return {"error": "You are not a participant of this expense"}, 403
 
     # Do the thing (add the comment)
     new_comment = Comment(
-        comment_text=comment_text,
+        comment_text=comment_text.strip(),
         expense_id=expense.id,
         user_id=current_user.id,
     )
@@ -386,7 +386,13 @@ def expense_comments(id):
 
     # Return paginated comments
     return jsonify({
-        'comments': [comment.to_dict() for comment in comments.items],
+        'comments': [
+            {
+                **comment.to_dict(),
+                "user": comment.user.to_dict()
+            } 
+            for comment in comments.items
+        ],
         'total': comments.total,
         'pages': comments.pages,
         'current_page': comments.page
