@@ -87,7 +87,12 @@ def upgrade():
 
     # Add alter table logic for production
     if environment == "production":
-        op.execute(f"ALTER TABLE <table_name> SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE payments SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE expense_participants SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE comments SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE friends SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE expenses SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE users SET SCHEMA {SCHEMA};")
 
     # ### end Alembic commands ###
 
