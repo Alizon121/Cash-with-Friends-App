@@ -13,6 +13,8 @@ expense_participants = db.Table(
     UniqueConstraint("expense_id", "user_id", name="uq_expense_user")
 )
 
+if environment == "production":
+        expense_participants.schema = SCHEMA
 
 class Expense(db.Model):
     __tablename__= "expenses"
