@@ -51,7 +51,7 @@ function UpdateExpenseModal({ expenseId, currentExpense, formattedPrice, onUpdat
         <h1 className={styles.title}>Update Details</h1>
       </div>
       <div className={styles.section}>
-        <h2 className={styles["section-title"]}>FOR:</h2>
+        <h3 className={styles["section-title"]}>FOR:</h3>
         <input
           className={styles.input}
           placeholder="New Description"
@@ -60,7 +60,7 @@ function UpdateExpenseModal({ expenseId, currentExpense, formattedPrice, onUpdat
         />
       </div>
       <div className={styles.section}>
-        <h2 className={styles["section-title"]}>EXPENSE TOTAL:</h2>
+        <h3 className={styles["section-title"]}>EXPENSE TOTAL:</h3>
         <input
           type="number"
           min="0"
@@ -72,7 +72,7 @@ function UpdateExpenseModal({ expenseId, currentExpense, formattedPrice, onUpdat
         {errors.amount && <p className={styles.error}>{errors.amount}</p>}
       </div>
       <div className={styles.section}>
-        <h2 className={styles["section-title"]}>PARTICIPANTS:</h2>
+        <h3 className={styles["section-title"]}>PARTICIPANTS:</h3>
         {currentExpense?.participants.map((participant, index) => (
           <div key={index}>
             {`${participant}: ${formattedPrice}\n`}
