@@ -98,8 +98,8 @@ function sessionReducer(state = initialState, action) {
     case REMOVE_USER:
       const newState={...state}
       delete newState.user
-      // return { ...state};
       return newState
+      // return { ...state};
     default:
       return state;
   }
