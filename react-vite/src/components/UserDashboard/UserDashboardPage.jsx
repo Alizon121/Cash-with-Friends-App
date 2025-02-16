@@ -118,7 +118,7 @@ function UserDashboardPage() {
                     {expense?.expensesOwed && expense?.expensesOwed.length > 0 ? 
                         expense?.expensesOwed.map(expense => (
                             <div className="dashboard_you_are_owed_info_container" key={expense.id}>
-                                {expense.username.map(user => (
+                                {expense?.username.map(user => (
                                     <div className="dashboard_you_are_owed_user_amount_details" key={user.id}>  
                                         <div className="dashboard_you_are_owed_user_expenses">
                                             <div>{user}</div>
@@ -139,7 +139,6 @@ function UserDashboardPage() {
                 </div>
             </div>
         </div>
-        
     </>
 )}
 
