@@ -21,7 +21,7 @@ export const addComment = (comment) => ({
 
 export const reviseComment = (updatedComment) => ({
   type: UPDATE_COMMENT,
-  payload: { updatedComment },
+  payload: updatedComment,
 });
 
 export const removeComment = (commentId) => ({
@@ -66,7 +66,6 @@ export const getExpenseComments = (id) => async (dispatch) => {
     const res = await csrfFetch(url);
     if (!res.ok) throw Error("Failed to get expense comments");
     const data = await res.json();
-    console.log("EXPENSE COMMENTS DATA:", data);
 
     if (!data.comments || !Array.isArray(data.comments)) {
       console.warn(`Invalid response format from ${url}:`, data);
@@ -120,9 +119,9 @@ export const updateComment = (commentData) => async (dispatch) => {
       body: JSON.stringify(commentData),
     });
     if (!res.ok) throw new Error("Failed to update comment.");
-    const updatedComment = await res.json();
-    dispatch(reviseComment(updatedComment.comment));
-    return updatedComment.comment;
+    const { comment } = await res.json();
+    dispatch(reviseComment(comment));
+    return comment;
   } catch (e) {
     console.error("Error updating comment:", e);
     throw e;
@@ -160,11 +159,13 @@ const commentsReducer = (state = initialState, action) => {
       };
     }
     case UPDATE_COMMENT: {
+      const updatedComment = action.payload;
+      if (!updatedComment) return state;
       return {
         ...state,
         comments: {
           ...state.comments,
-          [action.payload.id]: action.payload,
+          [updatedComment.id]: updatedComment,
         },
       };
     }

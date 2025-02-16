@@ -54,7 +54,7 @@ function ExpenseCommentPage() {
               comments.map((comment) => {
                 const user = comment.user || { first_name: "Uknown User" };
                 return (
-                  <CommentCard key={comment.id} comment={comment} user={user} />
+                  <CommentCard key={`comment-${comment.id}`} comment={comment} user={user} />
                 );
               })
             ) : (

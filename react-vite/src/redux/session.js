@@ -6,7 +6,7 @@ const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
 
 // Add action for loading all users -ASL
-const LOAD_ALL_USERS = 'session/loadAllUsers'
+// const LOAD_ALL_USERS = 'session/loadAllUsers'
 
 /**************************** Action Creators **************************/
 const setUser = (user) => ({

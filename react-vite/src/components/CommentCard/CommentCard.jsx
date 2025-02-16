@@ -1,28 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { commentActions } from "../../redux";
 import { useLocation } from "react-router-dom";
 import "./CommentCard.css";
 
-const CommentCard = ({ comment, user, showExpenseInfo }) => {
+const CommentCard = ({ comment, showExpenseInfo }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const currentUser = useSelector((state) => state.session.user);
+  const updatedComment = useSelector(state => state.comments[comment.id]);
+  const commentUser = useSelector((state) => state.users?.users[comment.user_id])
   const isCommentOwner = currentUser.id === comment.user_id;
   const [editing, setEditing] = useState(false);
   const [newCommentText, setNewCommentText] = useState(comment.comment_text);
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     if (editing && newCommentText !== comment.comment_text) {
-      dispatch(
+      const updatedComment = await dispatch(
         commentActions.updateComment({
           ...comment,
           comment_text: newCommentText,
         })
       );
+
+      if (updatedComment) {
+        setNewCommentText(updatedComment.comment_text);
+      }
     }
     setEditing(!editing);
   };
+
+  useEffect(() => {
+    if (updatedComment) {
+      setNewCommentText(updatedComment.comment_text);
+    }
+  }, [updatedComment]); 
 
   const handleDelete = () => {
     dispatch(commentActions.deleteComment(comment.id));
@@ -48,8 +60,8 @@ const CommentCard = ({ comment, user, showExpenseInfo }) => {
         />
       ) : (
         <p className="comment-text">
-          <strong className="comment-author">{user?.first_name}</strong> said:
-          <span className="comment-content"> "{comment?.comment_text}"</span>
+          <strong className="comment-author">{commentUser?.first_name}</strong> said:
+          <span className="comment-content"> "{newCommentText}"</span>
         </p>
       )}
       {isCommentOwner && (
