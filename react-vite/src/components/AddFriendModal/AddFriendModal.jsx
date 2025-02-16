@@ -73,7 +73,7 @@ const AddFriendModal = () => {
         {/* <label className={styles.addFriendLabel} htmlFor="username">Username:</label> */}
         <div className={styles.formGroup}>
           <input
-            class={styles.addFriendInputs}
+            className={styles.addFriendInputs}
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -84,7 +84,7 @@ const AddFriendModal = () => {
         {/* <label className={styles.addFriendLabel} htmlFor="nickname">Nickname (optional):</label> */}
         <div className={styles.formGroup}>
           <input
-            class={styles.addFriendInputs}
+            className={styles.addFriendInputs}
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}

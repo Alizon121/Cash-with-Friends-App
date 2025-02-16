@@ -1,4 +1,5 @@
 import { csrfFetch } from "./csrf";
+import { clearFriendsState } from "./friends";
 
 
 /*********************** Actions **************************************/
@@ -86,6 +87,7 @@ try { const response = await csrfFetch("/api/auth/signup", {
 export const thunkLogout = () => async (dispatch) => {
   await fetch("/api/auth/logout");
   dispatch(removeUser());
+  dispatch(clearFriendsState()); // Clear the friends state on logout
 };
 
 // export const thunkLoadAllUsers = () => async dispatch => {
