@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, request
 from flask_login import login_required, current_user
-from datetime import datetime
+from datetime import datetime, timezone
 from app.models import User, db, Comment
 from flask import Blueprint, redirect, jsonify
 from flask_login import login_required, LoginManager, current_user
@@ -56,8 +56,8 @@ def pending_expenses():
         # Query to get what the user owes
         user_owes = User.query.get(current_user.id).participant_expenses
 
-        if not user_owes:
-            return jsonify({"Message": "User does not currently owe anything."})
+        # if not user_owes:
+        #     return jsonify({"Message": "User does not currently owe anything."})
 
         for expense in user_owes:
             expense_owner = User.query.get(expense.created_by)
@@ -200,7 +200,7 @@ def add_expense():
     if form.validate_on_submit():
         try:
             date_str = form.date.data
-            date_obj = datetime.strptime(date_str, "%m/%d/%Y")
+            date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
 
             participant_usernames = [username.strip() for username in form.data["participants"]]
             participants = User.query.filter(User.username.in_(participant_usernames)).all()
@@ -211,7 +211,7 @@ def add_expense():
             new_expense = Expense(
                 description=form.data["description"],
                 amount=form.data["amount"],
-                date=date_obj.isoformat(),
+                date=datetime.now(timezone.utc),
                 created_by=current_user.id,
                 settled=False,
                 participants=participants
@@ -221,8 +221,8 @@ def add_expense():
             db.session.commit()
 
             return jsonify({
-                "Message": "Expense creation successful",
-                "New Expense": new_expense.to_dict(),
+                # "Message": "Expense creation successful",
+                "expense": new_expense.to_dict(),
                 }), 201
         except Exception as e:
             return jsonify({"error": str(e)}), 400
