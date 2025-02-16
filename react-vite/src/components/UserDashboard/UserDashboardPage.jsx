@@ -7,6 +7,7 @@ import { loadAllUserExpensesThunk } from "../../redux/expense"
 import SettleFormModal from "../SettleFormModal/SettleFormModal"
 import { useNavigate } from "react-router-dom"
 import { getUsers } from "../../redux/users"
+// import { thunkAuthenticate } from "../../redux/session"
 import "./UserDashboard.css"
 
 function UserDashboardPage() {
@@ -19,6 +20,7 @@ function UserDashboardPage() {
     useEffect(() => {
         dispatch(getUsers())
         dispatch(loadAllUserExpensesThunk())
+        // dispatch(thunkAuthenticate())
     }, [dispatch])
 
     const handleSettleExpense = (expenseId) => {
@@ -41,7 +43,7 @@ function UserDashboardPage() {
     {/* Dashboard Header */}
         <div>
             <div className="dashboard_header_container">
-                <h2>{user.user.first_name}'s' Dashboard</h2>
+                <h2>{user?.user?.first_name}'s' Dashboard</h2>
                 <div className="dashboard_create_add_buttons_container">
                     <button id="dashboard_create_expense_button">
                         <OpenModalMenuItem

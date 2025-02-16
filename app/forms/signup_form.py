@@ -31,4 +31,4 @@ class SignUpForm(FlaskForm):
     username = StringField(
         'Username', validators=[DataRequired(), username_exists])
     password = StringField('Password', validators=[DataRequired()])
-    confirm_password = StringField("Confirm Password", validators=[DataRequired(), EqualTo("password", message="Passwords must match")])
+    # confirm_password = StringField("Confirm Password", validators=[DataRequired(), EqualTo("password", message="Passwords must match")])

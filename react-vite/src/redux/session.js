@@ -69,14 +69,17 @@ try { const response = await csrfFetch("/api/auth/signup", {
 
   if(response.ok) {
     const data = await response.json();
+    console.log("DATATADATADATD", data)
     dispatch(setUser(data));
+    return data
   } else if (response.status < 500) {
     const errorMessages = await response.json();
     return errorMessages
   } else {
     return { server: "Something went wrong. Please try again" }
   }} catch (e){
-    return {Server: "network error please try again later"}
+    const errors = await e.json()
+    return {"errors": errors}
   }
 };
 
@@ -98,8 +101,8 @@ function sessionReducer(state = initialState, action) {
     case REMOVE_USER:
       const newState={...state}
       delete newState.user
-      // return { ...state};
       return newState
+      // return { ...state};
     default:
       return state;
   }

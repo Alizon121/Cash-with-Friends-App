@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { thunkLogin } from "../../redux/session";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import { useNavigate } from "react-router-dom";
-// import { getUsers } from "../../redux/users";
+// import { thunkAuthenticate } from "../../redux/session";
 import "./LoginForm.css";
 
 function LoginFormModal() {
@@ -39,6 +39,7 @@ function LoginFormModal() {
       }));
     if (response) {
       navigate("/users/dashboard")
+      // dispatch(thunkAuthenticate())
       closeModal();
     } else {
       closeModal()

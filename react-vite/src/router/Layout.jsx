@@ -13,7 +13,9 @@ export default function Layout() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // dispatch(thunkAuthenticate()).then(() => setIsLoaded(true));
+    if (location.pathname !== "/") {
+      dispatch(thunkAuthenticate());
+    }
     setIsLoaded(true)
   }, [dispatch]);
 

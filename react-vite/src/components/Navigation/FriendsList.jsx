@@ -14,9 +14,10 @@ const FriendsList = () => {
   useEffect(() => {
     if (sessionUser) {
       dispatch(getFriends());
-    } else {
-      console.error("User is not logged in. Cannot fetch friends.");
-    }
+    } 
+    // else {
+    //   console.error("User is not logged in. Cannot fetch friends.");
+    // }
   }, [dispatch, sessionUser]);
 
   if (!sessionUser) {

@@ -11,7 +11,7 @@ function UserCommentPage() {
 
   useEffect(() => {
     dispatch(commentActions.getUserComments());
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   const comments = Object.values(userComments);
 

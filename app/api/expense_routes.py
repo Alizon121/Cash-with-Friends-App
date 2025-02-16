@@ -64,15 +64,15 @@ def pending_expenses():
             owes_data = {
                 "id": expense.id,
                 "userId": current_user.id,
-                "amount": (expense.amount/(len(expense.participants)+1)),
+                "amount": (expense.amount/(len(expense.participants))),
                 "description": expense.description,
                 "settled": expense.settled,
                 "createdBy": expense_owner.username,
                 "participants": [user.username for user in expense.participants],
                 # "createdAt": user_owes.created_at
             }
-            total_owes_amount+=(expense.amount/(len(expense.participants)+1))
-            total_amount-= (expense.amount/(len(expense.participants)+1))
+            total_owes_amount+=(expense.amount/(len(expense.participants)))
+            total_amount-= (expense.amount/(len(expense.participants)))
             expense_data_owes_to.append(owes_data)
 
         return jsonify({
@@ -428,7 +428,7 @@ def expense_payments(id):
 
     for payment, payer in payments:
 
-        payment_amount = expense.amount / len(expense.participants)+1
+        payment_amount = expense.amount / len(expense.participants)
 
         payment_data = {
             "id": payment.id,
@@ -478,7 +478,7 @@ def add_payment(id):
     if not expense:
         return jsonify({"Message": "Expense couldn't be found"}), 404
 
-    payment_amount = expense.amount / len(expense.participants)+1
+    payment_amount = expense.amount / len(expense.participants)
 
     # Get request data
     data = request.get_json()
