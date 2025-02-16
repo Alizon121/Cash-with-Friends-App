@@ -24,7 +24,7 @@ function DeleteExpenseModal({ expenseId, onDelete, currentExpense }) {
   return (
     <div className={styles.modal}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Delete</h1>
+        <h2 className={styles.title}>Delete</h2>
       </div>
       <div className={styles.section}>
         <h2 className={styles["section-title"]}>ARE YOU SURE YOU WANT TO DELETE THIS EXPENSE?</h2>
