@@ -18,8 +18,7 @@ function CreateExpenseModal() {
     const dispatch = useDispatch()
     const {closeModal} = useModal()
     const navigate = useNavigate()
-    const regex = /^(\w+(,\s)?)*$/;
-
+    // const regex = /^(\w+(,\s)?)*$/;
     
     // Date logic -ASL
     const now = new Date(Date.now());
@@ -46,7 +45,6 @@ function CreateExpenseModal() {
             participantErrors.push("Provide only one friend.");
         } 
 
-        console.log(selectedFriends.split(", "))
         if (selectedFriends.split(", ").length > 1) {
             participantErrors.push("Please provide only one username")
         }
