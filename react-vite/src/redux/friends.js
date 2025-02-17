@@ -226,13 +226,14 @@ const initialState = {
 const friendsReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_FRIENDS: {
-      const friendsById = action.payload.reduce((acc, friend) => {
-        acc[friend.id] = friend;
-        return acc;
-      }, {});
+    //   const friendsById = action.payload.reduce((acc, friend) => {
+    //     acc[friend.id] = friend;
+    //     return acc;
+    //   }, {});
       return {
         ...state,
-        friends: friendsById,
+        friends: {...action.payload}
+        // friends: friendsById,
       };
     }
     case LOAD_PENDING_REQUESTS: {
@@ -258,9 +259,10 @@ const friendsReducer = (state = initialState, action) => {
     case ADD_FRIEND: {
       return {
         ...state,
-        friends: {
-          ...state.friends,
-          [action.payload.id]: action.payload,
+        sentRequests: {
+        //   ...state.friends,
+        //   [action.payload.id]: action.payload,
+            ...action.payload
         },
       };
     }

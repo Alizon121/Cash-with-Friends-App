@@ -24,9 +24,9 @@ const FriendsList = () => {
   // Filter out pending friend requests
   const acceptedFriends = friends.filter(friend => !friend.pending_status);
 
-  if (acceptedFriends.length === 0) {
-    return <p className={styles.message}>You have no friends yet. Start adding some!</p>;
-  }
+  // if (acceptedFriends.length === 0) {
+  //   return <p className={styles.message}>You have no friends yet. Start adding some!</p>;
+  // }
 
   return (
     <div className={styles.friendsListContainer}>
