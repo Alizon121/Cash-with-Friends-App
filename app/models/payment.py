@@ -22,6 +22,7 @@ class Payment(db.Model):
     if environment == "production":
         __table_args__ = {"schema": SCHEMA}
 
+    # WE NEED TO ADD SETTLED AND AMOUNT COLUMNS IN ORDER TO PROPERLY SETTLE AN EXPENSE
     id = db.Column(db.Integer, primary_key=True)
     expense_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('expenses.id')), nullable=False)
     payer_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), nullable=False)

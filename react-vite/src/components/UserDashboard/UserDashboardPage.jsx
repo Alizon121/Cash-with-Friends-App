@@ -84,10 +84,10 @@ function UserDashboardPage() {
                 <div>
                         <div className="dashboard_you_owe_container">
                             {expense?.owesExpenses?.map(participant => (
-                            <div key={participant.id}>
+                            <div key={participant?.id}>
                                 <div className="dashboard_body_created_amount">
-                                    <div>{participant.createdBy}</div>
-                                    <div>{participant.amount.toFixed(2)}</div>
+                                    <div>{participant?.createdBy}</div>
+                                    <div>{participant?.amount.toFixed(2)}</div>
                                 </div>
                                 <span className="dashboard_settle_details_container">
                                     {

@@ -310,6 +310,8 @@ def update_expense(id):
 @login_required
 def settle_expense(id):
 
+    # WE NEED TO REFACTOR THIS TO BE A POST AND MAKE A NEW PAYMENT INSTANCE WHEN A USER SETTLES AN EXPENSE
+
     # Query the expense from the path
     select_expense = Expense.query.get(id)
     print(select_expense.settled)

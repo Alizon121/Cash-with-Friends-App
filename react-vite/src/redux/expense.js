@@ -54,6 +54,10 @@ const updateExpense = (expense) => ({
     payload: expense
 })
 
+const CLEAR_EXPENSE_STATE = "CLEAR_EXPENSE_STATE"
+export const clearExpenseState = () => ({
+    type: CLEAR_EXPENSE_STATE
+})
 
 /******************* Thunk Actions *******************/
 
@@ -237,6 +241,16 @@ const expenseReducer = (state={}, action) => {
             return {
                 ...state,
                 expenses: updatedExpenses
+            }
+
+            case CLEAR_EXPENSE_STATE: {
+                return {
+                    expensesOwed: [],
+                    owesExpenses: [],
+                    totalAmountOwed: 0,
+                    totalOwedAmount: 0,
+                    totalOwesAmount: 0
+                };
             }
         default:
             return state
