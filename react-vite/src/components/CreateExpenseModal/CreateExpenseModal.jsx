@@ -43,10 +43,19 @@ function CreateExpenseModal() {
 
         const participantErrors = []
         if (!selectedFriends) {
-            participantErrors.push("Provide at least one friend.");
-        } else if (!regex.test(selectedFriends)) {
-            participantErrors.push("Usernames must be separated by ', '");
-        } else {
+            participantErrors.push("Provide only one friend.");
+        } 
+
+        console.log(selectedFriends.split(", "))
+        if (selectedFriends.split(", ").length > 1) {
+            participantErrors.push("Please provide only one username")
+        }
+
+        // else if (!regex.test(selectedFriends)) {
+        //     participantErrors.push("Usernames must be separated by ', '");
+        // } 
+        
+        else {
             const participants = selectedFriends.split(", ");
             if (participants.includes(currentUser.username)) {
                 participantErrors.push("Current user cannot be part of this expense.");
