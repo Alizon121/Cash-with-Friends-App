@@ -35,8 +35,10 @@ def send_friend_request():
     db.session.add(new_friend_request)
     db.session.commit()
 
-    return jsonify({"message": "Friend request sent successfully!"}), 201
-
+    return jsonify({
+        # "message": "Friend request sent successfully!",
+        "friendRequest": new_friend_request.to_dict()
+                    }), 201
 
 
 @friends_routes.route("/", methods=["PUT"])
