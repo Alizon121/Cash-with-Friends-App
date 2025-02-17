@@ -14,8 +14,6 @@ const FriendsList = () => {
   useEffect(() => {
     if (sessionUser) {
       dispatch(getFriends());
-    } else {
-      console.error("User is not logged in. Cannot fetch friends.");
     }
   }, [dispatch, sessionUser]);
 
@@ -23,9 +21,12 @@ const FriendsList = () => {
     return <p className={styles.message}>Please log in to see your friends list.</p>;
   }
 
-  if (friends.length === 0) {
-    return <p className={styles.message}>You have no friends yet. Start adding some!</p>;
-  }
+  // Filter out pending friend requests
+  const acceptedFriends = friends.filter(friend => !friend.pending_status);
+
+  // if (acceptedFriends.length === 0) {
+  //   return <p className={styles.message}>You have no friends yet. Start adding some!</p>;
+  // }
 
   return (
     <div className={styles.friendsListContainer}>
@@ -39,7 +40,7 @@ const FriendsList = () => {
               <div className={styles.addFriendContent}>
                 <span className={styles.plusSign}>+</span>
                 <div className={styles.iconWrapper}>
-                <FaUserCircle className={styles.addFriendIcon} />
+                  <FaUserCircle className={styles.addFriendIcon} />
                 </div>
               </div>
             }
@@ -49,8 +50,8 @@ const FriendsList = () => {
 
       {/* Friends List */}
       <ul className={styles.friendsList}>
-        {friends.map((friend) => (
-          <li key={friend.id} className={styles.friendItem}>
+        {acceptedFriends.map(friend => (
+          <li key={`${friend.user_id}-${friend.friend_id}`} className={styles.friendItem}>
             <FaUserCircle className={styles.profileIcon} />
             <span className={styles.friendName}>{friend.username}</span>
           </li>

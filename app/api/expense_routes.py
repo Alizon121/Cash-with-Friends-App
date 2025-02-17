@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, request
 from flask_login import login_required, current_user
-from datetime import datetime
+from datetime import datetime, timezone
 from app.models import User, db, Comment
 from flask import Blueprint, redirect, jsonify
 from flask_login import login_required, LoginManager, current_user
@@ -56,23 +56,23 @@ def pending_expenses():
         # Query to get what the user owes
         user_owes = User.query.get(current_user.id).participant_expenses
 
-        if not user_owes:
-            return jsonify({"Message": "User does not currently owe anything."})
+        # if not user_owes:
+        #     return jsonify({"Message": "User does not currently owe anything."})
 
         for expense in user_owes:
             expense_owner = User.query.get(expense.created_by)
             owes_data = {
                 "id": expense.id,
                 "userId": current_user.id,
-                "amount": (expense.amount/(len(expense.participants)+1)),
+                "amount": (expense.amount/(len(expense.participants))),
                 "description": expense.description,
                 "settled": expense.settled,
                 "createdBy": expense_owner.username,
                 "participants": [user.username for user in expense.participants],
                 # "createdAt": user_owes.created_at
             }
-            total_owes_amount+=(expense.amount/(len(expense.participants)+1))
-            total_amount-= (expense.amount/(len(expense.participants)+1))
+            total_owes_amount+=(expense.amount/(len(expense.participants)))
+            total_amount-= (expense.amount/(len(expense.participants)))
             expense_data_owes_to.append(owes_data)
 
         return jsonify({
@@ -200,7 +200,7 @@ def add_expense():
     if form.validate_on_submit():
         try:
             date_str = form.date.data
-            date_obj = datetime.strptime(date_str, "%m/%d/%Y")
+            date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
 
             participant_usernames = [username.strip() for username in form.data["participants"]]
             participants = User.query.filter(User.username.in_(participant_usernames)).all()
@@ -211,7 +211,7 @@ def add_expense():
             new_expense = Expense(
                 description=form.data["description"],
                 amount=form.data["amount"],
-                date=date_obj.isoformat(),
+                date=datetime.now(timezone.utc),
                 created_by=current_user.id,
                 settled=False,
                 participants=participants
@@ -221,8 +221,8 @@ def add_expense():
             db.session.commit()
 
             return jsonify({
-                "Message": "Expense creation successful",
-                "New Expense": new_expense.to_dict(),
+                # "Message": "Expense creation successful",
+                "expense": new_expense.to_dict(),
                 }), 201
         except Exception as e:
             return jsonify({"error": str(e)}), 400
@@ -310,6 +310,8 @@ def update_expense(id):
 @login_required
 def settle_expense(id):
 
+    # WE NEED TO REFACTOR THIS TO BE A POST AND MAKE A NEW PAYMENT INSTANCE WHEN A USER SETTLES AN EXPENSE
+
     # Query the expense from the path
     select_expense = Expense.query.get(id)
     print(select_expense.settled)
@@ -354,13 +356,13 @@ def add_comment(id):
     if not expense:
         return {"error": "Expense not found"}, 404
 
-    # Check if user is a participant
-    if current_user not in expense.participants:
+    # Check if user is a participant or creator of expense
+    if current_user not in expense.participants and current_user.id != expense.created_by:
         return {"error": "You are not a participant of this expense"}, 403
 
     # Do the thing (add the comment)
     new_comment = Comment(
-        comment_text=comment_text,
+        comment_text=comment_text.strip(),
         expense_id=expense.id,
         user_id=current_user.id,
     )
@@ -386,7 +388,13 @@ def expense_comments(id):
 
     # Return paginated comments
     return jsonify({
-        'comments': [comment.to_dict() for comment in comments.items],
+        'comments': [
+            {
+                **comment.to_dict(),
+                "user": comment.user.to_dict()
+            } 
+            for comment in comments.items
+        ],
         'total': comments.total,
         'pages': comments.pages,
         'current_page': comments.page
@@ -422,7 +430,7 @@ def expense_payments(id):
 
     for payment, payer in payments:
 
-        payment_amount = expense.amount / len(expense.participants)+1
+        payment_amount = expense.amount / len(expense.participants)
 
         payment_data = {
             "id": payment.id,
@@ -472,7 +480,7 @@ def add_payment(id):
     if not expense:
         return jsonify({"Message": "Expense couldn't be found"}), 404
 
-    payment_amount = expense.amount / len(expense.participants)+1
+    payment_amount = expense.amount / len(expense.participants)
 
     # Get request data
     data = request.get_json()

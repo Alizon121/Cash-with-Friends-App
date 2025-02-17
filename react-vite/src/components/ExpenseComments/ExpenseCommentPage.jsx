@@ -52,9 +52,9 @@ function ExpenseCommentPage() {
           <ul className="expense-comments">
             {comments.length > 0 ? (
               comments.map((comment) => {
-                const user = users[comment.user_id];
+                const user = comment.user || { first_name: "Uknown User" };
                 return (
-                  <CommentCard key={comment.id} comment={comment} user={user} />
+                  <CommentCard key={`comment-${comment.id}`} comment={comment} user={user} />
                 );
               })
             ) : (

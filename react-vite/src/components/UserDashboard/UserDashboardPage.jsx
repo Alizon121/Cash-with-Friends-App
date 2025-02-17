@@ -7,6 +7,7 @@ import { loadAllUserExpensesThunk } from "../../redux/expense"
 import SettleFormModal from "../SettleFormModal/SettleFormModal"
 import { useNavigate } from "react-router-dom"
 import { getUsers } from "../../redux/users"
+// import { thunkAuthenticate } from "../../redux/session"
 import "./UserDashboard.css"
 
 function UserDashboardPage() {
@@ -14,12 +15,18 @@ function UserDashboardPage() {
     const expense = useSelector(state => state.expenses, shallowEqual)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    // const [loading, setLoading] = useState(true)
 
     
     useEffect(() => {
         dispatch(getUsers())
         dispatch(loadAllUserExpensesThunk())
+        // dispatch(thunkAuthenticate())
     }, [dispatch])
+
+    // if (loading) {
+    //     return <div>Loading...</div>
+    // }
 
     const handleSettleExpense = (expenseId) => {
         dispatch(loadAllUserExpensesThunk())
@@ -41,7 +48,7 @@ function UserDashboardPage() {
     {/* Dashboard Header */}
         <div>
             <div className="dashboard_header_container">
-                <h2>{user.user.first_name}'s' Dashboard</h2>
+                <h2>{user?.user?.first_name}'s' Dashboard</h2>
                 <div className="dashboard_create_add_buttons_container">
                     <button id="dashboard_create_expense_button">
                         <OpenModalMenuItem
@@ -82,10 +89,10 @@ function UserDashboardPage() {
                 <div>
                         <div className="dashboard_you_owe_container">
                             {expense?.owesExpenses?.map(participant => (
-                            <div key={participant.id}>
+                            <div key={participant?.id}>
                                 <div className="dashboard_body_created_amount">
-                                    <div>{participant.createdBy}</div>
-                                    <div>{participant.amount.toFixed(2)}</div>
+                                    <div>{participant?.createdBy}</div>
+                                    <div>{participant?.amount.toFixed(2)}</div>
                                 </div>
                                 <span className="dashboard_settle_details_container">
                                     {
@@ -93,17 +100,17 @@ function UserDashboardPage() {
                                     <button disabled={true}>
                                         <OpenModalMenuItem
                                             itemText={"Settle"}
-                                            modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant?.amount.toFixed(2)}/>}
+                                            modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant?.id)} settled={participant?.settled} expenseId={participant?.id} amount={participant?.amount.toFixed(2)}/>}
                                         />
                                     </button> :
                                     <button id="dashboard_settle_button" disabled={false}>
                                     <OpenModalMenuItem
                                         itemText={"Settle"}
-                                        modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant.id)} settled={participant.settled} expenseId={participant.id} amount={participant?.amount.toFixed(2)}/>}
+                                        modalComponent={<SettleFormModal onSettle={() => handleSettleExpense(participant?.id)} settled={participant?.settled} expenseId={participant?.id} amount={participant?.amount.toFixed(2)}/>}
                                     />
                                     </button>
                                     }
-                                    <button id="dashboard_you_owe_details_button" onClick={() => navigatePaymentDuePage(participant.id)}>
+                                    <button id="dashboard_you_owe_details_button" onClick={() => navigatePaymentDuePage(participant?.id)}>
                                         Details
                                     </button>
                                 </span>
@@ -115,17 +122,17 @@ function UserDashboardPage() {
                 <div className="dashboard_you_are_owed_container">
                     {expense?.expensesOwed && expense?.expensesOwed.length > 0 ? 
                         expense?.expensesOwed.map(expense => (
-                            <div className="dashboard_you_are_owed_info_container" key={expense.id}>
-                                {expense.username.map(user => (
-                                    <div className="dashboard_you_are_owed_user_amount_details" key={user.id}>  
+                            <div className="dashboard_you_are_owed_info_container" key={expense?.id}>
+                                {expense?.username.map(user => (
+                                    <div className="dashboard_you_are_owed_user_amount_details" key={user?.id}>  
                                         <div className="dashboard_you_are_owed_user_expenses">
                                             <div>{user}</div>
                                             <div>
-                                                {(expense.amount/((expense.username).length)).toFixed(2)}
+                                                {(expense?.amount/((expense?.username).length)).toFixed(2)}
                                             </div>
                                         </div>
                                         <div className="dashboard_you_are_owed_details_container">
-                                            <button onClick={() => navigateAmountOwedPage(expense.id)}>
+                                            <button onClick={() => navigateAmountOwedPage(expense?.id)}>
                                                 Details
                                             </button>
                                         </div>       
@@ -137,7 +144,6 @@ function UserDashboardPage() {
                 </div>
             </div>
         </div>
-        
     </>
 )}
 

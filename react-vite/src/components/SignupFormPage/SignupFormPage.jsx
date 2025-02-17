@@ -21,14 +21,20 @@ function SignupFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      return setErrors({
-        confirmPassword:
-          "Confirm Password field must be the same as the Password field",
-      });
+    setErrors({})
+
+    const newErrors = {}
+
+    if (password !== confirmPassword) newErrors.confirmPassword = "Passwords must match"
+    if (username.length < 4) newErrors.username = "Username must be at least 4 characters."
+    if (password.length < 6) newErrors.password = "Password must be greater than 6 characters."
+
+    if (Object.values(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
     }
 
-    const serverResponse = await dispatch(
+    const response = await dispatch(
       thunkSignup({
         first_name: firstName,
         last_name: lastName,
@@ -39,10 +45,18 @@ function SignupFormPage() {
       })
     );
 
-    if (serverResponse) {
-      setErrors(serverResponse);
+    if (response?.errors) {
+      const apiErrors = response.errors.errors
+      const updatedErrors = {}
+      if (apiErrors.email) {
+        updatedErrors.email =apiErrors.email
+      }
+      if (response.errors.errors.username) {
+        updatedErrors.username = apiErrors.username
+      }
+      setErrors(updatedErrors)
     } else {
-      navigate("/users/dashboard");
+      navigate("/users/dashboard")
     }
   };
 

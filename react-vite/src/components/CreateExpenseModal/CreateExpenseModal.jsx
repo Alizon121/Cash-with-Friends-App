@@ -1,25 +1,24 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { createExpenseThunk } from "../../redux/expense";
+import { createExpenseThunk, loadAllUserExpensesThunk } from "../../redux/expense";
 import { useModal } from "../../context/Modal";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./CreateExpense.css"
 
 function CreateExpenseModal() {
-    const [amount, setAmount] = useState(Number(0).toFixed(2))
+    const [amount, setAmount] = useState(0)
     const [forDescription, setForDescription] =useState("")
     const [comment, setComment] = useState("")
     const [errors, setErrors] = useState({})
-    const [selectedFriends, setSelectedFriends] = useState([])
+    const [selectedFriends, setSelectedFriends] = useState("")
     const currentUser = useSelector(state => state.session.user)
     const users = useSelector(state => state.users.users)
     const usernames = Object.values(users).map(user => user.username)
     const dispatch = useDispatch()
     const {closeModal} = useModal()
     const navigate = useNavigate()
-    const regex = /^(\w+(,\s)?)*$/;
-
+    // const regex = /^(\w+(,\s)?)*$/;
     
     // Date logic -ASL
     const now = new Date(Date.now());
@@ -40,20 +39,44 @@ function CreateExpenseModal() {
         
         // Description validations
         if (!forDescription) newErrors.forDescription = "Description is required"
-        if (!selectedFriends) newErrors.selectedFriends = "Provide at least one friend"
-        
-        // Particiipants validations (selectedFriends)
-        if (!regex.test(selectedFriends)) {newErrors.selectedFriends = "Usernames must be separated by ', '"
-        } else {
-            if (selectedFriends.includes(currentUser.username)) {newErrors.selectedFriends = "Current user cannot be part of this expense"
-            }
-            
-            selectedFriends.split(", ").filter(element => 
-                {if (!usernames.includes(element)) newErrors.selectedFriends = "Please provide a valid username"}
-            )
+
+        const participantErrors = []
+        if (!selectedFriends) {
+            participantErrors.push("Provide only one friend.");
+        } 
+
+        if (selectedFriends.split(", ").length > 1) {
+            participantErrors.push("Please provide only one username")
         }
 
-        // if (selectedFriends.split(", ").filter(element => console.log(usernames.includes(element)))) {
+        // else if (!regex.test(selectedFriends)) {
+        //     participantErrors.push("Usernames must be separated by ', '");
+        // } 
+        
+        else {
+            const participants = selectedFriends.split(", ");
+            if (participants.includes(currentUser.username)) {
+                participantErrors.push("Current user cannot be part of this expense.");
+            }
+            participants.forEach(user => {
+                if (!usernames.includes(user)) {
+                    participantErrors.push(`Invalid username: ${user}`);
+                }
+            });
+        }
+
+        if (participantErrors.length > 0) {
+            newErrors.selectedFriends = participantErrors.join(" ");
+        }
+        // // Particiipants validations (selectedFriends)
+        // if (!selectedFriends) newErrors.selectedFriends = "Provide at least one friend"
+        // if (!regex.test(selectedFriends)) {newErrors.selectedFriends = "Usernames must be separated by ', '"
+        // } else {
+        //     if (selectedFriends.includes(currentUser.username)) {newErrors.selectedFriends = "Current user cannot be part of this expense"
+        //     }
+        //     selectedFriends.split(", ").filter(element => 
+        //         {if (!usernames.includes(element)) newErrors.selectedFriends = "Please provide a valid username"}
+        //     )
         // }
         if (Object.keys(newErrors).length > 0) { 
             setErrors(newErrors); 
@@ -69,18 +92,22 @@ function CreateExpenseModal() {
 
         try {
             await dispatch(createExpenseThunk(payload))
+            await dispatch(loadAllUserExpensesThunk())
             setAmount(0)
             setForDescription("")
             setSelectedFriends("")
             navigate("/")
             closeModal()
         } catch (e) {
+            newErrors.server = "Server error. Unable to create expense"
             console.error("Unable to create the expense", e)
+            setErrors(newErrors)
         }
     }
     return (
         <div className="create_expense_container">
             <h2>Create an Expense</h2>
+            {errors.server && <p className="error">{errors.server}</p>}
             <form className="create_expense_form_container" onSubmit={handleSubmit}>
                     <div>
                         <input
@@ -97,7 +124,7 @@ function CreateExpenseModal() {
                             placeholder="Amount"
                             min="1.00"
                             value={amount}
-                            onChange={e => setAmount(e.target.value)}
+                            onChange={e => setAmount(Number(e.target.value))}
                         />
                         {errors.amount && <p className="error">{errors.amount}</p>}
                     </div>

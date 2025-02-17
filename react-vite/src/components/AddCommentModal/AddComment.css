@@ -1,7 +1,6 @@
 /* Main modal container */
 .add-comment-modal {
   background-color: white;
-  /* padding: 20px; */
   border-radius: 5px;
   width: 350px;
   height: 250px;
@@ -20,6 +19,23 @@
   border-radius: 0px;
 }
 
+/* Error Message Styling */
+.error-message {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* Form Styling */
+.add-comment-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
 /* Textarea Styling */
 .comment-textarea {
   width: 80%;
@@ -28,7 +44,7 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 14px;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 /* Modal Footer: Buttons */
@@ -39,7 +55,7 @@
   margin-top: 15px;
 }
 
-/* Create Button */
+/* Add Button */
 .btn-add {
   background-color: #FF4F03;
   color: white;
@@ -51,7 +67,7 @@
   width: 120px;
 }
 
-.btn-create:hover {
+.btn-add:hover {
   background-color: #d5561a;
 }
 

@@ -9,6 +9,7 @@ export const DELETE_FRIEND = "friends/deleteFriend";
 export const REMOVE_FRIEND_REQUEST = "friends/removeFriendRequest";
 export const LOAD_SENT_REQUESTS = "friends/loadSentRequests";
 export const REMOVE_SENT_REQUEST = "friends/removeSentRequest";
+export const CLEAR_FRIENDS_STATE = "friends/clearFriendsState";
 
 
 /******************************* ACTION CREATORS *******************************************/
@@ -48,6 +49,11 @@ export const removeSentRequest = (friendId) => ({
   type: REMOVE_SENT_REQUEST,
   payload: friendId,
 });
+
+export const clearFriendsState = () => ({
+  type: CLEAR_FRIENDS_STATE,
+});
+
 
 
 /******************************* THUNK ACTIONS *******************************************/
@@ -226,7 +232,8 @@ const friendsReducer = (state = initialState, action) => {
       }, {});
       return {
         ...state,
-        friends: friendsById,
+        friends: {...action.payload}
+        // friends: friendsById,
       };
     }
     case LOAD_PENDING_REQUESTS: {
@@ -252,9 +259,10 @@ const friendsReducer = (state = initialState, action) => {
     case ADD_FRIEND: {
       return {
         ...state,
-        friends: {
+        sentRequests: {
           ...state.friends,
           [action.payload.id]: action.payload,
+            // ...action.payload
         },
       };
     }
@@ -281,6 +289,9 @@ const friendsReducer = (state = initialState, action) => {
         ...state,
         sentRequests: newSentRequests,
       };
+    }
+    case CLEAR_FRIENDS_STATE: {
+      return initialState; // Reset the friends slice to its initial state
     }
     default:
       return state;

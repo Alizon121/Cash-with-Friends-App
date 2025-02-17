@@ -1,4 +1,6 @@
 import { csrfFetch } from "./csrf";
+import { clearExpenseState } from "./expense";
+import { clearFriendsState } from "./friends";
 
 
 /*********************** Actions **************************************/
@@ -6,7 +8,7 @@ const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
 
 // Add action for loading all users -ASL
-const LOAD_ALL_USERS = 'session/loadAllUsers'
+// const LOAD_ALL_USERS = 'session/loadAllUsers'
 
 /**************************** Action Creators **************************/
 const setUser = (user) => ({
@@ -69,20 +71,25 @@ try { const response = await csrfFetch("/api/auth/signup", {
 
   if(response.ok) {
     const data = await response.json();
+    console.log("DATATADATADATD", data)
     dispatch(setUser(data));
+    return data
   } else if (response.status < 500) {
     const errorMessages = await response.json();
     return errorMessages
   } else {
     return { server: "Something went wrong. Please try again" }
   }} catch (e){
-    return {Server: "network error please try again later"}
+    const errors = await e.json()
+    return {"errors": errors}
   }
 };
 
 export const thunkLogout = () => async (dispatch) => {
   await fetch("/api/auth/logout");
   dispatch(removeUser());
+  dispatch(clearFriendsState()); // Clear the friends state on logout
+  dispatch(clearExpenseState())
 };
 
 // export const thunkLoadAllUsers = () => async dispatch => {
@@ -98,8 +105,8 @@ function sessionReducer(state = initialState, action) {
     case REMOVE_USER:
       const newState={...state}
       delete newState.user
-      // return { ...state};
       return newState
+      // return { ...state};
     default:
       return state;
   }

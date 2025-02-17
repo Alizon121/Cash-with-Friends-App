@@ -54,6 +54,10 @@ const updateExpense = (expense) => ({
     payload: expense
 })
 
+const CLEAR_EXPENSE_STATE = "CLEAR_EXPENSE_STATE"
+export const clearExpenseState = () => ({
+    type: CLEAR_EXPENSE_STATE
+})
 
 /******************* Thunk Actions *******************/
 
@@ -98,11 +102,12 @@ export const createExpenseThunk = (payload) => async dispatch => {
 
      if (response.ok) {
         const result = await response.json()
-        dispatch(create)
+        console.log("POJAPFIA", result)
+
+        dispatch(create(result))
         return result
     } else {
         const errorResult = await response.json()
-        console.error(errorResult)
         throw new Error("Failed to create expense")
     }
 }
@@ -166,13 +171,9 @@ const expenseReducer = (state={}, action) => {
         case LOAD_ALL_USER_EXPENSES: {
             const expenses = action.payload 
             return {
-                // ...state,
                 ...expenses
             }
         }
-        // let newState = structuredClone(state)
-        // newState =  structuredClone(expenses)
-        // return newState
         case SETTLE_EXPENSE: {
             const settledExpense = action.payload
             return {
@@ -181,10 +182,29 @@ const expenseReducer = (state={}, action) => {
             }
         }
         case CREATE_EXPENSE: {
-            const newExpense = action.payload;
+            const newExpense = action.payload.payload;
+            console.log("WE ARE CREATING THE EXPENSE", newExpense)
             return {
                 ...state,
-                ...newExpense
+                expensesOwed: state?.expenses?.expensesOwed 
+                    ? [...state.expenses.expensesOwed, newExpense] 
+                    : [newExpense],  // If `expensesOwed` doesn't exist, initialize it
+        
+                oweExpenses: state?.expenses?.oweExpenses 
+                    ? [...state.expenses.oweExpenses] 
+                    : [],  // Ensure it doesn't break if `oweExpenses` is undefined
+        
+                totalAmountOwed: state?.expenses?.totalAmountOwed 
+                    ? state.expenses.totalAmountOwed + (newExpense?.amount || 0) 
+                    : newExpense?.amount || 0,  // Initialize if it doesn’t exist
+        
+                totalOwedAmount: state?.expenses?.totalOwedAmount 
+                    ? state.expenses.totalOwedAmount + (newExpense?.amount || 0) 
+                    : newExpense?.amount || 0,  // Fix typo and initialize
+        
+                totalOwesAmount: state?.expenses?.totalOwesAmount 
+                    ? state.expenses.totalOwesAmount + 0 
+                    : 0  // Initialize if missing
             };
         }
         case PAYMENT_DUE: {
@@ -221,6 +241,16 @@ const expenseReducer = (state={}, action) => {
             return {
                 ...state,
                 expenses: updatedExpenses
+            }
+
+            case CLEAR_EXPENSE_STATE: {
+                return {
+                    expensesOwed: [],
+                    owesExpenses: [],
+                    totalAmountOwed: 0,
+                    totalOwedAmount: 0,
+                    totalOwesAmount: 0
+                };
             }
         default:
             return state

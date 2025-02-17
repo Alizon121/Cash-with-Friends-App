@@ -48,12 +48,12 @@ function UpdateExpenseModal({ expenseId, currentExpense, formattedPrice, onUpdat
   return (
     <div className={styles.modal}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Update Details</h1>
+        <h2 className={styles.title}>Update Details</h2>
       </div>
       <div className={styles.section}>
         <h3 className={styles["section-title"]}>FOR:</h3>
         <input
-          className={styles.input}
+          className={styles.updateInput}
           placeholder="New Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -64,7 +64,7 @@ function UpdateExpenseModal({ expenseId, currentExpense, formattedPrice, onUpdat
         <input
           type="number"
           min="0"
-          className={styles.input}
+          className={styles.updateInput}
           placeholder="New Total"
           value={amount}
           onChange={(e) => setAmount(parseFloat(e.target.value))}
@@ -74,8 +74,8 @@ function UpdateExpenseModal({ expenseId, currentExpense, formattedPrice, onUpdat
       <div className={styles.section}>
         <h3 className={styles["section-title"]}>PARTICIPANTS:</h3>
         {currentExpense?.participants.map((participant, index) => (
-          <div key={index}>
-            {`${participant}: ${formattedPrice}\n`}
+          <div className={styles.updateParticipantDetail} key={index}>
+            {`${index+1}. ${participant}: ${formattedPrice}\n`}
           </div>
         ))}
       </div>

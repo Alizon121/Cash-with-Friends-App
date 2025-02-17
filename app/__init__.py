@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, make_response, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import generate_csrf
@@ -97,3 +97,17 @@ def react_root(path):
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')
+
+
+@app.route("/api/csrf/restore", methods=["GET"])
+def restore_csrf():
+    if os.environ.get("FLASK_ENV") != "production":
+        csrf_token = generate_csrf()  # Generate a new CSRF Token
+        response = make_response(jsonify({"XSRF-Token": csrf_token}))
+        #Set the CSRF Token as a cookie
+        response.set_cookie(
+            "XSRF-TOKEN",
+            csrf_token,
+            samesite="Strict" if os.environ.get("FLASK_ENV") == "production" else None
+        )
+        return response
