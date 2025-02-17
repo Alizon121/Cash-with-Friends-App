@@ -226,10 +226,10 @@ const initialState = {
 const friendsReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_FRIENDS: {
-    //   const friendsById = action.payload.reduce((acc, friend) => {
-    //     acc[friend.id] = friend;
-    //     return acc;
-    //   }, {});
+      const friendsById = action.payload.reduce((acc, friend) => {
+        acc[friend.id] = friend;
+        return acc;
+      }, {});
       return {
         ...state,
         friends: {...action.payload}
@@ -260,9 +260,9 @@ const friendsReducer = (state = initialState, action) => {
       return {
         ...state,
         sentRequests: {
-        //   ...state.friends,
-        //   [action.payload.id]: action.payload,
-            ...action.payload
+          ...state.friends,
+          [action.payload.id]: action.payload,
+            // ...action.payload
         },
       };
     }
